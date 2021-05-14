@@ -9,7 +9,6 @@ namespace Mutoco\Mplus\Api;
 
 class SearchBuilder
 {
-    const NS = 'http://www.zetcom.com/ria/ws/module/search';
     private array $modules = [];
     private $start = 0;
     private $limit = 10;
@@ -25,19 +24,19 @@ class SearchBuilder
     {
         $xml = new \DOMDocument('1.0', 'UTF-8');
 
-        $xml->appendChild($root = $xml->createElementNS(self::NS,'application'));
+        $xml->appendChild($root = $xml->createElementNS(XmlNS::SEARCH,'application'));
 
         $root->setAttributeNS('http://www.w3.org/2000/xmlns/' ,'xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
         $root->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'schemaLocation', 'http://www.zetcom.com/ria/ws/module/search http://docs.zetcom.com/ws/module/search/search_1_6.xsd');
 
-        $root->appendChild($modules = $xml->createElementNS(self::NS,'modules'));
+        $root->appendChild($modules = $xml->createElementNS(XmlNS::SEARCH,'modules'));
         foreach ($this->modules as $module => $config) {
-            $modules->appendChild($child = $xml->createElementNS(self::NS, 'module'));
+            $modules->appendChild($child = $xml->createElementNS(XmlNS::SEARCH, 'module'));
             $child->setAttribute('name', $module);
-            $child->appendChild($search = $xml->createElementNS(self::NS, 'search'));
+            $child->appendChild($search = $xml->createElementNS(XmlNS::SEARCH, 'search'));
             $search->setAttribute('limit', $this->limit);
             $search->setAttribute('offset', $this->start);
-            $search->appendChild($expert = $xml->createElementNS(self::NS, 'expert'));
+            $search->appendChild($expert = $xml->createElementNS(XmlNS::SEARCH, 'expert'));
 
             if (is_array($config)) {
                 $this->serialize($config, $expert, $xml);
@@ -56,7 +55,7 @@ class SearchBuilder
                 continue;
             }
             if ($this->isAssoc($value)) {
-                $child = $doc->createElementNS(self::NS, $value['type']);
+                $child = $doc->createElementNS(XmlNS::SEARCH, $value['type']);
                 foreach ($value as $k => $v) {
                     if ($k === 'type') {
                         continue;
@@ -65,7 +64,7 @@ class SearchBuilder
                 }
                 $parent->appendChild($child);
             } else {
-                $child = $doc->createElementNS(self::NS, $item);
+                $child = $doc->createElementNS(XmlNS::SEARCH, $item);
                 $parent->appendChild($child);
                 $this->serialize($value, $child, $doc);
             }

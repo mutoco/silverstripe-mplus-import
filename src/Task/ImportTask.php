@@ -1,23 +1,20 @@
 <?php
-/**
- * Task that runs the import
- */
+
 
 namespace Mutoco\Mplus\Task;
 
 
-use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
+use Mutoco\Mplus\Job\ImportJob;
+use SilverStripe\Dev\BuildTask;
 
-class ImportTask extends AbstractQueuedJob
+class ImportTask extends BuildTask
 {
+    private static $segment = 'ImportMplusTask';
 
-    public function getTitle()
+    public function run($request)
     {
-        // TODO: Implement getTitle() method.
-    }
-
-    public function process()
-    {
-        // TODO: Implement process() method.
+        $job = new ImportJob();
+        $job->hydrate('Exhibition');
+        singleton('Symbiote\\QueuedJobs\\Services\\QueuedJobService')->queueJob($job);
     }
 }

@@ -6,7 +6,7 @@ namespace Mutoco\Mplus\Api;
 
 class Client
 {
-    const SESSION_NS = 'http://www.zetcom.com/ria/ws/session';
+
 
     private string $baseUrl;
     private string $username;
@@ -38,7 +38,7 @@ class Client
         if ($response->getStatusCode() === 200) {
             $doc = $this->parseXml($response->getBody());
             $xpath = new \DOMXPath($doc);
-            $xpath->registerNamespace('ns', self::SESSION_NS);
+            $xpath->registerNamespace('ns', XmlNS::SESSION);
             $session = $xpath->query('//ns:session[@pending="false"]/ns:key');
             if ($session && $session->count()) {
                 $this->sessionKey = (string)$session[0]->nodeValue;
