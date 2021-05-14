@@ -4,11 +4,10 @@
 namespace Mutoco\Mplus\Api;
 
 
-use SilverStripe\Dev\Debug;
-use Symfony\Component\Config\Util\Exception\XmlParsingException;
-
 class Client
 {
+    const SESSION_NS = 'http://www.zetcom.com/ria/ws/session';
+
     private string $baseUrl;
     private string $username;
     private string $password;
@@ -37,14 +36,20 @@ class Client
         ]);
 
         if ($response->getStatusCode() === 200) {
-            $this->sessionKey = (string)$response->getBody();
-            $this->client = new \GuzzleHttp\Client([
-                'base_uri' => $this->getBaseUrl(),
-                'auth' => [
-                    $this->username,
-                    $this->sessionKey
-                ]
-            ]);
+            $doc = $this->parseXml($response->getBody());
+            $xpath = new \DOMXPath($doc);
+            $xpath->registerNamespace('ns', self::SESSION_NS);
+            $session = $xpath->query('//ns:session[@pending="false"]/ns:key');
+            if ($session && $session->count()) {
+                $this->sessionKey = (string)$session[0]->nodeValue;
+                $this->client = new \GuzzleHttp\Client([
+                    'base_uri' => $this->getBaseUrl(),
+                    'auth' => [
+                        sprintf('user[%s]', $this->username),
+                        sprintf('session[%s]', $this->sessionKey)
+                    ]
+                ]);
+            }
         } else {
             throw new \Exception('Unable to establish session. Make sure credentials are correct');
         }
@@ -56,6 +61,17 @@ class Client
     {
         $response = $this->client->delete('ria-ws/application/session/'. $this->sessionKey);
         return $response->getStatusCode() === 200;
+    }
+
+    public function search(string $module, string $xml) : \DOMDocument
+    {
+        $response = $this->client->post(sprintf('ria-ws/application/module/%s/search/', $module), [
+            'body' => $xml
+        ]);
+
+        if ($response->getStatusCode() === 200) {
+            return $this->parseXml($response->getBody());
+        }
     }
 
     /**
@@ -112,27 +128,10 @@ class Client
         return $this;
     }
 
-    private function parseXml(string $body, array $config = [])
+    private function parseXml(string $body)
     {
-        $internalErrors = libxml_use_internal_errors(true);
-        try {
-            // Allow XML to be retrieved even if there is no response body
-            $xml = new \SimpleXMLElement(
-                $body ?: '<root />',
-                $config['libxml_options'] ?? LIBXML_NONET,
-                false,
-                $config['ns'] ?? 'http://www.zetcom.com/ria/ws/module',
-                $config['ns_is_prefix'] ?? false
-            );
-            libxml_use_internal_errors($internalErrors);
-        } catch (\Exception $e) {
-            libxml_use_internal_errors($internalErrors);
-            throw new XmlParsingException(
-                'Unable to parse response body into XML: ' . $e->getMessage(),
-                null,
-                $e
-            );
-        }
+        $xml = new \DOMDocument();
+        $xml->loadXML($body);
         return $xml;
     }
 }
