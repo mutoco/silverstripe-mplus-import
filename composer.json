@@ -1,6 +1,6 @@
 {
-    "name": "silverstripe-module/skeleton",
-    "description": "A skeleton for SilverStripe modules.",
+    "name": "mutoco/silverstripe-mplus-import",
+    "description": "Import data-records from MuseumPlus into SilverStripe.",
     "type": "silverstripe-vendormodule",
     "keywords": [
         "silverstripe",
@@ -17,17 +17,14 @@
     },
     "autoload": {
         "psr-4": {
-            "SilverStripeModule\\Skeleton\\": "src/",
-            "SilverStripeModule\\Skeleton\\Tests\\": "tests/"
+            "Mutoco\\Mplus\\": "src/",
+            "Mutoco\\Mplus\\Tests\\": "tests/"
         }
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.x-dev"
-        },
-        "expose": [
-            "client/dist"
-        ]
+            "dev-main": "1.x-dev"
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true
