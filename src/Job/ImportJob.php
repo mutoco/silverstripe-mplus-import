@@ -45,7 +45,7 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
     {
         parent::setup();
 
-        
+
     }
 
     public function process()
