@@ -32,13 +32,17 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
 
     public function hydrate(string $module)
     {
-        $mapping = self::config()->get('data_mapping');
+        $mapping = self::config()->get('modules');
         if (!isset($mapping[$module])) {
             throw new \InvalidArgumentException('No mapping for module');
         }
 
         $this->module = $module;
-        $this->mapping = $mapping[$module];
+    }
+
+    public function getJobType()
+    {
+        return QueuedJob::LARGE;
     }
 
     public function setup()
@@ -46,6 +50,8 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
         parent::setup();
 
 
+
+        $this->totalSteps = 1;
     }
 
     public function process()
