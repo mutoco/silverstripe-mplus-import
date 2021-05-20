@@ -10,7 +10,8 @@ class DataRecordExtension extends DataExtension
 {
     private static $db = [
         'MplusID' => 'Int',
-        'Module' => 'Varchar(127)'
+        'Module' => 'Varchar(127)',
+        'Imported' => 'Datetime'
     ];
 
     private static $indexes = [
