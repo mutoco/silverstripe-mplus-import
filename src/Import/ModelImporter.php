@@ -26,6 +26,7 @@ class ModelImporter implements \Serializable
     private array $cfg;
     private string $modelClass;
     private array $importedIds = [];
+    private array $skippedIds = [];
 
     private int $currentIndex = -1;
     private ?\DOMNodeList $nodes = null;
@@ -103,11 +104,27 @@ class ModelImporter implements \Serializable
     }
 
     /**
-     * @return array
+     * @return array - IDs of records that were imported.
      */
     public function getImportedIds(): array
     {
         return $this->importedIds;
+    }
+
+    /**
+     * @return array - IDs of records that were skipped, because they were not modified
+     */
+    public function getSkippedIds(): array
+    {
+        return $this->skippedIds;
+    }
+
+    /**
+     * @return array - all IDs that were received by this importer for the current model
+     */
+    public function getReceivedIds(): array
+    {
+        return array_merge($this->skippedIds, $this->importedIds);
     }
 
     /**
@@ -165,6 +182,7 @@ class ModelImporter implements \Serializable
         $this->nodes = $this->performQuery($this->xpath);
         $this->currentIndex = 0;
         $this->importedIds = [];
+        $this->skippedIds = [];
     }
 
     public function importNext()
@@ -182,8 +200,23 @@ class ModelImporter implements \Serializable
         /** @var DataObject $target */
         $target = $existing ?? Injector::inst()->create($this->modelClass);
 
+        // Skip over existing records that were not modified remotely
+        if ($target->isInDB()) {
+            $lastModifiedNode = $xpath->query('.//m:systemField[@name="__lastModified"]/m:value', $node);
+            $lastModified = 0;
+            if ($lastModifiedNode && $lastModifiedNode->count()) {
+                $lastModified = strtotime($lastModifiedNode->item(0)->nodeValue);
+            }
+
+            if ($lastModified > 0 && $lastModified <= strtotime($target->Imported)) {
+                $this->skippedIds[] = $target->ID;
+                $this->currentIndex++;
+                return;
+            }
+        }
+
         $target->MplusID = $id;
-        $target->Imported = DBDatetime::now();
+        $target->setField('Imported', DBDatetime::now());
         $target->Module = $this->model;
 
         if (!empty($this->cfg['fields'])) {
@@ -191,7 +224,7 @@ class ModelImporter implements \Serializable
                 if (!is_array($cfg)) {
                     $cfg = ['xpath' => $cfg];
                 }
-                $result = $xpath->query($cfg['xpath'], $node);
+                $result = $xpath->query($this->makeRelative($cfg['xpath']), $node);
                 if ($result && $result->count()) {
                     $value = $result[0]->nodeValue;
                     if ($target->hasDatabaseField($field)) {
@@ -222,6 +255,7 @@ class ModelImporter implements \Serializable
         $obj->model = $this->model;
         $obj->index = $this->currentIndex;
         $obj->importedIds = $this->importedIds;
+        $obj->skippedIds = $this->skippedIds;
         return serialize($obj);
     }
 
@@ -241,6 +275,7 @@ class ModelImporter implements \Serializable
 
         $this->initialize();
         $this->importedIds = $obj->importedIds;
+        $this->skippedIds = $obj->skippedIds;
         $this->currentIndex = $obj->index;
     }
 
@@ -261,5 +296,10 @@ class ModelImporter implements \Serializable
     private function performQuery(string $path)
     {
         return $this->createXPath()->query($path, $this->context);
+    }
+
+    private function makeRelative(string $xpath) : string
+    {
+        return '.' . ltrim($xpath, '.');
     }
 }
