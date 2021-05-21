@@ -24,11 +24,100 @@ class ModelImporter implements \Serializable
     private ?\DOMDocument $xml = null;
     private ?\DOMElement $context = null;
     private array $cfg;
-    private string $class;
+    private string $modelClass;
     private array $importedIds = [];
 
-    private int $currentIndex = 0;
+    private int $currentIndex = -1;
     private ?\DOMNodeList $nodes = null;
+
+    /**
+     * @return string
+     */
+    public function getXpath(): string
+    {
+        return $this->xpath;
+    }
+
+    /**
+     * @param string $xpath
+     * @return ModelImporter
+     */
+    public function setXpath(string $xpath): self
+    {
+        $this->xpath = $xpath;
+        return $this;
+    }
+
+    /**
+     * @return \DOMDocument|null
+     */
+    public function getXml(): ?\DOMDocument
+    {
+        return $this->xml;
+    }
+
+    /**
+     * @param \DOMDocument|null $xml
+     * @return ModelImporter
+     */
+    public function setXml(?\DOMDocument $xml): self
+    {
+        $this->xml = $xml;
+        return $this;
+    }
+
+    /**
+     * @return \DOMElement|null
+     */
+    public function getContext(): ?\DOMElement
+    {
+        return $this->context;
+    }
+
+    /**
+     * @param \DOMElement|null $context
+     * @return ModelImporter
+     */
+    public function setContext(?\DOMElement $context): self
+    {
+        $this->context = $context;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getModelClass(): string
+    {
+        return $this->modelClass;
+    }
+
+    /**
+     * @param string $modelClass
+     * @return ModelImporter
+     */
+    public function setModelClass(string $modelClass): self
+    {
+        $this->modelClass = $modelClass;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getImportedIds(): array
+    {
+        return $this->importedIds;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCurrentIndex(): int
+    {
+        return $this->currentIndex;
+    }
+
 
     public function __construct(string $model, string $xpath, ?\DOMDocument $xml = null, ?\DOMElement $context = null)
     {
@@ -67,9 +156,9 @@ class ModelImporter implements \Serializable
             throw new \InvalidArgumentException(sprintf('No class defined for model "%s"', $this->model));
         }
 
-        $this->class = $this->cfg['class'];
+        $this->modelClass = $this->cfg['class'];
 
-        if (!is_subclass_of($this->class, DataObject::class)) {
+        if (!is_subclass_of($this->modelClass, DataObject::class)) {
             throw new \InvalidArgumentException('Import target class must be a DataObject');
         }
 
@@ -89,9 +178,9 @@ class ModelImporter implements \Serializable
 
         $xpath = $this->createXPath();
 
-        $existing = DataObject::get_one($this->class, ['MplusID' => $id]);
+        $existing = DataObject::get_one($this->modelClass, ['MplusID' => $id]);
         /** @var DataObject $target */
-        $target = $existing ?? Injector::inst()->create($this->class);
+        $target = $existing ?? Injector::inst()->create($this->modelClass);
 
         $target->MplusID = $id;
         $target->Imported = DBDatetime::now();
@@ -102,7 +191,7 @@ class ModelImporter implements \Serializable
                 if (!is_array($cfg)) {
                     $cfg = ['xpath' => $cfg];
                 }
-                $result = $xpath->query($cfg['xpath'], $this->context);
+                $result = $xpath->query($cfg['xpath'], $node);
                 if ($result && $result->count()) {
                     $value = $result[0]->nodeValue;
                     if ($target->hasDatabaseField($field)) {
@@ -144,8 +233,8 @@ class ModelImporter implements \Serializable
         $this->xml = new \DOMDocument();
         $this->xml->loadXML($obj->xml);
 
-        $result = $this->performQuery('//[@serializedContext="serializedContext"]');
-        if ($result) {
+        $result = $this->performQuery('//m:*[@serializedContext="serializedContext"]');
+        if ($result && $result->count()) {
             $this->context = $result[0];
             $this->context->removeAttribute('serializedContext');
         }
