@@ -5,6 +5,8 @@ namespace Mutoco\Mplus\Import;
 
 
 use Mutoco\Mplus\Api\XmlNS;
+use Mutoco\Mplus\Extension\DataRecordExtension;
+use Ramsey\Uuid\Uuid;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\DataObject;
@@ -19,17 +21,28 @@ class ModelImporter implements \Serializable
         'm' => XmlNS::MODULE
     ];
 
-    private string $model;
-    private string $xpath;
-    private ?\DOMDocument $xml = null;
-    private ?\DOMElement $context = null;
-    private array $cfg;
-    private string $modelClass;
-    private array $importedIds = [];
-    private array $skippedIds = [];
+    protected string $model;
+    protected string $xpath;
+    protected ?ModelImporter $parent = null;
+    protected ?\DOMDocument $xml = null;
+    protected ?\DOMNode $context = null;
+    protected array $cfg;
+    protected string $modelClass;
+    protected array $importedIds = [];
+    protected array $skippedIds = [];
+    protected string $uuid;
+    protected array $subtasks = [];
+    protected bool $isFinalized = false;
+    protected int $currentIndex = 0;
+    protected ?\DOMNodeList $nodes = null;
 
-    private int $currentIndex = -1;
-    private ?\DOMNodeList $nodes = null;
+    /**
+     * @return string
+     */
+    public function getUUID(): string
+    {
+        return $this->uuid;
+    }
 
     /**
      * @return string
@@ -40,48 +53,40 @@ class ModelImporter implements \Serializable
     }
 
     /**
-     * @param string $xpath
-     * @return ModelImporter
-     */
-    public function setXpath(string $xpath): self
-    {
-        $this->xpath = $xpath;
-        return $this;
-    }
-
-    /**
      * @return \DOMDocument|null
      */
     public function getXml(): ?\DOMDocument
     {
+        if ($this->parent) {
+            return $this->parent->getXml();
+        }
+
         return $this->xml;
     }
 
     /**
-     * @param \DOMDocument|null $xml
-     * @return ModelImporter
+     * @return \DOMNode|null
      */
-    public function setXml(?\DOMDocument $xml): self
-    {
-        $this->xml = $xml;
-        return $this;
-    }
-
-    /**
-     * @return \DOMElement|null
-     */
-    public function getContext(): ?\DOMElement
+    public function getContext(): ?\DOMNode
     {
         return $this->context;
     }
 
     /**
-     * @param \DOMElement|null $context
+     * @param \DOMNode|null $context
      * @return ModelImporter
      */
-    public function setContext(?\DOMElement $context): self
+    public function setContext(?\DOMNode $context): ModelImporter
     {
+        if ($this->context) {
+            $this->context->removeAttribute('c-' . $this->uuid);
+        }
+
         $this->context = $context;
+        if ($this->context) {
+            $this->context->setAttribute('c-' . $this->uuid, 'context');
+        }
+
         return $this;
     }
 
@@ -91,16 +96,6 @@ class ModelImporter implements \Serializable
     public function getModelClass(): string
     {
         return $this->modelClass;
-    }
-
-    /**
-     * @param string $modelClass
-     * @return ModelImporter
-     */
-    public function setModelClass(string $modelClass): self
-    {
-        $this->modelClass = $modelClass;
-        return $this;
     }
 
     /**
@@ -135,39 +130,42 @@ class ModelImporter implements \Serializable
         return $this->currentIndex;
     }
 
+    /**
+     * @return ModelImporter|null
+     */
+    public function getParent(): ?ModelImporter
+    {
+        return $this->parent;
+    }
 
-    public function __construct(string $model, string $xpath, ?\DOMDocument $xml = null, ?\DOMElement $context = null)
+    /**
+     * @param ModelImporter|null $parent
+     * @return ModelImporter
+     */
+    public function setParent(?ModelImporter $parent): self
+    {
+        $this->parent = $parent;
+        return $this;
+    }
+
+    public function getIsFinalized() : bool
+    {
+        return $this->isFinalized;
+    }
+
+    public function __construct(string $model, string $xpath, ModelImporter $parent = null, ?\DOMNode $context = null)
     {
         $this->model = $model;
         $this->xpath = $xpath;
+        $this->parent = $parent;
+        $this->uuid = Uuid::uuid4()->toString();
 
-        if ($context) {
-            $this->context = $context;
-        }
-
-        if ($xml) {
-            $this->xml = $xml;
-            $this->initialize();
-        }
-    }
-
-    public function getRemainingSteps()
-    {
-        if ($this->nodes) {
-            return $this->nodes->count() - $this->currentIndex;
-        }
-
-        return 0;
-    }
-
-    public function initialize()
-    {
-        $modelsConfig = self::config()->get('models');
-        if (!isset($modelsConfig[$this->model])) {
+        $cfg = self::getModelConfig($this->model);
+        if (!$cfg) {
             throw new \InvalidArgumentException(sprintf('No config defined for model "%s"', $this->model));
         }
 
-        $this->cfg = $modelsConfig[$this->model];
+        $this->cfg = $cfg;
 
         if (!isset($this->cfg['class'])) {
             throw new \InvalidArgumentException(sprintf('No class defined for model "%s"', $this->model));
@@ -179,14 +177,53 @@ class ModelImporter implements \Serializable
             throw new \InvalidArgumentException('Import target class must be a DataObject');
         }
 
+        if ($context) {
+            $this->setContext($context);
+        }
+    }
+
+    public function getRemainingSteps()
+    {
+        $steps = 0;
+        if ($this->nodes) {
+            $steps += $this->nodes->count() - $this->currentIndex;
+        }
+
+        foreach ($this->subtasks as $name => $task) {
+            $steps += $task->getRemainingSteps();
+        }
+
+        return $steps;
+    }
+
+    public function initialize(?\DOMDocument $xml = null)
+    {
+        $this->xml = $xml;
+
+        $result = $this->performQuery(sprintf('//m:*[@c-%s="context"]', $this->uuid));
+        if ($result && $result->count()) {
+            $this->setContext($result[0]);
+        }
+
         $this->nodes = $this->performQuery($this->xpath);
-        $this->currentIndex = 0;
-        $this->importedIds = [];
-        $this->skippedIds = [];
     }
 
     public function importNext()
     {
+        if (!$this->nodes || $this->nodes->count() === 0) {
+            return;
+        }
+
+        foreach ($this->subtasks as $name => $subtask) {
+            if ($subtask->getRemainingSteps() > 0) {
+                $subtask->importNext();
+                if ($subtask->getRemainingSteps() === 0) {
+                    $subtask->finalize();
+                }
+                return;
+            }
+        }
+
         $node = $this->nodes->item($this->currentIndex);
 
         $id = $node->getAttribute('id');
@@ -200,6 +237,10 @@ class ModelImporter implements \Serializable
         /** @var DataObject $target */
         $target = $existing ?? Injector::inst()->create($this->modelClass);
 
+        if (!$target->hasExtension(DataRecordExtension::class)) {
+            throw new \LogicException('Dataobject import target needs to have the DataRecordExtension');
+        }
+
         // Skip over existing records that were not modified remotely
         if ($target->isInDB()) {
             $lastModifiedNode = $xpath->query('.//m:systemField[@name="__lastModified"]/m:value', $node);
@@ -209,11 +250,21 @@ class ModelImporter implements \Serializable
             }
 
             if ($lastModified > 0 && $lastModified <= strtotime($target->Imported)) {
-                $this->skippedIds[] = $target->ID;
-                $this->currentIndex++;
-                return;
+                // Get result from skip call and filter out any `null` value returns
+                $skipCallbackResult = array_filter(
+                    $target->extend('beforeMplusSkip', $this, $node),
+                    function($v) { return !is_null($v); }
+                );
+                // If any callback returned false, we won't skip
+                if (empty($skipCallbackResult) || min($skipCallbackResult) !== false) {
+                    $this->skippedIds[] = $target->ID;
+                    $this->currentIndex++;
+                    return;
+                }
             }
         }
+
+        $target->extend('beforeMplusImport', $this, $node);
 
         $target->MplusID = $id;
         $target->setField('Imported', DBDatetime::now());
@@ -237,69 +288,148 @@ class ModelImporter implements \Serializable
             }
         }
 
-        $this->importedIds[] = $target->write();
-
+        $target->write();
+        $this->persistedRecord($target);
+        $this->importedIds[] = $id;
         $this->currentIndex++;
+        $target->extend('afterMplusImport', $this, $node);
+
+        if (!empty($this->cfg['relations'])) {
+            foreach ($this->cfg['relations'] as $relation => $relationCfg) {
+                $this->importRelation($target, $node, $relation, $relationCfg);
+            }
+        }
+    }
+
+    public function finalize()
+    {
+        if ($this->isFinalized) {
+            return;
+        }
+
+        // Find all records only exists in the DB but no longer remotely
+        $obsolete = DataObject::get($this->modelClass)->exclude(['MplusID' => $this->getReceivedIds()]);
+        /** @var DataObject $record */
+        foreach ($obsolete as $record) {
+            $this->deleteRecord($record);
+        }
+
+        $this->isFinalized = true;
     }
 
     public function serialize()
     {
-        $obj = new \stdClass();
-
-        if ($this->context) {
-            $this->context->setAttribute('serializedContext', 'serializedContext');
-        }
-
-        $obj->xml = $this->xml->saveXML();
-        $obj->xpath = $this->xpath;
-        $obj->model = $this->model;
-        $obj->index = $this->currentIndex;
-        $obj->importedIds = $this->importedIds;
-        $obj->skippedIds = $this->skippedIds;
-        return serialize($obj);
+        return serialize($this->getSerializableObject());
     }
 
     public function unserialize($data)
     {
-        $obj = unserialize($data);
-        $this->xpath = $obj->xpath;
-        $this->model = $obj->model;
-        $this->xml = new \DOMDocument();
-        $this->xml->loadXML($obj->xml);
-
-        $result = $this->performQuery('//m:*[@serializedContext="serializedContext"]');
-        if ($result && $result->count()) {
-            $this->context = $result[0];
-            $this->context->removeAttribute('serializedContext');
-        }
-
-        $this->initialize();
-        $this->importedIds = $obj->importedIds;
-        $this->skippedIds = $obj->skippedIds;
-        $this->currentIndex = $obj->index;
+        $this->unserializeFromObject(unserialize($data));
     }
 
-    private function createXPath(): \DOMXPath
+    public static function getModelConfig(string $model) : ?array
     {
-        $ns = self::config()->get('namespaces');
-        $xpath = new \DOMXPath($this->xml);
-        foreach ($ns as $prefix => $namespace) {
-            $xpath->registerNamespace($prefix, $namespace);
+        $modelsConfig = self::config()->get('models');
+        if (!isset($modelsConfig[$model])) {
+            return null;
         }
-        return $xpath;
+        return $modelsConfig[$model];
     }
 
     /**
      * @param string $path – the xpath string
      * @return \DOMNodeList|false
      */
-    private function performQuery(string $path)
+    public function performQuery(string $path)
     {
         return $this->createXPath()->query($path, $this->context);
     }
 
-    private function makeRelative(string $xpath) : string
+    protected function persistedRecord(DataObject $record)
+    {
+
+    }
+
+    protected function deleteRecord(DataObject $record)
+    {
+        $rules = array_filter($record->extend('beforeMplusDelete', $this), function ($v) {
+            return !is_null($v);
+        });
+
+        if (min($rules) === false) {
+            return false;
+        }
+
+        $record->delete();
+        return true;
+    }
+
+    protected function importRelation(DataObject $target, \DOMNode $node, string $relationName, array $relationCfg)
+    {
+        if (!isset($this->subtasks[$relationName])) {
+            $importer = new RelationImporter($relationCfg['model'], $relationCfg['xpath'], $this, $target, $relationName, $node);
+            $importer->initialize();
+            $this->subtasks[$relationName] = $importer;
+        }
+    }
+
+    protected function createXPath(): \DOMXPath
+    {
+        $ns = self::config()->get('namespaces');
+        $xpath = new \DOMXPath($this->getXml());
+        foreach ($ns as $prefix => $namespace) {
+            $xpath->registerNamespace($prefix, $namespace);
+        }
+        return $xpath;
+    }
+
+    protected function makeRelative(string $xpath) : string
     {
         return '.' . ltrim($xpath, '.');
     }
+
+    protected function getSerializableObject() : \stdClass
+    {
+        $obj = new \stdClass();
+
+        if ($this->xml) {
+            $obj->xml = $this->xml->saveXML();
+        }
+
+        $obj->uuid = $this->uuid;
+        $obj->isFinalized = $this->isFinalized;
+        $obj->xpath = $this->xpath;
+        $obj->model = $this->model;
+        $obj->index = $this->currentIndex;
+        $obj->importedIds = $this->importedIds;
+        $obj->skippedIds = $this->skippedIds;
+        $obj->subtasks = $this->subtasks;
+
+        return $obj;
+    }
+
+    protected function unserializeFromObject(\stdClass $obj) : void
+    {
+        $this->xpath = $obj->xpath;
+        $this->model = $obj->model;
+        $this->uuid = $obj->uuid;
+        $this->isFinalized = $obj->isFinalized;
+
+        if ($obj->xml) {
+            $this->xml = new \DOMDocument();
+            $this->xml->loadXML($obj->xml);
+        }
+
+        $this->initialize($this->xml);
+        $this->importedIds = $obj->importedIds;
+        $this->skippedIds = $obj->skippedIds;
+        $this->currentIndex = $obj->index;
+
+        $this->subtasks = $obj->subtasks;
+        foreach ($this->subtasks as $name => $task) {
+            $task->setParent($this);
+        }
+    }
+
+
 }

@@ -61,16 +61,25 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
         $client->init();
         $xml = $client->search($this->module, $search);
 
-        $this->importer = new ModelImporter($this->module, $this->cfg['xpath'], $xml);
-        $this->totalSteps = 1;
+        $this->importer = new ModelImporter($this->module, $this->cfg['xpath']);
+        $this->importer->initialize($xml);
+        $this->totalSteps = $this->importer->getRemainingSteps();
+        $this->currentStep = 0;
+    }
+
+    public function prepareForRestart()
+    {
+        parent::prepareForRestart();
     }
 
     public function process()
     {
         $this->importer->importNext();
         $this->totalSteps = $this->importer->getRemainingSteps();
+        $this->currentStep++;
 
         if ($this->totalSteps === 0) {
+            $this->importer->finalize();
             $this->isComplete = true;
         }
     }

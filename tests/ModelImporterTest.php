@@ -19,7 +19,10 @@ class ModelImporterTest extends SapphireTest
 
     public function testSerialization()
     {
-        $instance = new ModelImporter('Exhibition', '//m:module[@name="Exhibition"]/m:moduleItem', $this->xml);
+        $instance = new ModelImporter('Exhibition', '//m:module[@name="Exhibition"]/m:moduleItem');
+        $instance->initialize($this->xml);
+        $context = $instance->performQuery('//m:repeatableGroupItem[@id="356559"]')->item(0);
+        $instance->setContext($context);
         $serialized = serialize($instance);
 
         $copy = unserialize($serialized);
@@ -27,6 +30,7 @@ class ModelImporterTest extends SapphireTest
         $this->assertEquals($copy->getXml()->saveXML(), $instance->getXml()->saveXML(), 'Deserialized object should have the same XML content');
         $this->assertEquals($copy->getXpath(), $instance->getXpath(), 'Deserialized object should have the same xpath');
         $this->assertEquals($copy->getCurrentIndex(), $instance->getCurrentIndex(), 'Deserialized object should have the same index');
+        $this->assertEquals($copy->getUUID(), $instance->getUUID(), 'Deserialized object should have the same uuid');
         $this->assertEquals($copy->getContext(), $instance->getContext(), 'Deserialized object should have the same context');
     }
 }
