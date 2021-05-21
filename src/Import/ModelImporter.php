@@ -145,6 +145,9 @@ class ModelImporter implements \Serializable
     public function setParent(?ModelImporter $parent): self
     {
         $this->parent = $parent;
+        if ($this->parent) {
+            $this->initialize($this->getXml());
+        }
         return $this;
     }
 
@@ -257,7 +260,7 @@ class ModelImporter implements \Serializable
                 );
                 // If any callback returned false, we won't skip
                 if (empty($skipCallbackResult) || min($skipCallbackResult) !== false) {
-                    $this->skippedIds[] = $target->ID;
+                    $this->skippedIds[] = $id;
                     $this->currentIndex++;
                     return;
                 }
@@ -414,16 +417,16 @@ class ModelImporter implements \Serializable
         $this->model = $obj->model;
         $this->uuid = $obj->uuid;
         $this->isFinalized = $obj->isFinalized;
-
-        if ($obj->xml) {
-            $this->xml = new \DOMDocument();
-            $this->xml->loadXML($obj->xml);
-        }
-
-        $this->initialize($this->xml);
         $this->importedIds = $obj->importedIds;
         $this->skippedIds = $obj->skippedIds;
         $this->currentIndex = $obj->index;
+
+        if (isset($obj->xml)) {
+            $this->xml = new \DOMDocument();
+            $this->xml->loadXML($obj->xml);
+            $this->initialize($this->xml);
+        }
+
 
         $this->subtasks = $obj->subtasks;
         foreach ($this->subtasks as $name => $task) {

@@ -12,6 +12,22 @@ class RelationImporter extends ModelImporter
     protected DataObject $target;
     protected string $relationName;
 
+    /**
+     * @return DataObject
+     */
+    public function getTarget(): DataObject
+    {
+        return $this->target;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRelationName(): string
+    {
+        return $this->relationName;
+    }
+
     public function __construct(
         string $model,
         string $xpath,
@@ -59,5 +75,26 @@ class RelationImporter extends ModelImporter
         if ($relation instanceof Relation) {
             return $relation;
         }
+    }
+
+    protected function getSerializableObject(): \stdClass
+    {
+        $obj = parent::getSerializableObject();
+
+        $obj->targetClass = $this->target->getClassName();
+        $obj->targetId = $this->target->ID;
+        $obj->relationName = $this->relationName;
+
+        return $obj;
+    }
+
+    protected function unserializeFromObject(\stdClass $obj): void
+    {
+        if (($target = DataObject::get_by_id($obj->targetClass, $obj->targetId)) && !is_null($target)) {
+            $this->target = $target;
+        }
+        $this->relationName = $obj->relationName;
+        parent::unserializeFromObject($obj);
+
     }
 }

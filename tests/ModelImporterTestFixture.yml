@@ -1,0 +1,11 @@
+Mutoco\Mplus\Tests\Model\Exhibition:
+  exhibition2:
+    MplusID: 2
+    Imported: 2021-05-01 09:00:00
+
+Mutoco\Mplus\Tests\Model\TextBlock:
+  textBlock:
+    MplusID: 356559
+    Text: Dies ist ein Pressetext.
+    Author: Firstname Lastname
+    Exhibition: =>Mutoco\Mplus\Tests\Model\Exhibition.exhibition2
