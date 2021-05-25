@@ -26,7 +26,7 @@ class ModelImporter implements \Serializable
     protected ?ModelImporter $parent = null;
     protected ?\DOMDocument $xml = null;
     protected ?\DOMNode $context = null;
-    protected array $cfg;
+    protected array $cfg = [];
     protected string $modelClass;
     protected array $importedIds = [];
     protected array $skippedIds = [];
@@ -359,7 +359,7 @@ class ModelImporter implements \Serializable
             return !is_null($v);
         });
 
-        if (min($rules) === false) {
+        if (!empty($rules) && min($rules) === false) {
             return false;
         }
 
@@ -420,13 +420,14 @@ class ModelImporter implements \Serializable
         $this->importedIds = $obj->importedIds;
         $this->skippedIds = $obj->skippedIds;
         $this->currentIndex = $obj->index;
+        $this->cfg = self::getModelConfig($this->model);
+        $this->modelClass = $this->cfg['class'];
 
         if (isset($obj->xml)) {
             $this->xml = new \DOMDocument();
             $this->xml->loadXML($obj->xml);
             $this->initialize($this->xml);
         }
-
 
         $this->subtasks = $obj->subtasks;
         foreach ($this->subtasks as $name => $task) {

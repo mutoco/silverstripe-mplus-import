@@ -53,7 +53,7 @@ class RelationImporter extends ModelImporter
                     return !is_null($v);
                 });
 
-                if (max($rules) == true) {
+                if (!empty($rules) && max($rules) == true) {
                     $this->deleteRecord($record);
                 }
             }
@@ -71,10 +71,13 @@ class RelationImporter extends ModelImporter
 
     protected function getRelation() : ?Relation
     {
-        $relation = $this->target->{$this->relationName}();
-        if ($relation instanceof Relation) {
-            return $relation;
+        if ($this->target->hasMethod($this->relationName)) {
+            $relation = $this->target->{$this->relationName}();
+            if ($relation instanceof Relation) {
+                return $relation;
+            }
         }
+        return null;
     }
 
     protected function getSerializableObject(): \stdClass
