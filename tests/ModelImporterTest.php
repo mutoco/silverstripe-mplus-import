@@ -4,11 +4,13 @@ namespace Mutoco\Mplus\Tests;
 
 use Mutoco\Mplus\Import\ModelImporter;
 use Mutoco\Mplus\Import\RelationImporter;
+use Mutoco\Mplus\Tests\Api\Client;
 use Mutoco\Mplus\Tests\Model\Exhibition;
+use Mutoco\Mplus\Tests\Model\Person;
 use Mutoco\Mplus\Tests\Model\TextBlock;
 use SilverStripe\Config\Collections\MutableConfigCollectionInterface;
 use SilverStripe\Core\Config\Config;
-use SilverStripe\Dev\Debug;
+use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\FieldType\DBDatetime;
 use Symfony\Component\Yaml\Yaml;
@@ -17,7 +19,8 @@ class ModelImporterTest extends SapphireTest
 {
     protected static $extra_dataobjects = [
         Exhibition::class,
-        TextBlock::class
+        TextBlock::class,
+        Person::class
     ];
 
     protected static $fixture_file = 'ModelImporterTestFixture.yml';
@@ -30,9 +33,11 @@ class ModelImporterTest extends SapphireTest
 
         Config::nest();
 
+        Config::inst()->merge(Injector::class, 'Mutoco\Mplus\Api\Client', ['class' => Client::class]);
+
         $this->loadedConfig = Yaml::parseFile(__DIR__ . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'test.yml');
-        if (isset($this->loadedConfig[ModelImporter::class])) {
-            Config::inst()->merge(ModelImporter::class, 'models', $this->loadedConfig[ModelImporter::class]['models']);
+        if (isset($this->loadedConfig['ModelImporterDefault'])) {
+            Config::inst()->merge(ModelImporter::class, 'models', $this->loadedConfig['ModelImporterDefault']['models']);
         }
 
         $this->xml = new \DOMDocument();
@@ -83,22 +88,18 @@ class ModelImporterTest extends SapphireTest
         $cfg = $this->loadedConfig;
         Config::withConfig(function(MutableConfigCollectionInterface $config) use ($cfg) {
             // update your config
-            $config->set(ModelImporter::class, 'models', $cfg[ModelImporter::class]['models']);
+            $config->set(ModelImporter::class, 'models', $cfg['ModelImporterDefault']['models']);
             $instance = new ModelImporter('Exhibition', '//m:module[@name="Exhibition"]/m:moduleItem');
             $instance->initialize($this->xml);
             $instance->importNext();
-            $this->assertEquals(5, $instance->getRemainingSteps(), 'Remaining steps should be 5');
+            $this->assertEquals(1, $instance->getProcessedSteps(), 'Processed steps should be 1');
             $instance->importNext();
 
             /** @var ModelImporter $copy */
             $copy = unserialize(serialize($instance));
-            $this->assertEquals(4, $copy->getRemainingSteps(), 'Remaining steps should be 4');
+            $this->assertEquals(2, $copy->getProcessedSteps(), 'Processed steps should be 2');
 
-            while ($copy->getRemainingSteps()) {
-                $copy->importNext();
-            }
-
-            $copy->finalize();
+            while ($copy->importNext()) { /* NOOP */ }
 
             $imported = Exhibition::get()->find('MplusID', 2);
             $this->assertEquals([356559, 356558, 367558, 367559, 367560], $imported->Texts()->column('MplusID'));
@@ -107,42 +108,66 @@ class ModelImporterTest extends SapphireTest
 
     public function testDeleteUnused()
     {
-        $exhibition = Exhibition::create()->update([
-            'MplusID' => 3,
-            'Title' => 'Testrecord'
-        ]);
-        $exhibition->write();
+        $cfg = $this->loadedConfig;
+        Config::withConfig(function(MutableConfigCollectionInterface $config) use ($cfg) {
+            $config->set(ModelImporter::class, 'models', $cfg['ModelImporterDefault']['models']);
+            $exhibition = Exhibition::create()->update([
+                'MplusID' => 3,
+                'Title' => 'Testrecord'
+            ]);
+            $exhibition->write();
 
-        $this->assertEquals([2,3], Exhibition::get()->column('MplusID'));
-        $instance = new ModelImporter('Exhibition', '//m:module[@name="Exhibition"]/m:moduleItem');
-        $instance->initialize($this->xml);
-        while ($instance->getRemainingSteps()) {
-            $instance->importNext();
-        }
-        $instance->finalize();
+            $this->assertEquals([2,3], Exhibition::get()->column('MplusID'));
+            $instance = new ModelImporter('Exhibition', '//m:module[@name="Exhibition"]/m:moduleItem');
+            $instance->initialize($this->xml);
+            while ($instance->importNext()) { /* NOOP */ }
 
-        $this->assertEquals([2], Exhibition::get()->column('MplusID'));
+            $this->assertEquals([2], Exhibition::get()->column('MplusID'));
+        });
     }
 
     public function testModifiedImport()
     {
-        DBDatetime::set_mock_now('2021-05-10 10:00:00');
+        $cfg = $this->loadedConfig;
+        Config::withConfig(function(MutableConfigCollectionInterface $config) use ($cfg) {
+            $config->set(ModelImporter::class, 'models', $cfg['ModelImporterDefault']['models']);
+            DBDatetime::set_mock_now('2021-05-10 10:00:00');
 
-        $instance = new ModelImporter('Exhibition', '//m:module[@name="Exhibition"]/m:moduleItem');
-        $instance->initialize($this->xml);
-        $instance->importNext();
+            $instance = new ModelImporter('Exhibition', '//m:module[@name="Exhibition"]/m:moduleItem');
+            $instance->initialize($this->xml);
+            $instance->importNext();
 
-        $this->assertEquals([2], $instance->getImportedIds(), 'Exhibition should be imported');
-        Exhibition::flush_and_destroy_cache();
-        $imported = Exhibition::get()->find('MplusID', 2);
-        $this->assertEquals('2021-05-10 10:00:00', $imported->Imported, 'Imported date must be updated to import time');
+            $this->assertEquals([2], $instance->getImportedIds(), 'Exhibition should be imported');
+            Exhibition::flush_and_destroy_cache();
+            $imported = Exhibition::get()->find('MplusID', 2);
+            $this->assertEquals('2021-05-10 10:00:00', $imported->Imported, 'Imported date must be updated to import time');
 
-        $instance = new ModelImporter('Exhibition', '//m:module[@name="Exhibition"]/m:moduleItem');
-        $instance->initialize($this->xml);
-        $instance->importNext();
-        $this->assertEmpty($instance->getImportedIds(), 'There should be no import, as nothing has changed');
-        $this->assertEquals([2], $instance->getSkippedIds(), 'Exhibition must be in skipped');
+            $instance = new ModelImporter('Exhibition', '//m:module[@name="Exhibition"]/m:moduleItem');
+            $instance->initialize($this->xml);
+            $instance->importNext();
+            $this->assertEmpty($instance->getImportedIds(), 'There should be no import, as nothing has changed');
+            $this->assertEquals([2], $instance->getSkippedIds(), 'Exhibition must be in skipped');
 
-        DBDatetime::clear_mock_now();
+            DBDatetime::clear_mock_now();
+        });
+    }
+
+    public function testModuleRelationImport()
+    {
+        $cfg = $this->loadedConfig;
+        Config::withConfig(function(MutableConfigCollectionInterface $config) use ($cfg) {
+            // update your config
+            $config->set(ModelImporter::class, 'models', $cfg['ModelImporterRelation']['models']);
+            $instance = new ModelImporter('Exhibition', '//m:module[@name="Exhibition"]/m:moduleItem');
+            $client = new Client();
+            $instance->setApi($client);
+            $instance->initialize($this->xml);
+            while ($instance->importNext()) {  }
+            $imported = Exhibition::get()->find('MplusID', 2);
+            $this->assertEquals([1982], $imported->Persons()->column('MplusID'));
+            $person = $imported->Persons()->find('MplusID', 1982);
+            $this->assertEquals('Edvard', $person->Firstname);
+            $this->assertEquals('Munch', $person->Lastname);
+        });
     }
 }

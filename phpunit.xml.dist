@@ -1,5 +1,5 @@
-<phpunit bootstrap="vendor/silverstripe/cms/tests/bootstrap.php" colors="true">
-    <testsuite name="silverstripe-module/skeleton">
+<phpunit bootstrap="vendor/silverstripe/framework/tests/bootstrap.php" colors="true">
+    <testsuite name="mutoco/silverstripe-mplus-import">
         <directory>tests/</directory>
     </testsuite>
     <filter>
@@ -10,4 +10,8 @@
             </exclude>
         </whitelist>
     </filter>
+    <php>
+        <env name="SS_DATABASE_CLASS" value="SQLite3Database"/>
+        <env name="SS_SQLITE_DATABASE_PATH" value=":memory:"/>
+    </php>
 </phpunit>

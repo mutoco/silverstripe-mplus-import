@@ -20,6 +20,10 @@ class Exhibition extends DataObject implements TestOnly
 		'Texts' => TextBlock::class
 	];
 
+	private static $many_many = [
+	    'Persons' => Person::class
+    ];
+
 	private static $extensions = [
 		DataRecordExtension::class
 	];

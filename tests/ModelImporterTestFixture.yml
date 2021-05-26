@@ -9,3 +9,9 @@ Mutoco\Mplus\Tests\Model\TextBlock:
     Text: Dies ist ein Pressetext.
     Author: Firstname Lastname
     Exhibition: =>Mutoco\Mplus\Tests\Model\Exhibition.exhibition2
+
+Mutoco\Mplus\Tests\Model\Person:
+  person:
+    MplusID: 10
+    Firstname: Example
+    Lastname: Tester

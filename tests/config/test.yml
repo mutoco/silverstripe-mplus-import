@@ -1,4 +1,4 @@
-Mutoco\Mplus\Import\ModelImporter:
+ModelImporterDefault:
   models:
     ExhTextGrp:
       class: Mutoco\Mplus\Tests\Model\TextBlock
@@ -15,3 +15,25 @@ Mutoco\Mplus\Import\ModelImporter:
         Texts:
           xpath: '//m:repeatableGroup[@name="ExhTextGrp"]/m:repeatableGroupItem'
           model: ExhTextGrp
+
+ModelImporterRelation:
+  models:
+    Person:
+      class: Mutoco\Mplus\Tests\Model\Person
+      fields:
+        Firstname: '//m:dataField[@name="PerFirstNameTxt"]/m:value'
+        Lastname: '//m:dataField[@name="PerLastNameTxt"]/m:value'
+        PlaceOfBirth: '//m:dataField[@name="PerPlaceBirthTxt"]/m:value'
+        PlaceOfDeath: '//m:dataField[@name="PerPlaceDeathTxt"]/m:value'
+        DateOfBirth: '//m:dataField[@name="PerDateFromBeginDat"]/m:value'
+        DateOfDeath: '//m:dataField[@name="PerDateToEndDat"]/m:value'
+    Exhibition:
+      class: Mutoco\Mplus\Tests\Model\Exhibition
+      fields:
+        Title: '//m:dataField[@name="ExhTitleTxt"]/m:value'
+        DateTo: '//m:dataField[@name="ExhDateToDat"]/m:value'
+        DateFrom: '//m:dataField[@name="ExhDateFromDat"]/m:value'
+      relations:
+        Persons:
+          model: Person
+          moduleRef: ExhPersonRef
