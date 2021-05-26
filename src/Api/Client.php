@@ -4,7 +4,7 @@
 namespace Mutoco\Mplus\Api;
 
 
-class Client
+class Client implements ClientInterface
 {
 
 
@@ -22,7 +22,7 @@ class Client
         $this->setPassword($password);
     }
 
-    public function init() : self
+    public function init(): self
     {
         $tmpClient = new \GuzzleHttp\Client([
             'base_uri' => $this->getBaseUrl()
@@ -57,13 +57,13 @@ class Client
         return $this;
     }
 
-    public function destroySession() : bool
+    public function destroySession(): bool
     {
-        $response = $this->client->delete('ria-ws/application/session/'. $this->sessionKey);
+        $response = $this->client->delete('ria-ws/application/session/' . $this->sessionKey);
         return $response->getStatusCode() === 200;
     }
 
-    public function search(string $module, string $xml) : \DOMDocument
+    public function search(string $module, string $xml): \DOMDocument
     {
         $response = $this->client->post(sprintf('ria-ws/application/module/%s/search/', $module), [
             'body' => $xml
@@ -72,6 +72,17 @@ class Client
         if ($response->getStatusCode() === 200) {
             return $this->parseXml($response->getBody());
         }
+    }
+
+    public function queryModelItem(string $module, int $id): ?\DOMDocument
+    {
+        $response = $this->client->get(sprintf('ria-ws/application/module/%s/%d', $module, $id));
+
+        if ($response->getStatusCode() === 200) {
+            return $this->parseXml($response->getBody());
+        }
+
+        return null;
     }
 
     /**

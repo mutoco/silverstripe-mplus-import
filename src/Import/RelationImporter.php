@@ -43,8 +43,9 @@ class RelationImporter extends ModelImporter
 
     public function finalize()
     {
-        if ($relation = $this->getRelation()) {
-            $obsolete = $relation->exclude(['MplusID' => $this->getReceivedIds()]);
+        $received = $this->getReceivedIds();
+        if (!empty($received) && ($relation = $this->getRelation())) {
+            $obsolete = $relation->exclude(['MplusID' => $received]);
             foreach ($obsolete as $record) {
                 $relation->remove($record);
 

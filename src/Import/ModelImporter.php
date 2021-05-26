@@ -4,6 +4,8 @@
 namespace Mutoco\Mplus\Import;
 
 
+use Mutoco\Mplus\Api\Client;
+use Mutoco\Mplus\Api\ClientInterface;
 use Mutoco\Mplus\Api\XmlNS;
 use Mutoco\Mplus\Extension\DataRecordExtension;
 use Ramsey\Uuid\Uuid;
@@ -35,6 +37,29 @@ class ModelImporter implements \Serializable
     protected bool $isFinalized = false;
     protected int $currentIndex = 0;
     protected ?\DOMNodeList $nodes = null;
+    protected ?ClientInterface $api = null;
+
+    /**
+     * @return Client|null
+     */
+    public function getApi(): ?ClientInterface
+    {
+        if (!$this->api && $this->parent) {
+            return $this->parent->getApi();
+        }
+
+        return $this->api;
+    }
+
+    /**
+     * @param ClientInterface|null $api
+     * @return ModelImporter
+     */
+    public function setApi(?ClientInterface $api): self
+    {
+        $this->api = $api;
+        return $this;
+    }
 
     /**
      * @return string
@@ -57,7 +82,7 @@ class ModelImporter implements \Serializable
      */
     public function getXml(): ?\DOMDocument
     {
-        if ($this->parent) {
+        if (!$this->xml && $this->parent) {
             return $this->parent->getXml();
         }
 
@@ -151,7 +176,10 @@ class ModelImporter implements \Serializable
         return $this;
     }
 
-    public function getIsFinalized() : bool
+    /**
+     * @return bool - Whether or not the import has concluded
+     */
+    public function getIsFinalized(): bool
     {
         return $this->isFinalized;
     }
@@ -185,15 +213,26 @@ class ModelImporter implements \Serializable
         }
     }
 
-    public function getRemainingSteps()
+    public function getTotalSteps()
     {
         $steps = 0;
         if ($this->nodes) {
-            $steps += $this->nodes->count() - $this->currentIndex;
+            $steps += $this->nodes->count();
         }
 
         foreach ($this->subtasks as $name => $task) {
-            $steps += $task->getRemainingSteps();
+            $steps += $task->getTotalSteps();
+        }
+
+        return $steps;
+    }
+
+    public function getProcessedSteps()
+    {
+        $steps = $this->currentIndex;
+
+        foreach ($this->subtasks as $name => $task) {
+            $steps += $task->getProcessedSteps();
         }
 
         return $steps;
@@ -203,37 +242,128 @@ class ModelImporter implements \Serializable
     {
         $this->xml = $xml;
 
-        $result = $this->performQuery(sprintf('//m:*[@c-%s="context"]', $this->uuid));
-        if ($result && $result->count()) {
-            $this->setContext($result[0]);
+        if (!$this->context) {
+            $result = $this->performQuery(sprintf('//m:*[@c-%s="context"]', $this->uuid));
+            if ($result && $result->count()) {
+                $this->setContext($result[0]);
+            }
         }
 
         $this->nodes = $this->performQuery($this->xpath);
     }
 
-    public function importNext()
+    public function importNext(): bool
     {
-        if (!$this->nodes || $this->nodes->count() === 0) {
-            return;
+        if ($this->isFinalized) {
+            return false;
         }
 
         foreach ($this->subtasks as $name => $subtask) {
-            if ($subtask->getRemainingSteps() > 0) {
-                $subtask->importNext();
-                if ($subtask->getRemainingSteps() === 0) {
-                    $subtask->finalize();
-                }
-                return;
+            if ($subtask->importNext()) {
+                return true;
             }
         }
 
-        $node = $this->nodes->item($this->currentIndex);
+        if ($this->getRemainingSteps() <= 0) {
+            $this->finalize();
+            return false;
+        }
 
+        $this->processNode($this->getCurrent());
+        $this->currentIndex++;
+
+        return true;
+    }
+
+    public function finalize()
+    {
+        if ($this->isFinalized) {
+            return;
+        }
+
+        // Find all records only exists in the DB but no longer remotely
+        $obsolete = DataObject::get($this->modelClass)->exclude(['MplusID' => $this->getReceivedIds()]);
+        /** @var DataObject $record */
+        foreach ($obsolete as $record) {
+            $this->deleteRecord($record);
+        }
+
+        $this->isFinalized = true;
+        $this->xml = null;
+    }
+
+    public function serialize()
+    {
+        return serialize($this->getSerializableObject());
+    }
+
+    public function unserialize($data)
+    {
+        $this->unserializeFromObject(unserialize($data));
+    }
+
+    public static function getModelConfig(string $model): ?array
+    {
+        $modelsConfig = self::config()->get('models');
+        if (!isset($modelsConfig[$model])) {
+            return null;
+        }
+        return $modelsConfig[$model];
+    }
+
+    /**
+     * @param string $path – the xpath string
+     * @param \DOMNode|null $context - the context to use
+     * @return \DOMNodeList|false
+     */
+    public function performQuery(string $path, \DOMNode $context = null)
+    {
+        return $this->createXPath()->query($path, $context ?? $this->context);
+    }
+
+    protected function getRemainingSteps()
+    {
+        $steps = 0;
+        if ($this->nodes) {
+            $steps += $this->nodes->count() - $this->currentIndex;
+        }
+
+        return $steps;
+    }
+
+    protected function getCurrent(): \DOMNode
+    {
+        if (!$this->nodes) {
+            $this->nodes = $this->performQuery($this->xpath);
+        }
+
+        return $this->nodes->item($this->currentIndex);
+    }
+
+    protected function processNode(\DOMNode $node)
+    {
         $id = $node->getAttribute('id');
         if (empty($id)) {
             throw new \LogicException('Cannot import an item without ID');
         }
 
+        $skipped = false;
+        $record = $this->createOrUpdate($id, $node, $skipped);
+        if ($skipped) {
+            $this->skippedIds[] = $id;
+        } else {
+            $this->importedIds[] = $id;
+        }
+
+        if (!empty($this->cfg['relations'])) {
+            foreach ($this->cfg['relations'] as $relation => $relationCfg) {
+                $this->importRelation($record, $node, $relation, $relationCfg);
+            }
+        }
+    }
+
+    protected function createOrUpdate($id, \DOMNode $node, bool &$skipped = false)
+    {
         $xpath = $this->createXPath();
 
         $existing = DataObject::get_one($this->modelClass, ['MplusID' => $id]);
@@ -256,13 +386,14 @@ class ModelImporter implements \Serializable
                 // Get result from skip call and filter out any `null` value returns
                 $skipCallbackResult = array_filter(
                     $target->extend('beforeMplusSkip', $this, $node),
-                    function($v) { return !is_null($v); }
+                    function ($v) {
+                        return !is_null($v);
+                    }
                 );
                 // If any callback returned false, we won't skip
                 if (empty($skipCallbackResult) || min($skipCallbackResult) !== false) {
-                    $this->skippedIds[] = $id;
-                    $this->currentIndex++;
-                    return;
+                    $skipped = true;
+                    return $target;
                 }
             }
         }
@@ -293,59 +424,8 @@ class ModelImporter implements \Serializable
 
         $target->write();
         $this->persistedRecord($target);
-        $this->importedIds[] = $id;
-        $this->currentIndex++;
         $target->extend('afterMplusImport', $this, $node);
-
-        if (!empty($this->cfg['relations'])) {
-            foreach ($this->cfg['relations'] as $relation => $relationCfg) {
-                $this->importRelation($target, $node, $relation, $relationCfg);
-            }
-        }
-    }
-
-    public function finalize()
-    {
-        if ($this->isFinalized) {
-            return;
-        }
-
-        // Find all records only exists in the DB but no longer remotely
-        $obsolete = DataObject::get($this->modelClass)->exclude(['MplusID' => $this->getReceivedIds()]);
-        /** @var DataObject $record */
-        foreach ($obsolete as $record) {
-            $this->deleteRecord($record);
-        }
-
-        $this->isFinalized = true;
-    }
-
-    public function serialize()
-    {
-        return serialize($this->getSerializableObject());
-    }
-
-    public function unserialize($data)
-    {
-        $this->unserializeFromObject(unserialize($data));
-    }
-
-    public static function getModelConfig(string $model) : ?array
-    {
-        $modelsConfig = self::config()->get('models');
-        if (!isset($modelsConfig[$model])) {
-            return null;
-        }
-        return $modelsConfig[$model];
-    }
-
-    /**
-     * @param string $path – the xpath string
-     * @return \DOMNodeList|false
-     */
-    public function performQuery(string $path)
-    {
-        return $this->createXPath()->query($path, $this->context);
+        return $target;
     }
 
     protected function persistedRecord(DataObject $record)
@@ -370,9 +450,19 @@ class ModelImporter implements \Serializable
     protected function importRelation(DataObject $target, \DOMNode $node, string $relationName, array $relationCfg)
     {
         if (!isset($this->subtasks[$relationName])) {
-            $importer = new RelationImporter($relationCfg['model'], $relationCfg['xpath'], $this, $target, $relationName, $node);
-            $importer->initialize();
-            $this->subtasks[$relationName] = $importer;
+            if (isset($relationCfg['moduleRef'])) {
+                $module = $this->performQuery(sprintf('.//m:moduleReference[@name="%s"]', $relationCfg['moduleRef']), $node);
+                if ($module && ($moduleNode = $module->item(0))) {
+                    $importer = new ModuleRelationImporter($relationCfg['model'], $this, $target, $relationName, $moduleNode);
+                }
+            } else {
+                $importer = new RelationImporter($relationCfg['model'], $relationCfg['xpath'], $this, $target, $relationName, $node);
+            }
+
+            if ($importer) {
+                $importer->initialize();
+                $this->subtasks[$relationName] = $importer;
+            }
         }
     }
 
@@ -386,12 +476,12 @@ class ModelImporter implements \Serializable
         return $xpath;
     }
 
-    protected function makeRelative(string $xpath) : string
+    protected function makeRelative(string $xpath): string
     {
         return '.' . ltrim($xpath, '.');
     }
 
-    protected function getSerializableObject() : \stdClass
+    protected function getSerializableObject(): \stdClass
     {
         $obj = new \stdClass();
 
@@ -411,7 +501,7 @@ class ModelImporter implements \Serializable
         return $obj;
     }
 
-    protected function unserializeFromObject(\stdClass $obj) : void
+    protected function unserializeFromObject(\stdClass $obj): void
     {
         $this->xpath = $obj->xpath;
         $this->model = $obj->model;

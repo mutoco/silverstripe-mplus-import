@@ -62,24 +62,27 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
         $xml = $client->search($this->module, $search);
 
         $this->importer = new ModelImporter($this->module, $this->cfg['xpath']);
+        $this->importer->setApi($client);
         $this->importer->initialize($xml);
-        $this->totalSteps = $this->importer->getRemainingSteps();
+        $this->totalSteps = $this->importer->getTotalSteps();
         $this->currentStep = 0;
     }
 
     public function prepareForRestart()
     {
         parent::prepareForRestart();
+        $client = Injector::inst()->create('Mutoco\Mplus\Api\Client');
+        $client->init();
+        $this->importer->setApi($client);
     }
 
     public function process()
     {
         $this->importer->importNext();
-        $this->totalSteps = $this->importer->getRemainingSteps();
+        $this->totalSteps = $this->importer->getTotalSteps();
         $this->currentStep++;
 
-        if ($this->totalSteps === 0) {
-            $this->importer->finalize();
+        if ($this->importer->getIsFinalized()) {
             $this->isComplete = true;
         }
     }
