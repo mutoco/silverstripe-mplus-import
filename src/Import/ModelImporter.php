@@ -213,6 +213,15 @@ class ModelImporter implements \Serializable
         }
     }
 
+    public function getImportedIdsPerModel(): array
+    {
+        $arr = $this->getIdsPerModel();
+        foreach ($this->subtasks as $name => $task) {
+            $arr = array_merge_recursive($arr, $task->getImportedIdsPerModel());
+        }
+        return $arr;
+    }
+
     public function getTotalSteps()
     {
         $steps = 0;
@@ -275,29 +284,33 @@ class ModelImporter implements \Serializable
         return true;
     }
 
-    public function finalize()
+    public final function finalize()
     {
         if ($this->isFinalized) {
             return;
         }
 
-        // Find all records only exists in the DB but no longer remotely
-        $obsolete = DataObject::get($this->modelClass)->exclude(['MplusID' => $this->getReceivedIds()]);
-        /** @var DataObject $record */
-        foreach ($obsolete as $record) {
-            $this->deleteRecord($record);
-        }
+        $this->performFinalize();
 
         $this->isFinalized = true;
         $this->xml = null;
     }
 
-    public function serialize()
+    public final function cleanup($idList)
+    {
+        foreach ($this->subtasks as $key => $task) {
+            $task->cleanup($idList);
+        }
+
+        $this->performCleanup($idList);
+    }
+
+    public final function serialize()
     {
         return serialize($this->getSerializableObject());
     }
 
-    public function unserialize($data)
+    public final function unserialize($data)
     {
         $this->unserializeFromObject(unserialize($data));
     }
@@ -319,6 +332,28 @@ class ModelImporter implements \Serializable
     public function performQuery(string $path, \DOMNode $context = null)
     {
         return $this->createXPath()->query($path, $context ?? $this->context);
+    }
+
+    protected function getIdsPerModel(): array
+    {
+        return [$this->modelClass => $this->getReceivedIds()];
+    }
+
+    protected function performCleanup($idList)
+    {
+        if (isset($idList[$this->modelClass])) {
+            // Find all records only exists in the DB but no longer remotely
+            $obsolete = DataObject::get($this->modelClass)->exclude(['MplusID' => $idList[$this->modelClass]]);
+            /** @var DataObject $record */
+            foreach ($obsolete as $record) {
+                $this->deleteRecord($record);
+            }
+        }
+    }
+
+    protected function performFinalize()
+    {
+
     }
 
     protected function getRemainingSteps()
@@ -451,9 +486,11 @@ class ModelImporter implements \Serializable
     {
         if (!isset($this->subtasks[$relationName])) {
             if (isset($relationCfg['moduleRef'])) {
-                $module = $this->performQuery(sprintf('.//m:moduleReference[@name="%s"]', $relationCfg['moduleRef']), $node);
+                $parts = explode('.', $relationCfg['moduleRef']);
+                $module = $this->performQuery(sprintf('.//m:moduleReference[@name="%s"]', array_shift($parts)), $node);
                 if ($module && ($moduleNode = $module->item(0))) {
                     $importer = new ModuleRelationImporter($relationCfg['model'], $this, $target, $relationName, $moduleNode);
+                    $importer->setSubRelations($parts);
                 }
             } else {
                 $importer = new RelationImporter($relationCfg['model'], $relationCfg['xpath'], $this, $target, $relationName, $node);
@@ -466,10 +503,10 @@ class ModelImporter implements \Serializable
         }
     }
 
-    protected function createXPath(): \DOMXPath
+    protected function createXPath(?\DOMDocument $xml = null): \DOMXPath
     {
         $ns = self::config()->get('namespaces');
-        $xpath = new \DOMXPath($this->getXml());
+        $xpath = new \DOMXPath($xml ?? $this->getXml());
         foreach ($ns as $prefix => $namespace) {
             $xpath->registerNamespace($prefix, $namespace);
         }

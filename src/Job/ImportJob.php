@@ -83,6 +83,7 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
         $this->currentStep++;
 
         if ($this->importer->getIsFinalized()) {
+            $this->importer->cleanup($this->importer->getImportedIdsPerModel());
             $this->isComplete = true;
         }
     }

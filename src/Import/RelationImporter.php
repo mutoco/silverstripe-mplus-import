@@ -41,21 +41,39 @@ class RelationImporter extends ModelImporter
         parent::__construct($model, $xpath, $parent, $context);
     }
 
-    public function finalize()
+    protected function getIdsPerModel(): array
     {
         $received = $this->getReceivedIds();
-        if (!empty($received) && ($relation = $this->getRelation())) {
-            $obsolete = $relation->exclude(['MplusID' => $received]);
-            foreach ($obsolete as $record) {
-                $relation->remove($record);
 
-                // Call an extension hook, if that returns `true`, the object is good to delete
-                $rules = array_filter($record->extend('afterMplusUnlink', $this), function ($v) {
-                    return !is_null($v);
-                });
+        return [
+            $this->modelClass => $received,
+            $this->getRelationKey() => $received
+        ];
+    }
 
-                if (!empty($rules) && max($rules) == true) {
-                    $this->deleteRecord($record);
+    protected function getRelationKey() : string
+    {
+        return sprintf('%s-%d.%s', $this->target->getClassName(), $this->target->ID, $this->relationName);
+    }
+
+    protected function performCleanup($idList)
+    {
+        $key = $this->getRelationKey();
+        if (isset($idList[$key])) {
+            $received = $idList[$key];
+            if (!empty($received) && ($relation = $this->getRelation())) {
+                $obsolete = $relation->exclude(['MplusID' => $received]);
+                foreach ($obsolete as $record) {
+                    $relation->remove($record);
+
+                    // Call an extension hook, if that returns `true`, the object is good to delete
+                    $rules = array_filter($record->extend('afterMplusUnlink', $this), function ($v) {
+                        return !is_null($v);
+                    });
+
+                    if (!empty($rules) && max($rules) == true) {
+                        $this->deleteRecord($record);
+                    }
                 }
             }
         }

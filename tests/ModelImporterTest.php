@@ -100,9 +100,31 @@ class ModelImporterTest extends SapphireTest
             $this->assertEquals(2, $copy->getProcessedSteps(), 'Processed steps should be 2');
 
             while ($copy->importNext()) { /* NOOP */ }
+            $copy->cleanup($copy->getImportedIdsPerModel());
 
             $imported = Exhibition::get()->find('MplusID', 2);
             $this->assertEquals([356559, 356558, 367558, 367559, 367560], $imported->Texts()->column('MplusID'));
+        });
+    }
+
+    public function testImportedIds()
+    {
+        $cfg = $this->loadedConfig;
+        Config::withConfig(function(MutableConfigCollectionInterface $config) use ($cfg) {
+            // update your config
+            $config->set(ModelImporter::class, 'models', $cfg['ModelImporterDefault']['models']);
+            $instance = new ModelImporter('Exhibition', '//m:module[@name="Exhibition"]/m:moduleItem');
+            $instance->initialize($this->xml);
+            while (!$instance->getIsFinalized()) {
+                $instance->importNext();
+            }
+            $ids = $instance->getImportedIdsPerModel();
+            $this->assertArrayHasKey(Exhibition::class, $ids);
+            $this->assertArrayHasKey(Exhibition::class . '-1.Texts', $ids);
+            $this->assertArrayHasKey(TextBlock::class, $ids);
+            $this->assertEquals([2], $ids[Exhibition::class]);
+            $this->assertEquals([356559, 356558, 367558, 367559, 367560], $ids[TextBlock::class]);
+            $this->assertEquals([356559, 356558, 367558, 367559, 367560], $ids[Exhibition::class . '-1.Texts']);
         });
     }
 
@@ -121,7 +143,7 @@ class ModelImporterTest extends SapphireTest
             $instance = new ModelImporter('Exhibition', '//m:module[@name="Exhibition"]/m:moduleItem');
             $instance->initialize($this->xml);
             while ($instance->importNext()) { /* NOOP */ }
-
+            $instance->cleanup($instance->getImportedIdsPerModel());
             $this->assertEquals([2], Exhibition::get()->column('MplusID'));
         });
     }
@@ -163,11 +185,32 @@ class ModelImporterTest extends SapphireTest
             $instance->setApi($client);
             $instance->initialize($this->xml);
             while ($instance->importNext()) {  }
+            $instance->cleanup($instance->getImportedIdsPerModel());
             $imported = Exhibition::get()->find('MplusID', 2);
             $this->assertEquals([1982], $imported->Persons()->column('MplusID'));
             $person = $imported->Persons()->find('MplusID', 1982);
             $this->assertEquals('Edvard', $person->Firstname);
             $this->assertEquals('Munch', $person->Lastname);
+        });
+    }
+
+    public function testDeepRelationImport()
+    {
+        $cfg = $this->loadedConfig;
+        Config::withConfig(function(MutableConfigCollectionInterface $config) use ($cfg) {
+            // update your config
+            $config->set(ModelImporter::class, 'models', $cfg['ModelImporterDeepRelation']['models']);
+            $instance = new ModelImporter('Exhibition', '//m:module[@name="Exhibition"]/m:moduleItem');
+            $client = new Client();
+            $instance->setApi($client);
+            $instance->initialize($this->xml);
+            while ($instance->importNext()) {  }
+            $instance->cleanup($instance->getImportedIdsPerModel());
+            $imported = Exhibition::get()->find('MplusID', 2);
+            $this->assertEquals([1982, 153053], $imported->Persons()->column('MplusID'));
+            $person = $imported->Persons()->find('MplusID', 153053);
+            $this->assertEquals('Bilbo', $person->Firstname);
+            $this->assertEquals('Baggins', $person->Lastname);
         });
     }
 }
