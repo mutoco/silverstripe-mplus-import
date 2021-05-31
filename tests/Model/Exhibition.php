@@ -21,7 +21,12 @@ class Exhibition extends DataObject implements TestOnly
 	];
 
 	private static $many_many = [
-	    'Persons' => Person::class
+	    'Persons' => Person::class,
+        'Works' => [
+            'through' => ExhibitionWork::class,
+            'from' => Exhibition::class,
+            'to' => Work::class,
+        ]
     ];
 
 	private static $extensions = [
