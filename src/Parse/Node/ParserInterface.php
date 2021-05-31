@@ -17,7 +17,7 @@ interface ParserInterface
 
     public function handleDefault(Parser $parser, string $data);
 
-    public function isComplete(): bool;
+    public function getValue(): ?ResultInterface;
 
-    public function getValue(): ResultInterface;
+    public function isInside(): bool;
 }

@@ -8,29 +8,19 @@ use Mutoco\Mplus\Parse\Node\ParserInterface;
 
 class Parser
 {
-    protected \SplQueue $nodeStack;
-    protected \SplQueue $parserStack;
-
-    /*
-    protected array $fields = [
-        'SYSTEMFIELD' => 'VALUE',
-        'DATAFIELD' => 'FORMATTEDVALUE',
-        'VOCABULARYREFERENCE' => 'VALUE',
-        'VIRTUALFIELD' => 'VALUE'
-    ];
-
-    protected array $relations = [
-        'REPEATABLEGROUP' => 'REPEATABLEGROUPITEM',
-        'MODULEREFERENCE' => 'MODULEREFERENCEITEM'
-    ];
-    */
+    protected \SplStack $nodeStack;
+    protected \SplStack $parserStack;
 
     public function __construct()
     {
-        $this->nodeStack = new \SplQueue();
-        $this->parserStack = new \SplQueue();
+        $this->nodeStack = new \SplStack();
+        $this->parserStack = new \SplStack();
     }
 
+    public function getDepth(): int
+    {
+        return $this->nodeStack->count();
+    }
 
     public function parseFile(string $file)
     {
@@ -44,34 +34,34 @@ class Parser
         fclose($stream);
         xml_parser_free($parser);
 
-        $this->nodeStack = new \SplQueue();
-        $this->parserStack = new \SplQueue();
+        $this->nodeStack = new \SplStack();
+        $this->parserStack = new \SplStack();
     }
 
     public function pushStack(ParserInterface $parser)
     {
-        $this->parserStack->enqueue($parser);
+        $this->parserStack->push($parser);
     }
 
     public function popStack(): ParserInterface
     {
-        return $this->parserStack->dequeue();
+        return $this->parserStack->pop();
     }
 
     public function handleCharacterData($parser, string $data)
     {
         /** @var ParserInterface $current */
-        if ($current = $this->parserStack->top()) {
+        if (!$this->parserStack->isEmpty() && ($current = $this->parserStack->top())) {
             $current->handleCharacterData($this, $data);
         }
     }
 
     public function handleElementStart($parser, string $name, array $attributes)
     {
-        $this->nodeStack->enqueue($name);
+        $this->nodeStack->push($name);
 
         /** @var ParserInterface $current */
-        if ($current = $this->parserStack->top()) {
+        if (!$this->parserStack->isEmpty() && ($current = $this->parserStack->top())) {
             $current->handleElementStart($this, $name, $attributes);
         }
     }
@@ -79,16 +69,17 @@ class Parser
     public function handleElementEnd($parser, string $name)
     {
         /** @var ParserInterface $current */
-        if ($current = $this->parserStack->top()) {
+        if (!$this->parserStack->isEmpty() && ($current = $this->parserStack->top())) {
             $current->handleElementEnd($this, $name);
         }
-        $this->nodeStack->dequeue();
+
+        $this->nodeStack->pop();
     }
 
     public function handleDefault($parser, string $data)
     {
         /** @var ParserInterface $current */
-        if ($current = $this->parserStack->top()) {
+        if (!$this->parserStack->isEmpty() && ($current = $this->parserStack->top())) {
             $current->handleDefault($this, $data);
         }
     }

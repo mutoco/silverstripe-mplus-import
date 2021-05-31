@@ -10,13 +10,15 @@ use Sabre\Event\Emitter;
 
 abstract class AbstractParser extends Emitter implements ParserInterface
 {
+    const STATE_SEEKING = 1;
+    const STATE_PARSING = 2;
+    const STATE_DONE = 4;
+
     protected string $tag;
     protected string $tagUc;
-    protected string $characters;
-    protected int $depth;
-    protected bool $isComplete;
     protected array $attributes;
     protected int $startDepth;
+    protected int $state;
     protected int $iteration = -1;
 
     public function __construct(string $tagName)
@@ -26,41 +28,42 @@ abstract class AbstractParser extends Emitter implements ParserInterface
         $this->reset();
     }
 
+    abstract public function getValue(): ResultInterface;
+
     public function reset()
     {
         $this->iteration++;
-        $this->characters = '';
-        $this->depth = 0;
+        $this->state = self::STATE_SEEKING;
         $this->startDepth = -1;
-        $this->isComplete = false;
         $this->attributes = [];
     }
 
-    public function handleCharacterData(Parser $parser, string $data)
+    public function isInside(): bool
     {
-        $this->characters .= $data;
+        return $this->state === self::STATE_PARSING;
     }
 
     public function handleElementStart(Parser $parser, string $name, array $attributes)
     {
-        if ($this->startDepth === -1 && $name === $this->tagUc) {
-            $this->startDepth = $this->depth;
-            $this->characters = '';
+        if ($this->state === self::STATE_SEEKING && $name === $this->tagUc) {
+            $this->state = self::STATE_PARSING;
+            $this->startDepth = $parser->getDepth();
             $this->attributes = $attributes;
+            $this->onEnter($parser);
         }
-
-        $this->depth++;
     }
 
     public function handleElementEnd(Parser $parser, string $name)
     {
-        $this->depth--;
-
-        if ($this->startDepth === $this->depth && $name === $this->tagUc) {
-            $this->isComplete = true;
-            $this->emit('parse:complete', [$this->getValue()]);
-            $this->reset();
+        if ($this->state === self::STATE_PARSING && $this->startDepth === $parser->getDepth() && $name === $this->tagUc) {
+            $this->emit('parse:result', [$this->getValue()]);
+            $this->state = self::STATE_DONE;
+            $this->onLeave($parser);
         }
+    }
+
+    public function handleCharacterData(Parser $parser, string $data) {
+        // Does nothing, implement in subclass if needed
     }
 
     public function handleDefault(Parser $parser, string $data)
@@ -68,10 +71,13 @@ abstract class AbstractParser extends Emitter implements ParserInterface
         // Does nothing, implement in subclass if needed
     }
 
-    public function isComplete(): bool
+    protected function onEnter(Parser $parser)
     {
-        return $this->isComplete;
+
     }
 
-    abstract public function getValue(): ResultInterface;
+    protected function onLeave(Parser $parser)
+    {
+        $this->reset();
+    }
 }
