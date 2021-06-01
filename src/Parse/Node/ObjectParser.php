@@ -76,7 +76,7 @@ class ObjectParser extends AbstractParser
 
         $this->relationTags = [];
         foreach ($this->relationParsers as $key => $parser) {
-            $tag = $parser->getTag(true);
+            $tag = $parser->getTag();
             if (!isset($this->relationTags[$tag])) {
                 $this->relationTags[$tag] = true;
             }

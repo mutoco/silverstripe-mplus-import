@@ -4,8 +4,10 @@
 namespace Mutoco\Mplus\Parse;
 
 
+use GuzzleHttp\Psr7\Utils;
 use Mutoco\Mplus\Parse\Node\ParserInterface;
 use Mutoco\Mplus\Parse\Result\ResultInterface;
+use Psr\Http\Message\StreamInterface;
 
 class Parser
 {
@@ -23,19 +25,18 @@ class Parser
         return $this->nodeStack->count();
     }
 
-    public function parseFile(string $file, ?ParserInterface $rootParser = null) : ?ResultInterface
+    public function parse(StreamInterface $stream, ?ParserInterface $rootParser = null): ?ResultInterface
     {
         $parser = $this->setupParser();
         if ($rootParser) {
             $this->pushStack($rootParser);
         }
 
-        $stream = fopen($file, 'r');
-        while (($data = fread($stream, 16384))) {
-            xml_parse($parser, $data); // parse the current chunk
+        while (!$stream->eof()) {
+            xml_parse($parser, $stream->read(16384));
         }
+
         xml_parse($parser, '', true); // finalize parsing
-        fclose($stream);
         xml_parser_free($parser);
 
         $this->nodeStack = new \SplStack();
@@ -46,6 +47,11 @@ class Parser
         }
 
         return null;
+    }
+
+    public function parseFile(string $file, ?ParserInterface $rootParser = null) : ?ResultInterface
+    {
+        return $this->parse(Utils::streamFor(fopen($file, 'r')), $rootParser);
     }
 
     public function pushStack(ParserInterface $parser)
