@@ -5,6 +5,7 @@ namespace Mutoco\Mplus\Parse;
 
 
 use Mutoco\Mplus\Parse\Node\ParserInterface;
+use Mutoco\Mplus\Parse\Result\ResultInterface;
 
 class Parser
 {
@@ -22,9 +23,12 @@ class Parser
         return $this->nodeStack->count();
     }
 
-    public function parseFile(string $file)
+    public function parseFile(string $file, ?ParserInterface $rootParser = null) : ?ResultInterface
     {
         $parser = $this->setupParser();
+        if ($rootParser) {
+            $this->pushStack($rootParser);
+        }
 
         $stream = fopen($file, 'r');
         while (($data = fread($stream, 16384))) {
@@ -36,6 +40,12 @@ class Parser
 
         $this->nodeStack = new \SplStack();
         $this->parserStack = new \SplStack();
+
+        if ($rootParser) {
+            return $rootParser->getValue();
+        }
+
+        return null;
     }
 
     public function pushStack(ParserInterface $parser)

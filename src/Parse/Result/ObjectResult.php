@@ -4,16 +4,17 @@
 namespace Mutoco\Mplus\Parse\Result;
 
 
-class ModuleResult extends AbstractResult
+class ObjectResult extends AbstractResult
 {
-    protected string $type;
+    protected string $type = 'unknown';
     protected array $fields = [];
+    protected array $relations = [];
     protected ?string $id;
 
     public function __construct(string $tag, array $attributes)
     {
         parent::__construct($tag, $attributes);
-        $this->id = $attributes['ID'] ?? null;
+        $this->id = $attributes['ID'] ?? $attributes['MODULEITEMID'] ?? null;
     }
 
     public function getId(): string
@@ -23,7 +24,17 @@ class ModuleResult extends AbstractResult
 
     public function getValue()
     {
-        // TODO: Implement getValue() method.
+        $fields = [];
+        foreach ($this->fields as $field) {
+            $fields[$field->getName()] = $field->getValue();
+        }
+
+        return [
+            'id' => $this->id,
+            'type' => $this->type,
+            'attributes' => $this->attributes,
+            'fields' => $fields
+        ];
     }
 
     /**
@@ -36,7 +47,7 @@ class ModuleResult extends AbstractResult
 
     /**
      * @param string $type
-     * @return ModuleResult
+     * @return ObjectResult
      */
     public function setType(string $type): self
     {
@@ -52,9 +63,20 @@ class ModuleResult extends AbstractResult
         return $this->fields;
     }
 
+    public function getRelations(): array
+    {
+        return $this->relations;
+    }
+
     public function addField(FieldResult $field): self
     {
         $this->fields[] = $field;
+        return $this;
+    }
+
+    public function addRelation(CollectionResult $result): self
+    {
+        $this->relations[] = $result;
         return $this;
     }
 }

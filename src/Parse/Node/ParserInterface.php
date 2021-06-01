@@ -6,8 +6,9 @@ namespace Mutoco\Mplus\Parse\Node;
 
 use Mutoco\Mplus\Parse\Parser;
 use Mutoco\Mplus\Parse\Result\ResultInterface;
+use Sabre\Event\EmitterInterface;
 
-interface ParserInterface
+interface ParserInterface extends EmitterInterface
 {
     public function handleCharacterData(Parser $parser, string $data);
 

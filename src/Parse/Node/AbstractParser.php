@@ -14,6 +14,7 @@ abstract class AbstractParser extends Emitter implements ParserInterface
     const STATE_PARSING = 2;
     const STATE_DONE = 4;
 
+    protected ?Parser $parser;
     protected string $tag;
     protected string $tagUc;
     protected array $attributes;
@@ -26,6 +27,15 @@ abstract class AbstractParser extends Emitter implements ParserInterface
         $this->tag = $tagName;
         $this->tagUc = strtoupper($tagName);
         $this->reset();
+    }
+
+    public function getTag($uppercase = false): string
+    {
+        if ($uppercase) {
+            return $this->tagUc;
+        }
+
+        return $this->tag;
     }
 
     abstract public function getValue(): ResultInterface;
@@ -73,11 +83,14 @@ abstract class AbstractParser extends Emitter implements ParserInterface
 
     protected function onEnter(Parser $parser)
     {
-
+        $this->parser = $parser;
+        $this->emit('parse:enter', [$this]);
     }
 
     protected function onLeave(Parser $parser)
     {
+        $this->emit('parse:complete', [$this]);
+        $this->parser = null;
         $this->reset();
     }
 }
