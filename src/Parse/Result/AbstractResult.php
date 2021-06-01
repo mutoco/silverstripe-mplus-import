@@ -25,13 +25,14 @@ abstract class AbstractResult implements ResultInterface
         return $this->attributes;
     }
 
-    public function __toString()
+    public function getAttribute($name): ?string
     {
-        return json_encode([
-            'tag' => $this->getTag(),
-            'attributes' => $this->getAttributes(),
-            'value' => (string)$this->getValue()
-        ]);
+        return $this->attributes[$name] ?? null;
+    }
+
+    public function __get(string $name)
+    {
+        return $this->getAttribute($name);
     }
 
     abstract public function getValue();

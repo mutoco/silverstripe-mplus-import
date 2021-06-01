@@ -11,8 +11,6 @@ use Sabre\Event\EmitterInterface;
 
 class CollectionParser extends AbstractParser
 {
-    protected string $sizeAttr;
-    protected int $size;
     protected ?ParserInterface $childParser = null;
     protected ?CollectionResult $result;
 
@@ -43,20 +41,27 @@ class CollectionParser extends AbstractParser
         return $this;
     }
 
-    public function __construct(string $tagName, ParserInterface $childParser, string $sizeAttr = 'SIZE')
+    public function __construct(string $tagName, ParserInterface $childParser)
     {
         parent::__construct($tagName);
         $this->setChildParser($childParser);
-        $this->sizeAttr = $sizeAttr;
+    }
+
+    public function handleElementStart(Parser $parser, string $name, array $attributes)
+    {
+        if ($this->childParser && $this->startDepth + 1 >= $parser->getDepth()) {
+            $parser->pushStack($this->childParser);
+            $this->childParser->handleElementStart($parser, $name, $attributes);
+            return;
+        }
+
+        parent::handleElementStart($parser, $name, $attributes);
     }
 
     public function onChildParsed(ResultInterface $result)
     {
         $this->result->addItem($result);
-
-        if ($this->result->count() >= $this->size) {
-            $this->parser->popStack();
-        }
+        $this->parser->popStack();
     }
 
     public function getValue(): CollectionResult
@@ -67,9 +72,6 @@ class CollectionParser extends AbstractParser
     protected function onEnter(Parser $parser)
     {
         parent::onEnter($parser);
-
-        $this->size = (int)($this->attributes[$this->sizeAttr] ?? 0);
         $this->result = new CollectionResult($this->tag, $this->attributes);
-        $parser->pushStack($this->childParser);
     }
 }

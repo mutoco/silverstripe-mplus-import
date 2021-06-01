@@ -4,12 +4,10 @@
 namespace Mutoco\Mplus\Parse\Node;
 
 
-use GrahamCampbell\ResultType\Result;
 use Mutoco\Mplus\Parse\Parser;
 use Mutoco\Mplus\Parse\Result\CollectionResult;
 use Mutoco\Mplus\Parse\Result\FieldResult;
 use Mutoco\Mplus\Parse\Result\ObjectResult;
-use Mutoco\Mplus\Parse\Result\ResultInterface;
 
 class ObjectParser extends AbstractParser
 {
@@ -19,10 +17,10 @@ class ObjectParser extends AbstractParser
     protected ?array $fieldList;
 
     protected array $fields = [
-        'SYSTEMFIELD' => 'VALUE',
-        'DATAFIELD' => 'VALUE',
-        'VOCABULARYREFERENCE' => 'FORMATTEDVALUE',
-        'VIRTUALFIELD' => 'VALUE'
+        'systemField' => 'value',
+        'dataField' => 'value',
+        'vocabularyReference' => 'formattedValue',
+        'virtualField' => 'value'
     ];
 
     protected array $relationTags = [];
@@ -102,7 +100,7 @@ class ObjectParser extends AbstractParser
                 $fieldParser->handleElementStart($parser, $name, $attributes);
                 return;
             } else if (isset($this->relationTags[$name])) {
-                $relationName = $attributes['NAME'] ?? null;
+                $relationName = $attributes['name'] ?? null;
                 if ($relationName && ($collectionParser = $this->getRelationParser($relationName))) {
                     $parser->pushStack($collectionParser);
                     $collectionParser->handleElementStart($parser, $name, $attributes);

@@ -16,7 +16,6 @@ abstract class AbstractParser extends Emitter implements ParserInterface
 
     protected ?Parser $parser;
     protected string $tag;
-    protected string $tagUc;
     protected array $attributes;
     protected int $startDepth;
     protected int $state;
@@ -25,16 +24,11 @@ abstract class AbstractParser extends Emitter implements ParserInterface
     public function __construct(string $tagName)
     {
         $this->tag = $tagName;
-        $this->tagUc = strtoupper($tagName);
         $this->reset();
     }
 
-    public function getTag($uppercase = false): string
+    public function getTag(): string
     {
-        if ($uppercase) {
-            return $this->tagUc;
-        }
-
         return $this->tag;
     }
 
@@ -55,7 +49,7 @@ abstract class AbstractParser extends Emitter implements ParserInterface
 
     public function handleElementStart(Parser $parser, string $name, array $attributes)
     {
-        if ($this->state === self::STATE_SEEKING && $name === $this->tagUc) {
+        if ($this->state === self::STATE_SEEKING && $name === $this->tag) {
             $this->state = self::STATE_PARSING;
             $this->startDepth = $parser->getDepth();
             $this->attributes = $attributes;
@@ -65,7 +59,7 @@ abstract class AbstractParser extends Emitter implements ParserInterface
 
     public function handleElementEnd(Parser $parser, string $name)
     {
-        if ($this->state === self::STATE_PARSING && $this->startDepth === $parser->getDepth() && $name === $this->tagUc) {
+        if ($this->state === self::STATE_PARSING && $this->startDepth === $parser->getDepth() && $name === $this->tag) {
             $this->emit('parse:result', [$this->getValue()]);
             $this->state = self::STATE_DONE;
             $this->onLeave($parser);

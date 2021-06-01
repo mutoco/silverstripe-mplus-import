@@ -14,7 +14,7 @@ class FieldParser extends AbstractParser
     protected string $value;
     protected string $valueTag;
 
-    public function __construct(string $tagName, string $valueTag = 'VALUE')
+    public function __construct(string $tagName, string $valueTag = 'value')
     {
         parent::__construct($tagName);
         $this->valueTag = $valueTag;

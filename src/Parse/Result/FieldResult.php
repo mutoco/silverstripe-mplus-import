@@ -14,8 +14,8 @@ class FieldResult extends AbstractResult
     {
         parent::__construct($tag, $attributes);
         $this->value = $value;
-        $this->name = $attributes['NAME'] ?? $tag;
-        $this->type = $attributes['DATATYPE'] ?? 'unknown';
+        $this->name = $attributes['name'] ?? $tag;
+        $this->type = $attributes['dataType'] ?? 'unknown';
     }
 
     public function getName(): string

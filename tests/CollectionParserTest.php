@@ -15,7 +15,7 @@ class CollectionParserTest extends FunctionalTest
 {
     public function testCollectionParser()
     {
-        $collectionParser = new CollectionParser('module', new ObjectParser(), 'TOTALSIZE');
+        $collectionParser = new CollectionParser('module', new ObjectParser());
 
         $parser = new Parser();
         /** @var CollectionResult $collectionResult */

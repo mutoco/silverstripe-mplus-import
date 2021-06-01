@@ -8,6 +8,11 @@ class CollectionResult extends AbstractResult
 {
     protected array $items = [];
 
+    public function getName(): ?string
+    {
+        return $this->attributes['name'] ?? null;
+    }
+
     public function addItem(ResultInterface $result)
     {
         $this->items[] = $result;
@@ -23,13 +28,8 @@ class CollectionResult extends AbstractResult
         return $this->items;
     }
 
-    public function getValue()
+    public function getValue(): array
     {
-        return [
-            'tag' => $this->tag,
-            'attributes' => $this->attributes,
-            'count' => $this->count(),
-            'items' => $this->items
-        ];
+        return $this->getItems();
     }
 }

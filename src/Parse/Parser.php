@@ -97,6 +97,7 @@ class Parser
     protected function setupParser()
     {
         $parser = xml_parser_create();
+        xml_parser_set_option ( $parser , XML_OPTION_CASE_FOLDING , false );
         xml_set_object($parser, $this);
         xml_set_character_data_handler($parser, 'handleCharacterData');
         xml_set_element_handler($parser, 'handleElementStart', 'handleElementEnd');
