@@ -12,6 +12,8 @@ class ModuleParser extends AbstractParser
 {
     protected ?ModuleResult $result;
     protected string $type;
+    protected int $searchDepth;
+    protected ?array $fieldList;
 
     protected array $fields = [
         'SYSTEMFIELD' => 'VALUE',
@@ -25,19 +27,46 @@ class ModuleParser extends AbstractParser
         'MODULEREFERENCE' => 'MODULEREFERENCEITEM'
     ];
 
-    public function __construct(string $type)
+    public function __construct(string $type, int $searchDepth = 1)
     {
         $this->type = $type;
+        $this->searchDepth = $searchDepth;
+        $this->fieldList = null;
         parent::__construct('moduleItem');
+    }
+
+    public function getValue(): ModuleResult
+    {
+        return $this->result;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getFieldList(): ?array
+    {
+        return $this->fieldList;
+    }
+
+    /**
+     * @param array|null $fieldList
+     * @return ModuleParser
+     */
+    public function setFieldList(?array $fieldList): self
+    {
+        $this->fieldList = $fieldList;
+        return $this;
     }
 
     public function handleElementStart(Parser $parser, string $name, array $attributes)
     {
-        if ($this->startDepth + 1 === $parser->getDepth()) {
+        if ($this->startDepth + $this->searchDepth >= $parser->getDepth()) {
             if (isset($this->fields[$name])) {
                 $fieldParser = new FieldParser($name, $this->fields[$name]);
                 $fieldParser->on('parse:result', function (FieldResult $result) use ($parser) {
-                    $this->result->fields[] = $result;
+                    if (!$this->fieldList || in_array($result->getName(), $this->fieldList)) {
+                        $this->result->addField($result);
+                    }
                     $parser->popStack();
                 });
                 $parser->pushStack($fieldParser);
@@ -55,14 +84,9 @@ class ModuleParser extends AbstractParser
         $this->result = null;
     }
 
-    public function getValue(): ModuleResult
-    {
-        return $this->result;
-    }
-
     protected function onEnter(Parser $parser)
     {
         $this->result = new ModuleResult($this->tag, $this->attributes);
-        $this->result->type = $this->type;
+        $this->result->setType($this->type);
     }
 }
