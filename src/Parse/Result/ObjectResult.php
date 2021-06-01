@@ -28,6 +28,10 @@ class ObjectResult extends AbstractResult
             $fields[$name] = $field->getValue();
         }
 
+        foreach ($this->relations as $name => $relation){
+            $fields[$name] = $relation->getValue();
+        }
+
         return $fields;
     }
 

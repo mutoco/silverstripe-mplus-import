@@ -22,6 +22,7 @@ class ObjectParserTest extends FunctionalTest
 
         $this->assertNotNull($objectResult, 'Object result should be set');
         $this->assertEquals('123', $objectResult->getId());
+        $this->assertEquals('Varchar', $objectResult->getFieldResult('ObjAcquisitionYearTxt')->getType());
         $this->assertCount(4, $objectResult->getFields());
         $this->assertCount(0, $objectResult->getRelations(), 'Relations aren\'t imported by default');
         $this->assertEquals(
@@ -29,16 +30,12 @@ class ObjectParserTest extends FunctionalTest
             $objectResult->getAttributes()
         );
 
-        $fieldValues = [];
-        foreach ($objectResult->getFields() as $field) {
-            $fieldValues[$field->getName()] = $field->getValue();
-        }
         $this->assertEquals([
             '__id' => '123',
             'ObjAcquisitionYearTxt' => '1916',
             'ObjCategoryVoc' => 'Druckgrafik',
             'ObjTitleVrt' => 'Testdatensatz Portrait . Hummer'
-        ], $fieldValues);
+        ], $objectResult->getValue());
     }
 
     public function testObjectParserFiltered()
@@ -60,6 +57,12 @@ class ObjectParserTest extends FunctionalTest
         $this->assertEquals('repeatableGroup', $objectResult->getRelationResult('ObjBriefDescriptionGrp')->getTag());
         $this->assertCount(2, $objectResult->ObjBriefDescriptionGrp);
         $this->assertCount(7, $objectResult->ObjMultimediaRef);
+
+        $this->assertEquals([
+            'ObjCategoryVoc',
+            'ObjBriefDescriptionGrp',
+            'ObjMultimediaRef'
+        ], array_keys($objectResult->getValue()));
 
         $ids = [];
         foreach ($objectResult->ObjMultimediaRef as $item) {
