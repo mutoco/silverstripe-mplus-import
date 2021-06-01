@@ -7,6 +7,7 @@ namespace Mutoco\Mplus\Tests;
 use Mutoco\Mplus\Parse\Node\CollectionParser;
 use Mutoco\Mplus\Parse\Node\ObjectParser;
 use Mutoco\Mplus\Parse\Parser;
+use Mutoco\Mplus\Parse\Result\FieldResult;
 use Mutoco\Mplus\Parse\Result\ObjectResult;
 use SilverStripe\Dev\FunctionalTest;
 
@@ -69,5 +70,42 @@ class ObjectParserTest extends FunctionalTest
             $ids[] = $item->getId();
         }
         $this->assertEquals(['115234', '307193', '904212', '904213', '904214', '904215', '907206'], $ids);
+    }
+
+    public function testFieldSerialize()
+    {
+        $field = new FieldResult('tag', [
+            'id' => '1',
+            'dataType' => 'Varchar',
+            'name' => 'foo'
+        ], 'Some test');
+        /** @var FieldResult $copy */
+        $copy = unserialize(serialize($field));
+        $this->assertEquals('tag', $copy->getTag());
+        $this->assertEquals(['id' => '1', 'dataType' => 'Varchar', 'name' => 'foo'], $copy->getAttributes());
+        $this->assertEquals('Some test', $copy->getValue());
+        $this->assertEquals('Varchar', $copy->getType());
+        $this->assertEquals('foo', $copy->getName());
+    }
+
+    public function testResultSerialize()
+    {
+        $result = new ObjectResult('tag', ['id' => '123']);
+        $result->addField(new FieldResult('tag', [
+            'id' => '1',
+            'dataType' => 'Varchar',
+            'name' => 'foo'
+        ], 'Some test'));
+        $result->addField(new FieldResult('tag', [
+            'id' => '2',
+            'dataType' => 'Varchar',
+            'name' => 'bar'
+        ], 'Some other test'));
+
+        /** @var ObjectResult $copy */
+        $copy = unserialize(serialize($result));
+        $this->assertEquals('123', $copy->getId());
+        $this->assertEquals('Some test', $copy->foo);
+        $this->assertEquals('Some other test', $copy->bar);
     }
 }

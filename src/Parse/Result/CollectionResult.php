@@ -32,4 +32,17 @@ class CollectionResult extends AbstractResult
     {
         return $this->getItems();
     }
+
+    protected function getSerializableObject(): \stdClass
+    {
+        $obj = parent::getSerializableObject();
+        $obj->items = $this->items;
+        return $obj;
+    }
+
+    protected function unserializeFromObject(\stdClass $obj): void
+    {
+        $this->items = $obj->items;
+        parent::unserializeFromObject($obj);
+    }
 }

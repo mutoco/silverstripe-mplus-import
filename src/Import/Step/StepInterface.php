@@ -6,7 +6,7 @@ namespace Mutoco\Mplus\Import\Step;
 
 use Mutoco\Mplus\Import\ImportEngine;
 
-interface StepInterface
+interface StepInterface extends \Serializable
 {
     /**
      * Activate the current step

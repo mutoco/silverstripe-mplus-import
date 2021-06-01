@@ -4,8 +4,11 @@
 namespace Mutoco\Mplus\Parse\Result;
 
 
-abstract class AbstractResult implements ResultInterface
+use Mutoco\Mplus\Serialize\SerializableTrait;
+
+abstract class AbstractResult implements ResultInterface, \Serializable
 {
+    use SerializableTrait;
     protected string $tag;
     protected array $attributes;
 
@@ -36,4 +39,18 @@ abstract class AbstractResult implements ResultInterface
     }
 
     abstract public function getValue();
+
+    protected function unserializeFromObject(\stdClass $obj): void
+    {
+        $this->attributes = $obj->attributes;
+        $this->tag = $obj->tag;
+    }
+
+    protected function getSerializableObject(): \stdClass
+    {
+        $obj = new \stdClass();
+        $obj->tag = $this->tag;
+        $obj->attributes = $this->attributes;
+        return $obj;
+    }
 }

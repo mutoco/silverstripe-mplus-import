@@ -7,25 +7,21 @@ namespace Mutoco\Mplus\Parse\Result;
 class FieldResult extends AbstractResult
 {
     protected string $value;
-    protected string $name;
-    protected string $type;
 
     public function __construct(string $tag, array $attributes, string $value)
     {
         parent::__construct($tag, $attributes);
         $this->value = $value;
-        $this->name = $attributes['name'] ?? $tag;
-        $this->type = $attributes['dataType'] ?? 'unknown';
     }
 
     public function getName(): string
     {
-        return $this->name;
+        return $this->attributes['name'] ?? $this->getTag();
     }
 
     public function getType(): string
     {
-        return $this->type;
+        return $this->attributes['dataType'] ?? 'unknown';
     }
 
     public function getValue(): string
@@ -36,5 +32,18 @@ class FieldResult extends AbstractResult
     public function __toString()
     {
         return sprintf('%s (%s): %s', $this->getName(), $this->getType(), $this->getValue());
+    }
+
+    protected function getSerializableObject(): \stdClass
+    {
+        $obj = parent::getSerializableObject();
+        $obj->value = $this->value;
+        return $obj;
+    }
+
+    protected function unserializeFromObject(\stdClass $obj): void
+    {
+        $this->value = $obj->value;
+        parent::unserializeFromObject($obj);
     }
 }

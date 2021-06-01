@@ -6,9 +6,14 @@ namespace Mutoco\Mplus\Import;
 
 use Mutoco\Mplus\Api\ClientInterface;
 use Mutoco\Mplus\Import\Step\StepInterface;
+use Mutoco\Mplus\Serialize\SerializableTrait;
+use SilverStripe\Core\Config\Configurable;
 
-class ImportEngine
+class ImportEngine implements \Serializable
 {
+    use Configurable;
+    use SerializableTrait;
+
     const QUEUE_LOAD = 'LOAD';
     const QUEUE_IMPORT = 'IMPORT';
     const QUEUE_LINK = 'LINK';
@@ -30,6 +35,17 @@ class ImportEngine
     public function getApi(): ClientInterface
     {
         return $this->api;
+    }
+
+    public function setApi(ClientInterface $client) : self
+    {
+        $this->api = $client;
+        return $this;
+    }
+
+    public function getModuleConfig(): array
+    {
+        return $this->config()->get('modules');
     }
 
     public function enqueue(StepInterface $step, string $queue = self::QUEUE_LOAD)
@@ -78,5 +94,17 @@ class ImportEngine
         }
 
         return false;
+    }
+
+    protected function getSerializableObject(): \stdClass
+    {
+        $obj = new \stdClass();
+        $obj->queues = $this->queues;
+        return $obj;
+    }
+
+    protected function unserializeFromObject(\stdClass $obj): void
+    {
+        $this->queues = $obj->queues;
     }
 }

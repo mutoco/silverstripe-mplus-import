@@ -55,4 +55,18 @@ class CollectionParserTest extends FunctionalTest
         $this->assertEquals($collectionResult->getItems(), $collectionResult->getValue());
         $this->assertEquals('module', $collectionResult->getTag());
     }
+
+    public function testCollectionResultSerialize()
+    {
+        $result = new CollectionResult('tag', ['name' => 'Module']);
+        $result->addItem(new ObjectResult('objTag', ['id' => '123']));
+        $result->addItem(new ObjectResult('objTag', ['id' => '321']));
+
+        /** @var CollectionResult $copy */
+        $copy = unserialize(serialize($result));
+        $this->assertCount(2, $copy->getItems());
+        $this->assertInstanceOf(ObjectResult::class, $copy->getItems()[0]);
+        $this->assertEquals('123', $copy->getItems()[0]->getId());
+        $this->assertEquals('321', $copy->getItems()[1]->getId());
+    }
 }

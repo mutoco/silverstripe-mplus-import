@@ -10,18 +10,16 @@ class ObjectResult extends AbstractResult
 {
     protected array $fields = [];
     protected array $relations = [];
-    protected ?string $id;
     protected string $type = ObjectParser::TYPE_UNKNOWN;
 
     public function __construct(string $tag, array $attributes)
     {
         parent::__construct($tag, $attributes);
-        $this->id = $attributes['id'] ?? $attributes['moduleItemId'] ?? null;
     }
 
-    public function getId(): string
+    public function getId(): ?string
     {
-        return $this->id;
+        return $this->attributes['id'] ?? $this->attributes['moduleItemId'] ?? null;
     }
 
     public function getValue(): array
@@ -109,4 +107,20 @@ class ObjectResult extends AbstractResult
         return null;
     }
 
+    protected function getSerializableObject(): \stdClass
+    {
+        $obj = parent::getSerializableObject();
+        $obj->fields = $this->fields;
+        $obj->relations = $this->relations;
+        $obj->type = $this->type;
+        return $obj;
+    }
+
+    protected function unserializeFromObject(\stdClass $obj): void
+    {
+        $this->fields = $obj->fields;
+        $this->relations = $obj->relations;
+        $this->type = $obj->type;
+        parent::unserializeFromObject($obj);
+    }
 }

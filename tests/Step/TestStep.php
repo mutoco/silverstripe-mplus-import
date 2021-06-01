@@ -6,9 +6,12 @@ namespace Mutoco\Mplus\Tests\Step;
 
 use Mutoco\Mplus\Import\ImportEngine;
 use Mutoco\Mplus\Import\Step\StepInterface;
+use Mutoco\Mplus\Serialize\SerializableTrait;
 
 class TestStep implements StepInterface
 {
+    use SerializableTrait;
+
     public static array $stack = [];
     private int $loops;
     private int $step;
