@@ -67,4 +67,15 @@ class ImportEngineTest extends FunctionalTest
             'A:deactivate'
         ], TestStep::$stack);
     }
+
+    public function testSerialize()
+    {
+        $engine = new ImportEngine();
+        $engine->enqueue(new TestStep());
+
+        /** @var ImportEngine $copy */
+        $copy = unserialize(serialize($engine));
+        $this->assertFalse($copy->isComplete());
+        $this->assertInstanceOf(TestStep::class, $copy->getCurrentQueue()->top());
+    }
 }
