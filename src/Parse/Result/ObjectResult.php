@@ -4,11 +4,14 @@
 namespace Mutoco\Mplus\Parse\Result;
 
 
+use Mutoco\Mplus\Parse\Node\ObjectParser;
+
 class ObjectResult extends AbstractResult
 {
     protected array $fields = [];
     protected array $relations = [];
     protected ?string $id;
+    protected string $type = ObjectParser::TYPE_UNKNOWN;
 
     public function __construct(string $tag, array $attributes)
     {
@@ -33,6 +36,25 @@ class ObjectResult extends AbstractResult
         }
 
         return $fields;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     * @return ObjectResult
+     */
+    public function setType(string $type): self
+    {
+        $this->type = $type;
+        return $this;
     }
 
     /**
@@ -86,4 +108,5 @@ class ObjectResult extends AbstractResult
 
         return null;
     }
+
 }

@@ -32,6 +32,12 @@ abstract class AbstractParser extends Emitter implements ParserInterface
         return $this->tag;
     }
 
+    public function setTag(string $tag): self
+    {
+        $this->tag = $tag;
+        return $this;
+    }
+
     abstract public function getValue(): ResultInterface;
 
     public function reset()

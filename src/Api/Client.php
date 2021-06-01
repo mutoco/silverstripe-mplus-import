@@ -4,10 +4,10 @@
 namespace Mutoco\Mplus\Api;
 
 
+use Psr\Http\Message\StreamInterface;
+
 class Client implements ClientInterface
 {
-
-
     private string $baseUrl;
     private string $username;
     private string $password;
@@ -63,23 +63,25 @@ class Client implements ClientInterface
         return $response->getStatusCode() === 200;
     }
 
-    public function search(string $module, string $xml): \DOMDocument
+    public function search(string $module, string $xml): ?StreamInterface
     {
         $response = $this->client->post(sprintf('ria-ws/application/module/%s/search/', $module), [
             'body' => $xml
         ]);
 
         if ($response->getStatusCode() === 200) {
-            return $this->parseXml($response->getBody());
+            return $response->getBody();
         }
+
+        return null;
     }
 
-    public function queryModelItem(string $module, int $id): ?\DOMDocument
+    public function queryModelItem(string $module, int $id): ?StreamInterface
     {
         $response = $this->client->get(sprintf('ria-ws/application/module/%s/%d', $module, $id));
 
         if ($response->getStatusCode() === 200) {
-            return $this->parseXml($response->getBody());
+            return $response->getBody();
         }
 
         return null;

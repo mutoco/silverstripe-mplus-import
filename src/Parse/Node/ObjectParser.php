@@ -11,8 +11,10 @@ use Mutoco\Mplus\Parse\Result\ObjectResult;
 
 class ObjectParser extends AbstractParser
 {
+    const TYPE_UNKNOWN = 'UNKNOWN';
+
     protected ?ObjectResult $result;
-    protected string $type;
+    protected string $type = self::TYPE_UNKNOWN;
     protected int $searchDepth;
     protected ?array $fieldList;
 
@@ -37,6 +39,17 @@ class ObjectParser extends AbstractParser
     public function getValue(): ObjectResult
     {
         return $this->result;
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type): self
+    {
+        $this->type = $type;
+        return $this;
     }
 
     /**
@@ -121,7 +134,7 @@ class ObjectParser extends AbstractParser
     protected function onEnter(Parser $parser)
     {
         $this->result = new ObjectResult($this->tag, $this->attributes);
-
+        $this->result->setType($this->getType());
         parent::onEnter($parser);
     }
 }

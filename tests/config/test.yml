@@ -1,3 +1,22 @@
+ImportEngine:
+  modules:
+    ExhTextGrp:
+      modelClass: Mutoco\Mplus\Tests\Model\TextBlock
+      fields:
+        Text: TextClb
+        Author: AuthorTxt
+    Exhibition:
+      modelClass: Mutoco\Mplus\Tests\Model\Exhibition
+      fields:
+        Title: ExhTitleTxt
+        DateTo: ExhDateToDat
+        DateFrom: ExhDateFromDat
+      relations:
+        Texts: ExhTextGrp
+        Persons:
+          name: ExhPersonRef
+          module: Person
+
 ModelImporterDefault:
   models:
     ExhTextGrp:
