@@ -23,6 +23,9 @@ class CollectionResult extends AbstractResult
         return count($this->items);
     }
 
+    /**
+     * @return ResultInterface[]
+     */
     public function getItems(): array
     {
         return $this->items;

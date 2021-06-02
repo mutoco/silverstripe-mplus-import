@@ -11,6 +11,34 @@ use SilverStripe\Dev\FunctionalTest;
 
 class ParserUtilTest extends FunctionalTest
 {
+    private static array $config = [
+        'Test' => [
+            'relations' => [
+                'Texts' => 'ExhTextGrp',
+                'Persons' => [
+                    'name' => 'ExhPersonRef',
+                    'module' => 'Person'
+                ]
+            ]
+        ],
+        'Person' => [
+            'fields' => [
+                'Firstname' => 'PerFirstNameTxt'
+            ]
+        ],
+        'ExhTextGrp' => [
+            'fields' => [
+                'Text' => 'TextClb',
+            ],
+            'relations' => [
+                'Author' => [
+                    'name' => 'AuthorRef',
+                    'module' => 'Person'
+                ]
+            ]
+        ]
+    ];
+
     public function testBasicParserFromConfig()
     {
         /** @var ObjectParser $parser */
@@ -32,33 +60,7 @@ class ParserUtilTest extends FunctionalTest
     public function testRelationParserFromConfig()
     {
         /** @var ObjectParser $parser */
-        $parser = Util::parserFromConfig([
-            'Test' => [
-                'relations' => [
-                    'Texts' => 'ExhTextGrp',
-                    'Persons' => [
-                        'name' => 'ExhPersonRef',
-                        'module' => 'Person'
-                    ]
-                ]
-            ],
-            'Person' => [
-                'fields' => [
-                    'Firstname' => 'PerFirstNameTxt'
-                ]
-            ],
-            'ExhTextGrp' => [
-                'fields' => [
-                    'Text' => 'TextClb',
-                ],
-                'relations' => [
-                    'Author' => [
-                        'name' => 'AuthorRef',
-                        'module' => 'Person'
-                    ]
-                ]
-            ]
-        ], 'Test');
+        $parser = Util::parserFromConfig(self::$config, 'Test');
 
         $this->assertInstanceOf(ObjectParser::class, $parser);
         $this->assertNull($parser->getFieldList());
@@ -85,6 +87,30 @@ class ParserUtilTest extends FunctionalTest
         $this->assertInstanceOf(ObjectParser::class, $childParser);
         $this->assertEquals('Person', $childParser->getType());
         $this->assertEquals(['PerFirstNameTxt'], $childParser->getFieldList());
+    }
+
+    public function testRelationModule()
+    {
+        $module = Util::getRelationModule(self::$config, 'Test', 'ExhPersonRef');
+        $this->assertEquals('Person', $module);
+
+        $module = Util::getRelationModule(self::$config, 'Test', 'ExhTextGrp');
+        $this->assertEquals('ExhTextGrp', $module);
+    }
+
+    public function testRelationNormalization()
+    {
+        $relations = Util::getNormalizedRelationConfig(self::$config, 'Test');
+        $this->assertEquals([
+            'Texts' => [
+                'name' => 'ExhTextGrp',
+                'module' => 'ExhTextGrp'
+            ],
+            'Persons' => [
+                'name' => 'ExhPersonRef',
+                'module' => 'Person'
+            ]
+        ], $relations);
     }
 
     public function testIncompleteRelationFromConfig()

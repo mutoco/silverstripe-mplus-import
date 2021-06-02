@@ -6,6 +6,7 @@ namespace Mutoco\Mplus\Import;
 
 use Mutoco\Mplus\Api\ClientInterface;
 use Mutoco\Mplus\Import\Step\StepInterface;
+use Mutoco\Mplus\Parse\Util;
 use Mutoco\Mplus\Serialize\SerializableTrait;
 use SilverStripe\Core\Config\Configurable;
 
@@ -21,9 +22,12 @@ class ImportEngine implements \Serializable
 
     protected ClientInterface $api;
     protected array $queues;
+    protected int $steps;
 
     public function __construct()
     {
+        $this->steps = -1;
+
         $this->queues = [
             self::QUEUE_LOAD => new \SplQueue(),
             self::QUEUE_IMPORT => new \SplQueue(),
@@ -37,10 +41,15 @@ class ImportEngine implements \Serializable
         return $this->api;
     }
 
-    public function setApi(ClientInterface $client) : self
+    public function setApi(ClientInterface $value): self
     {
-        $this->api = $client;
+        $this->api = $value;
         return $this;
+    }
+
+    public function getSteps(): int
+    {
+        return $this->steps;
     }
 
     public function getModuleConfig(): array
@@ -58,9 +67,14 @@ class ImportEngine implements \Serializable
         $step->activate($this);
     }
 
+    public function getQueue(string $name): ?\SplQueue
+    {
+        return $this->queues[$name] ?? null;
+    }
+
     public function getCurrentQueue(): ?\SplQueue
     {
-        foreach ($this->queues as $key => $queue) {
+        foreach ($this->queues as $queue) {
             if (!$queue->isEmpty()) {
                 return $queue;
             }
@@ -76,6 +90,7 @@ class ImportEngine implements \Serializable
 
     public function next(): bool
     {
+        $this->steps++;
         $currentQueue = $this->getCurrentQueue();
 
         if ($currentQueue) {
@@ -96,15 +111,22 @@ class ImportEngine implements \Serializable
         return false;
     }
 
+    public function moduleForRelation(string $module, string $relationName): ?string
+    {
+        return Util::getRelationModule($this->getModuleConfig(), $module, $relationName);
+    }
+
     protected function getSerializableObject(): \stdClass
     {
         $obj = new \stdClass();
         $obj->queues = $this->queues;
+        $obj->steps = $this->steps;
         return $obj;
     }
 
     protected function unserializeFromObject(\stdClass $obj): void
     {
+        $this->steps = $obj->steps;
         $this->queues = $obj->queues;
     }
 }

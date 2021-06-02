@@ -56,7 +56,7 @@ class ObjectResult extends AbstractResult
     }
 
     /**
-     * @return array
+     * @return FieldResult[]
      */
     public function getFields(): array
     {
@@ -68,6 +68,9 @@ class ObjectResult extends AbstractResult
         return $this->fields[$name] ?? null;
     }
 
+    /**
+     * @return CollectionResult[]
+     */
     public function getRelations(): array
     {
         return $this->relations;

@@ -66,6 +66,7 @@ class ImportEngineTest extends FunctionalTest
             'A:run',
             'A:deactivate'
         ], TestStep::$stack);
+        $this->assertEquals(3, $engine->getSteps());
     }
 
     public function testSerialize()

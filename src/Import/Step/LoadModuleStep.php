@@ -6,6 +6,7 @@ namespace Mutoco\Mplus\Import\Step;
 
 use Mutoco\Mplus\Import\ImportEngine;
 use Mutoco\Mplus\Parse\Parser;
+use Mutoco\Mplus\Parse\Result\ObjectResult;
 use Mutoco\Mplus\Parse\Util;
 use Mutoco\Mplus\Serialize\SerializableTrait;
 
@@ -16,12 +17,24 @@ class LoadModuleStep implements StepInterface
     protected string $module;
     protected string $id;
     protected int $runs;
+    protected ?ObjectResult $result;
 
     public function __construct(string $module, string $id)
     {
         $this->module = $module;
         $this->id = $id;
         $this->runs = 0;
+        $this->result = null;
+    }
+
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
+    public function getModule(): string
+    {
+        return $this->module;
     }
 
     /**
@@ -30,6 +43,7 @@ class LoadModuleStep implements StepInterface
     public function activate(ImportEngine $engine): void
     {
         $this->runs = 0;
+        $this->result = null;
     }
 
     /**
@@ -52,8 +66,8 @@ class LoadModuleStep implements StepInterface
                 $this->module
             );
             $parser = new Parser();
-            if ($result = $parser->parse($stream, $rootParser)) {
-                $engine->enqueue(new ImportModuleStep($result), ImportEngine::QUEUE_IMPORT);
+            if (($result = $parser->parse($stream, $rootParser)) && $result instanceof ObjectResult) {
+                $this->result = $result;
             }
         }
 
@@ -65,7 +79,26 @@ class LoadModuleStep implements StepInterface
      */
     public function deactivate(ImportEngine $engine): void
     {
+        if ($this->result) {
+            foreach($this->result->getRelations() as $relation) {
+                // Must also load module references
+                if ($relation->getTag() === 'moduleReference') {
+                    // Look up the module from config, otherwise directly from the parsed data
+                    $module = $engine->moduleForRelation($this->module, $relation->getName()) ?? $relation->targetModule;
+                    if ($module) {
+                        foreach ($relation->getItems() as $item) {
+                            if ($item instanceof ObjectResult && $item->getTag() === 'moduleReferenceItem') {
+                                $engine->enqueue(new LoadModuleStep($module, $item->getId()), ImportEngine::QUEUE_LOAD);
+                            }
+                        }
+                    }
+                }
+            }
 
+            $engine->enqueue(new ImportModuleStep($this->result), ImportEngine::QUEUE_IMPORT);
+        }
+
+        $this->result = null;
     }
 
     protected function getSerializableObject(): \stdClass
