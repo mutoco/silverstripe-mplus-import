@@ -12,7 +12,7 @@ use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\FunctionalTest;
 use Symfony\Component\Yaml\Yaml;
 
-class LoadStepTest extends FunctionalTest
+class LoadModuleStepTest extends FunctionalTest
 {
     protected function setUp()
     {
@@ -37,8 +37,7 @@ class LoadStepTest extends FunctionalTest
     public function testLoadStep()
     {
         $engine = new ImportEngine();
-        $api = Injector::inst()->create('Mutoco\Mplus\Api\Client');
-        $engine->setApi($api);
+        $engine->setApi(new Client());
         $engine->enqueue(new LoadModuleStep('Exhibition', 2));
         $engine->next();
         $this->assertCount(1, $engine->getQueue(ImportEngine::QUEUE_LOAD));

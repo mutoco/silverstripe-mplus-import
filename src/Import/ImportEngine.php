@@ -94,15 +94,19 @@ class ImportEngine implements \Serializable
         $currentQueue = $this->getCurrentQueue();
 
         if ($currentQueue) {
-            $size = $currentQueue->count();
-            $isComplete = !$currentQueue->top()->run($this);
-            if ($currentQueue->count() !== $size) {
-                throw new \LogicException('A queue cannot change size during one run step');
-            }
+            $step = $currentQueue->bottom();
+            $isComplete = !$step->run($this);
 
             if ($isComplete) {
-                $step = $currentQueue->dequeue();
-                $step->deactivate($this);
+                $valid = false;
+                try {
+                    $valid = ($step === $currentQueue->dequeue());
+                    $step->deactivate($this);
+                } catch (\Exception $ex) {}
+
+                if (!$valid) {
+                    throw new \LogicException('A queue cannot change the current item during one run step');
+                }
             }
 
             return true;

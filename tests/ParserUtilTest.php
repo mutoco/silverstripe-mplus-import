@@ -7,6 +7,8 @@ namespace Mutoco\Mplus\Tests;
 use Mutoco\Mplus\Parse\Node\CollectionParser;
 use Mutoco\Mplus\Parse\Node\ObjectParser;
 use Mutoco\Mplus\Parse\Util;
+use SilverStripe\Config\Collections\MutableConfigCollectionInterface;
+use SilverStripe\Core\Config\Config;
 use SilverStripe\Dev\FunctionalTest;
 
 class ParserUtilTest extends FunctionalTest
@@ -111,6 +113,28 @@ class ParserUtilTest extends FunctionalTest
                 'module' => 'Person'
             ]
         ], $relations);
+    }
+
+    public function testFieldNormalization()
+    {
+        Config::withConfig(function(MutableConfigCollectionInterface $config) {
+            // update your config
+            $config->set('Test', 'mplus_import_fields', ['MplusID' => '__id']);
+            $moduleConfig = [
+                'Test' => [
+                    'modelClass' => 'Test',
+                    'fields' => [
+                        'Title' => 'ExhTitleTxt'
+                    ]
+                ]
+            ];
+
+            $fields = Util::getNormalizedFieldConfig($moduleConfig, 'Test');
+            $this->assertEquals([
+                'Title' => 'ExhTitleTxt',
+                'MplusID' => '__id'
+            ], $fields);
+        });
     }
 
     public function testIncompleteRelationFromConfig()

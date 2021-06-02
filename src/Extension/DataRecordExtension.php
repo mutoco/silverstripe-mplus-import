@@ -20,4 +20,9 @@ class DataRecordExtension extends DataExtension
             'columns' => ['MplusID']
         ]
     ];
+
+    private static $mplus_import_fields = [
+        'Imported' => '__lastModified',
+        'MplusID' => '__id'
+    ];
 }
