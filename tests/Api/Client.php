@@ -32,6 +32,15 @@ class Client implements ClientInterface
 
     public function search(string $module, string $xml): ?StreamInterface
     {
+        $searchDoc = new \SimpleXMLElement($xml);
+        $search = $searchDoc->modules[0]->module[0]->search[0];
+        $page = floor($search['offset'] / $search['limit']) + 1;
+
+        $filename = sprintf('%s-p%d.xml', $module, $page);
+        $filePath = realpath(implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'data', 'search', $filename]));
+        if (file_exists($filePath)) {
+            return Utils::streamFor(fopen($filePath, 'r'));
+        }
         return null;
     }
 }

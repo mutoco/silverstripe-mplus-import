@@ -25,3 +25,10 @@ ImportEngine:
         DateOfDeath: PerDateToEndDat
         PlaceOfBirth: PerPlaceBirthTxt
         PlaceOfDeath: PerPlaceDeathTxt
+
+SearchLoader:
+  modules:
+    Exhibition:
+      modelClass: Mutoco\Mplus\Tests\Model\Exhibition
+      fields:
+        Title: ExhTitleTxt
