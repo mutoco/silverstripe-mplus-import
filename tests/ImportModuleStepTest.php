@@ -47,6 +47,10 @@ class ImportModuleStepTest extends SapphireTest
     public function testModelImport()
     {
         Config::withConfig(function(MutableConfigCollectionInterface $config) {
+            $existing = $this->objFromFixture(Exhibition::class, 'exhibition2');
+            $existing->write();
+            $this->assertEquals(['10'], $existing->Persons()->column('MplusID'));
+
             $config->set(ImportEngine::class, 'modules', $this->loadedConfig['ImportEngine']['modules']);
             $engine = new ImportEngine();
             $engine->setApi(new Client());
@@ -69,6 +73,10 @@ class ImportModuleStepTest extends SapphireTest
                 '...die 5 Wochen gedauert hat...',
                 '... und auf wenig Interesse gestossen ist.'
             ], $exhibition->Texts()->column('Text'));
+
+            $this->assertEquals([2], $engine->getRegistry()->getImportedIds('Exhibition'));
+            $this->assertEquals([1982], $engine->getRegistry()->getImportedIds('Person'));
+            $this->assertEquals([356559, 356558, 367558, 367559, 367560], $engine->getRegistry()->getImportedIds('ExhTextGrp'));
         });
     }
 

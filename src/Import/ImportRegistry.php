@@ -11,6 +11,25 @@ class ImportRegistry implements \Serializable
     use SerializableTrait;
 
     protected array $modules = [];
+    protected array $relations = [];
+
+    public function reportImportedRelation(string $class, string $name, array $ids)
+    {
+        $key = $class . '.' . $name;
+        $this->relations[$key] = $ids;
+    }
+
+    public function hasImportedRelation(string $class, string $name): bool
+    {
+        $key = $class . '.' . $name;
+        return isset($this->relations[$key]);
+    }
+
+    public function getRelationIds(string $class, string $name): array
+    {
+        $key = $class . '.' . $name;
+        return $this->relations[$key] ?? [];
+    }
 
     public function reportImportedModule(string $name, string $id): void
     {
@@ -36,22 +55,20 @@ class ImportRegistry implements \Serializable
 
     public function getImportedIds(string $module): array
     {
-        if (!isset($this->modules[$module])) {
-            return [];
-        }
-
-        return $this->modules[$module];
+        return $this->modules[$module] ?? [];
     }
 
     protected function getSerializableObject(): \stdClass
     {
         $obj = new \stdClass();
         $obj->modules = $this->modules;
+        $obj->relations = $this->relations;
         return $obj;
     }
 
     protected function unserializeFromObject(\stdClass $obj): void
     {
         $this->modules = $obj->modules;
+        $this->relations = $obj->relations;
     }
 }
