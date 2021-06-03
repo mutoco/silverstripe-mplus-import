@@ -100,4 +100,22 @@ class ImportEngineTest extends FunctionalTest
         $this->assertFalse($copy->isComplete());
         $this->assertInstanceOf(TestStep::class, $copy->getCurrentQueue()->top());
     }
+
+    public function testRegistry()
+    {
+        $engine = new ImportEngine();
+        $this->assertFalse($engine->getRegistry()->hasImportedModule('Test'));
+        $this->assertFalse($engine->getRegistry()->hasImportedModule('Test', '0'));
+        $engine->getRegistry()->reportImportedModule('Test', 2);
+        $engine->getRegistry()->reportImportedModule('Test', 3);
+        $engine->getRegistry()->reportImportedModule('Person', 0);
+        $engine->getRegistry()->reportImportedModule('Person', 2);
+        $this->assertTrue($engine->getRegistry()->hasImportedModule('Test'));
+        $this->assertTrue($engine->getRegistry()->hasImportedModule('Test', 2));
+        $this->assertTrue($engine->getRegistry()->hasImportedModule('Test', 3));
+        $this->assertFalse($engine->getRegistry()->hasImportedModule('Test', 0));
+        $this->assertTrue($engine->getRegistry()->hasImportedModule('Person', 0));
+        $this->assertEquals([2,3], $engine->getRegistry()->getImportedIds('Test'));
+        $this->assertEquals([0,2], $engine->getRegistry()->getImportedIds('Person'));
+    }
 }

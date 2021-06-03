@@ -23,10 +23,12 @@ class ImportEngine implements \Serializable
     protected ClientInterface $api;
     protected array $queues;
     protected int $steps;
+    protected ImportRegistry $registry;
 
     public function __construct()
     {
         $this->steps = -1;
+        $this->registry = new ImportRegistry();
 
         $this->queues = [
             self::QUEUE_LOAD => new \SplQueue(),
@@ -45,6 +47,11 @@ class ImportEngine implements \Serializable
     {
         $this->api = $value;
         return $this;
+    }
+
+    public function getRegistry(): ImportRegistry
+    {
+        return $this->registry;
     }
 
     public function getSteps(): int
@@ -127,6 +134,7 @@ class ImportEngine implements \Serializable
         $obj = new \stdClass();
         $obj->queues = $this->queues;
         $obj->steps = $this->steps;
+        $obj->registry = $this->registry;
         return $obj;
     }
 
@@ -134,5 +142,6 @@ class ImportEngine implements \Serializable
     {
         $this->steps = $obj->steps;
         $this->queues = $obj->queues;
+        $this->registry = $obj->registry;
     }
 }

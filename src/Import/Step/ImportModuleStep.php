@@ -42,8 +42,17 @@ class ImportModuleStep implements StepInterface
      */
     public function run(ImportEngine $engine): bool
     {
+        $id = $this->result->__id ?? $this->result->getId() ?? null;
+        $type = $this->result->getType();
+
+        // If the exact same module was already imported it's safe to skip
+        if ($engine->getRegistry()->hasImportedModule($type, $id)) {
+            return false;
+        }
+
         $config = Util::getNormalizedModuleConfig($engine->getModuleConfig(), $this->result->getType());
         $target = $this->createOrUpdate($config, $isSkipped);
+        $engine->getRegistry()->reportImportedModule($type, $target->MplusID);
 
         foreach ($config['relations'] as $relationName => $relationCfg) {
             if ($collectionResult = $this->result->getRelationResult($relationCfg['name'])) {
