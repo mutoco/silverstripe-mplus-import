@@ -32,3 +32,20 @@ SearchLoader:
       modelClass: Mutoco\Mplus\Tests\Model\Exhibition
       fields:
         Title: ExhTitleTxt
+
+ImportNested:
+  modules:
+    Object:
+      modelClass:  Mutoco\Mplus\Tests\Model\Work
+      fields:
+        Title: ObjObjectTitleGrp.TitleTxt
+    Exhibition:
+      modelClass: Mutoco\Mplus\Tests\Model\Exhibition
+      fields:
+        Title: ExhTitleTxt
+        DateTo: ExhDateToDat
+        DateFrom: ExhDateFromDat
+      relations:
+        Works:
+          name: ExhRegistrarRef.RegObjectRef
+          module: Object

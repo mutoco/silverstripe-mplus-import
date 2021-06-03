@@ -6,8 +6,10 @@ use Mutoco\Mplus\Import\ImportEngine;
 use Mutoco\Mplus\Import\Step\LoadModuleStep;
 use Mutoco\Mplus\Tests\Api\Client;
 use Mutoco\Mplus\Tests\Model\Exhibition;
+use Mutoco\Mplus\Tests\Model\ExhibitionWork;
 use Mutoco\Mplus\Tests\Model\Person;
 use Mutoco\Mplus\Tests\Model\TextBlock;
+use Mutoco\Mplus\Tests\Model\Work;
 use SilverStripe\Config\Collections\MutableConfigCollectionInterface;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
@@ -20,7 +22,9 @@ class ImportModuleStepTest extends SapphireTest
     protected static $extra_dataobjects = [
         Exhibition::class,
         TextBlock::class,
-        Person::class
+        Person::class,
+        Work::class,
+        ExhibitionWork::class
     ];
 
     protected array $loadedConfig;
@@ -111,6 +115,24 @@ class ImportModuleStepTest extends SapphireTest
             $this->assertEquals('2021-05-10 10:00:00', $exhibition->Imported, 'Imported date must still be as before');
 
             DBDatetime::clear_mock_now();
+        });
+    }
+
+    public function testNestedFields()
+    {
+        Config::withConfig(function(MutableConfigCollectionInterface $config) {
+            $config->set(ImportEngine::class, 'modules', $this->loadedConfig['ImportNested']['modules']);
+            $engine = new ImportEngine();
+            $engine->setApi(new Client());
+            $engine->enqueue(new LoadModuleStep('Exhibition', 2));
+            do {
+                $hasSteps = $engine->next();
+            } while ($hasSteps);
+
+            Exhibition::flush_and_destroy_cache();
+            $exhibition = Exhibition::get()->find('MplusID', 2);
+            $this->assertEquals([47894, 435960], $exhibition->Works()->column('MplusID'));
+            $this->assertEquals(['Testdatensatz Portrait', 'Stillleben mit Hummer'], $exhibition->Works()->column('Title'));
         });
     }
 
