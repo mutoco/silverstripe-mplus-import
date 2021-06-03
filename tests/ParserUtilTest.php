@@ -15,6 +15,7 @@ class ParserUtilTest extends FunctionalTest
 {
     private static array $config = [
         'Test' => [
+            'modelClass' => 'Test',
             'relations' => [
                 'Texts' => 'ExhTextGrp',
                 'Persons' => [
@@ -134,6 +135,31 @@ class ParserUtilTest extends FunctionalTest
                 'Title' => 'ExhTitleTxt',
                 'MplusID' => '__id'
             ], $fields);
+        });
+    }
+
+    public function testModuleNormalization()
+    {
+        Config::withConfig(function(MutableConfigCollectionInterface $config) {
+            // update your config
+            $config->set('Test', 'mplus_import_fields', ['MplusID' => '__id']);
+
+
+            $result = Util::getNormalizedModuleConfig(self::$config, 'Test');
+            $this->assertEquals([
+                'modelClass' => 'Test',
+                'fields' => ['MplusID' => '__id'],
+                'relations' => [
+                    'Texts' => [
+                        'name' => 'ExhTextGrp',
+                        'module' => 'ExhTextGrp'
+                    ],
+                    'Persons' => [
+                        'name' => 'ExhPersonRef',
+                        'module' => 'Person'
+                    ]
+                ]
+            ], $result);
         });
     }
 

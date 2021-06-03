@@ -57,13 +57,15 @@ class ImportEngine implements \Serializable
         return $this->config()->get('modules');
     }
 
-    public function enqueue(StepInterface $step, string $queue = self::QUEUE_LOAD)
+    public function enqueue(StepInterface $step, ?string $queue = null)
     {
-        if (!isset($this->queues[$queue])) {
+        $queueName = $queue ?? $step->getDefaultQueue();
+
+        if (!isset($this->queues[$queueName])) {
             throw new \InvalidArgumentException('Not a valid queue name');
         }
 
-        $this->queues[$queue]->enqueue($step);
+        $this->queues[$queueName]->enqueue($step);
         $step->activate($this);
     }
 

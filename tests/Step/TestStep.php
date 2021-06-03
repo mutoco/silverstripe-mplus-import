@@ -27,6 +27,11 @@ class TestStep implements StepInterface
         $this->name = $name;
     }
 
+    public function getDefaultQueue(): string
+    {
+        return ImportEngine::QUEUE_LOAD;
+    }
+
     /**
      * @inheritDoc
      */
@@ -62,4 +67,5 @@ class TestStep implements StepInterface
     {
         self::$stack[] = $this->name . ':' . __FUNCTION__;
     }
+
 }

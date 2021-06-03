@@ -37,6 +37,11 @@ class LoadModuleStep implements StepInterface
         return $this->module;
     }
 
+    public function getDefaultQueue(): string
+    {
+        return ImportEngine::QUEUE_LOAD;
+    }
+
     /**
      * @inheritDoc
      */
@@ -88,7 +93,7 @@ class LoadModuleStep implements StepInterface
                     if ($module) {
                         foreach ($relation->getItems() as $item) {
                             if ($item instanceof ObjectResult && $item->getTag() === 'moduleReferenceItem') {
-                                $engine->enqueue(new LoadModuleStep($module, $item->getId()), ImportEngine::QUEUE_LOAD);
+                                $engine->enqueue(new LoadModuleStep($module, $item->getId()));
                             }
                         }
                     }

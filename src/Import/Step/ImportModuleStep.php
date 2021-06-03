@@ -4,6 +4,7 @@
 namespace Mutoco\Mplus\Import\Step;
 
 
+use Mutoco\Mplus\Exception\ImportException;
 use Mutoco\Mplus\Extension\DataRecordExtension;
 use Mutoco\Mplus\Import\ImportEngine;
 use Mutoco\Mplus\Parse\Result\ObjectResult;
@@ -24,6 +25,11 @@ class ImportModuleStep implements StepInterface
         $this->result = $result;
     }
 
+    public function getDefaultQueue(): string
+    {
+        return ImportEngine::QUEUE_IMPORT;
+    }
+
     /**
      * @inheritDoc
      */
@@ -36,9 +42,30 @@ class ImportModuleStep implements StepInterface
      */
     public function run(ImportEngine $engine): bool
     {
-        $config = $engine->getModuleConfig();
+        $config = Util::getNormalizedModuleConfig($engine->getModuleConfig(), $this->result->getType());
         $target = $this->createOrUpdate($config, $isSkipped);
-        // TODO: Import relations
+
+        foreach ($config['relations'] as $relationName => $relationCfg) {
+            if ($collectionResult = $this->result->getRelationResult($relationCfg['name'])) {
+                // If main import was skipped and the relation isn't an external module, then we can skip
+                if ($isSkipped && $collectionResult->getTag() !== 'moduleReference') {
+                    continue;
+                }
+
+                $ids = [];
+                foreach ($collectionResult->getItems() as $result) {
+                    if ($result instanceof ObjectResult) {
+                        $engine->enqueue(new ImportModuleStep($result));
+                        $ids[] = $result->getId();
+                    }
+                }
+
+                if (!empty($ids)) {
+                    $engine->enqueue(new LinkRelationStep($target->getClassName(), $target->MplusID, $relationName, $ids));
+                }
+            }
+        }
+
         return false;
     }
 
@@ -52,17 +79,19 @@ class ImportModuleStep implements StepInterface
 
     protected function createOrUpdate(array $config, &$skipped = false): DataObject
     {
-        $module = $this->result->getType();
-        $cfg = Util::getModuleConfig($config, $module);
-        $modelClass = $cfg['modelClass'];
-        $id = $this->result->__id;
+        $modelClass = $config['modelClass'] ?? null;
+        $id = $this->result->__id ?? $this->result->getId() ?? null;
+
+        if (!$modelClass || !$id) {
+            throw new ImportException('Cannot import Module without modelClass or ID');
+        }
 
         $existing = DataObject::get_one($modelClass, ['MplusID' => $id]);
         /** @var DataObject $target */
         $target = $existing ?? Injector::inst()->create($modelClass);
 
         if (!$target->hasExtension(DataRecordExtension::class)) {
-            throw new \LogicException(sprintf('Dataobject import target (%s) needs to have the DataRecordExtension', $modelClass));
+            throw new ImportException(sprintf('Dataobject import target (%s) needs to have the DataRecordExtension', $modelClass));
         }
 
         // Skip over existing records that were not modified remotely
@@ -88,11 +117,9 @@ class ImportModuleStep implements StepInterface
             }
         }
 
-
         $target->extend('beforeMplusImport', $this);
-        $fields = Util::getNormalizedFieldConfig($config, $module);
 
-        foreach ($fields as $fieldName => $mplusName) {
+        foreach ($config['fields'] as $fieldName => $mplusName) {
             // Skip ID
             if ($fieldName === 'MplusID') {
                 continue;

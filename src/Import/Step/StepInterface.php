@@ -9,6 +9,13 @@ use Mutoco\Mplus\Import\ImportEngine;
 interface StepInterface extends \Serializable
 {
     /**
+     * The default queue to run this step in.
+     * Use one of the constants defined in `ImportEngine`
+     * @return string - default queue name
+     */
+    public function getDefaultQueue(): string;
+
+    /**
      * Activate the current step
      * @param ImportEngine $engine - the import engine
      */

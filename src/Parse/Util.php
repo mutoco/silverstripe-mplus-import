@@ -40,6 +40,16 @@ class Util
         return $parser;
     }
 
+    static function getNormalizedModuleConfig(array $moduleCfg, string $module): array
+    {
+        $cfg = self::getModuleConfig($moduleCfg, $module);
+        return array_merge(
+            $cfg,
+            ['fields' => self::getNormalizedFieldConfig($moduleCfg, $module)],
+            ['relations' => self::getNormalizedRelationConfig($moduleCfg, $module)],
+        );
+    }
+
     static function getRelationModule(array $moduleCfg, string $module, string $relationName): ?string
     {
         $relations = self::getNormalizedRelationConfig($moduleCfg, $module);
