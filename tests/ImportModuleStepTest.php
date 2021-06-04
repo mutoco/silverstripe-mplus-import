@@ -133,7 +133,8 @@ class ImportModuleStepTest extends SapphireTest
             $exhibition = Exhibition::get()->find('MplusID', 2);
             $this->assertEquals([47894, 435960], $exhibition->Works()->column('MplusID'));
             $this->assertEquals(['Testdatensatz Portrait', 'Stillleben mit Hummer'], $exhibition->Works()->column('Title'));
+            $this->assertEquals(['TEST', 'Hummer'], $exhibition->Works()->column('Subtitle'));
+            $this->assertEquals(['Edvard Munch', 'Edvard Munch'], $exhibition->Works()->column('Artist'));
         });
     }
-
 }

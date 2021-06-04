@@ -4,6 +4,7 @@
 namespace Mutoco\Mplus\Tests;
 
 
+use Mutoco\Mplus\Import\ImportConfig;
 use Mutoco\Mplus\Parse\Node\CollectionParser;
 use Mutoco\Mplus\Parse\Node\ObjectParser;
 use Mutoco\Mplus\Parse\Util;
@@ -11,7 +12,7 @@ use SilverStripe\Config\Collections\MutableConfigCollectionInterface;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Dev\FunctionalTest;
 
-class ParserUtilTest extends FunctionalTest
+class ImportConfigTest extends FunctionalTest
 {
     private static array $config = [
         'Test' => [
@@ -45,7 +46,7 @@ class ParserUtilTest extends FunctionalTest
     public function testBasicParserFromConfig()
     {
         /** @var ObjectParser $parser */
-        $parser = Util::parserFromConfig([
+        $config = new ImportConfig([
             'Test' => [
                 'fields' => [
                     'Title' => 'ExhTitleTxt',
@@ -53,7 +54,9 @@ class ParserUtilTest extends FunctionalTest
                     'DateFrom' => 'ExhDateFromDat',
                 ]
             ]
-        ], 'Test');
+        ]);
+
+        $parser = $config->parserForModule('Test');
 
         $this->assertInstanceOf(ObjectParser::class, $parser);
         $this->assertEquals(['ExhTitleTxt', 'ExhDateToDat', 'ExhDateFromDat'], $parser->getFieldList());
@@ -63,7 +66,8 @@ class ParserUtilTest extends FunctionalTest
     public function testRelationParserFromConfig()
     {
         /** @var ObjectParser $parser */
-        $parser = Util::parserFromConfig(self::$config, 'Test');
+        $config = new ImportConfig(self::$config);
+        $parser = $config->parserForModule('Test');
 
         $this->assertInstanceOf(ObjectParser::class, $parser);
         $this->assertNull($parser->getFieldList());
@@ -94,16 +98,14 @@ class ParserUtilTest extends FunctionalTest
 
     public function testRelationModule()
     {
-        $module = Util::getRelationModule(self::$config, 'Test', 'ExhPersonRef');
-        $this->assertEquals('Person', $module);
-
-        $module = Util::getRelationModule(self::$config, 'Test', 'ExhTextGrp');
-        $this->assertEquals('ExhTextGrp', $module);
+        $config = new ImportConfig(self::$config);
+        $this->assertEquals('Person', $config->getRelationModule('Test', 'ExhPersonRef'));
+        $this->assertEquals('ExhTextGrp', $config->getRelationModule('Test', 'ExhTextGrp'));
     }
 
     public function testRelationNormalization()
     {
-        $relations = Util::getNormalizedRelationConfig(self::$config, 'Test');
+        $config = new ImportConfig(self::$config);
         $this->assertEquals([
             'Texts' => [
                 'name' => 'ExhTextGrp',
@@ -113,7 +115,7 @@ class ParserUtilTest extends FunctionalTest
                 'name' => 'ExhPersonRef',
                 'module' => 'Person'
             ]
-        ], $relations);
+        ], $config->getRelationsForModule('Test'));
     }
 
     public function testFieldNormalization()
@@ -130,11 +132,11 @@ class ParserUtilTest extends FunctionalTest
                 ]
             ];
 
-            $fields = Util::getNormalizedFieldConfig($moduleConfig, 'Test');
+            $config = new ImportConfig($moduleConfig);
             $this->assertEquals([
                 'Title' => 'ExhTitleTxt',
                 'MplusID' => '__id'
-            ], $fields);
+            ], $config->getFieldsForModule('Test'));
         });
     }
 
@@ -143,9 +145,8 @@ class ParserUtilTest extends FunctionalTest
         Config::withConfig(function(MutableConfigCollectionInterface $config) {
             // update your config
             $config->set('Test', 'mplus_import_fields', ['MplusID' => '__id']);
+            $cfg = new ImportConfig(self::$config);
 
-
-            $result = Util::getNormalizedModuleConfig(self::$config, 'Test');
             $this->assertEquals([
                 'modelClass' => 'Test',
                 'fields' => ['MplusID' => '__id'],
@@ -159,21 +160,21 @@ class ParserUtilTest extends FunctionalTest
                         'module' => 'Person'
                     ]
                 ]
-            ], $result);
+            ], $cfg->getModuleConfig('Test'));
         });
     }
 
     public function testIncompleteRelationFromConfig()
     {
         $this->expectException(\InvalidArgumentException::class);
-
-        /** @var ObjectParser $parser */
-        $parser = Util::parserFromConfig([
+        $config = new ImportConfig([
             'Test' => [
                 'relations' => [
                     'Texts' => 'ExhTextGrp'
                 ]
             ]
-        ], 'Test');
+        ]);
+        /** @var ObjectParser $parser */
+        $parser = $config->parserForModule('Test');
     }
 }

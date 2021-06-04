@@ -39,6 +39,8 @@ ImportNested:
       modelClass:  Mutoco\Mplus\Tests\Model\Work
       fields:
         Title: ObjObjectTitleGrp.TitleTxt
+        Subtitle: ObjObjectTitleGrp.AdditionTxt
+        Artist: ObjContentDescriptionGrp.PersonRef.PerPersonVrt
     Exhibition:
       modelClass: Mutoco\Mplus\Tests\Model\Exhibition
       fields:

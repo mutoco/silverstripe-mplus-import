@@ -66,10 +66,7 @@ class LoadModuleStep implements StepInterface
         }
 
         if ($stream) {
-            $rootParser = Util::parserFromConfig(
-                $engine->getModuleConfig(),
-                $this->module
-            );
+            $rootParser = $engine->getConfig()->parserForModule($this->module);
             $parser = new Parser();
             if (($result = $parser->parse($stream, $rootParser)) && $result instanceof ObjectResult) {
                 $this->result = $result;
@@ -89,7 +86,7 @@ class LoadModuleStep implements StepInterface
                 // Must also load module references
                 if ($relation->getTag() === 'moduleReference') {
                     // Look up the module from config, otherwise directly from the parsed data
-                    $module = $engine->moduleForRelation($this->module, $relation->getName()) ?? $relation->targetModule;
+                    $module = $engine->getConfig()->getRelationModule($this->module, $relation->getName()) ?? $relation->targetModule;
                     if ($module) {
                         foreach ($relation->getItems() as $item) {
                             if ($item instanceof ObjectResult && $item->getTag() === 'moduleReferenceItem') {

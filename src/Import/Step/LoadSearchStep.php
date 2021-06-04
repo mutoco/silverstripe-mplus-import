@@ -56,10 +56,7 @@ class LoadSearchStep implements StepInterface
         $stream = $engine->getApi()->search($this->search->getModule(), (string)$this->search);
 
         if ($stream) {
-            $moduleParser = Util::parserFromConfig(
-                $engine->getModuleConfig(),
-                $this->search->getModule()
-            );
+            $moduleParser = $engine->getConfig()->parserForModule($this->search->getModule());
             $rootParser = new CollectionParser('module', $moduleParser);
             $parser = new Parser();
             $result = $parser->parse($stream, $rootParser);

@@ -24,11 +24,13 @@ class ImportEngine implements \Serializable
     protected array $queues;
     protected int $steps;
     protected ImportRegistry $registry;
+    protected ?ImportConfig $config;
 
     public function __construct()
     {
         $this->steps = -1;
         $this->registry = new ImportRegistry();
+        $this->config = null;
 
         $this->queues = [
             self::QUEUE_LOAD => new \SplQueue(),
@@ -59,9 +61,13 @@ class ImportEngine implements \Serializable
         return $this->steps;
     }
 
-    public function getModuleConfig(): array
+    public function getConfig(): ImportConfig
     {
-        return $this->config()->get('modules');
+        if (!$this->config) {
+            $this->config = new ImportConfig($this->config()->get('modules'));
+        }
+
+        return $this->config;
     }
 
     public function enqueue(StepInterface $step, ?string $queue = null)
@@ -122,11 +128,6 @@ class ImportEngine implements \Serializable
         }
 
         return false;
-    }
-
-    public function moduleForRelation(string $module, string $relationName): ?string
-    {
-        return Util::getRelationModule($this->getModuleConfig(), $module, $relationName);
     }
 
     protected function getSerializableObject(): \stdClass

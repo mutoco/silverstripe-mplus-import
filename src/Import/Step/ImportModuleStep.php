@@ -50,7 +50,7 @@ class ImportModuleStep implements StepInterface
             return false;
         }
 
-        $config = Util::getNormalizedModuleConfig($engine->getModuleConfig(), $this->result->getType());
+        $config = $engine->getConfig()->getModuleConfig($this->result->getType());
         $target = $this->createOrUpdate($config, $isSkipped);
         $engine->getRegistry()->reportImportedModule($type, $target->MplusID);
 
