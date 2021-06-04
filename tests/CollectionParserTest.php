@@ -30,7 +30,7 @@ class CollectionParserTest extends FunctionalTest
     public function testSubCollection()
     {
         $moduleParser = new ObjectParser();
-        $moduleParser->setRelationParser('ObjMultimediaRef', new CollectionParser('moduleReference', new ObjectParser('moduleReferenceItem')));
+        $moduleParser->setCollectionParser('ObjMultimediaRef', new CollectionParser('moduleReference', new ObjectParser('moduleReferenceItem')));
         $collectionParser = new CollectionParser('module', $moduleParser);
         $parser = new Parser();
         /** @var CollectionResult $collectionResult */
@@ -39,9 +39,9 @@ class CollectionParserTest extends FunctionalTest
         $this->assertEquals(1, $collectionResult->count());
 
         $moduleResult = $collectionResult->getItems()[0];
-        $this->assertInstanceOf(CollectionResult::class, $moduleResult->getRelationResult('ObjMultimediaRef'));
+        $this->assertInstanceOf(CollectionResult::class, $moduleResult->getCollection('ObjMultimediaRef'));
         $this->assertCount(7, $moduleResult->ObjMultimediaRef);
-        $this->assertEquals('Multimedia', $moduleResult->getRelationResult('ObjMultimediaRef')->targetModule);
+        $this->assertEquals('Multimedia', $moduleResult->getCollection('ObjMultimediaRef')->targetModule);
     }
 
     public function testCollectionResult()

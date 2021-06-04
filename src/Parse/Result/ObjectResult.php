@@ -63,22 +63,9 @@ class ObjectResult extends AbstractResult
         return $this->fields;
     }
 
-    public function getFieldResult($name): ?FieldResult
+    public function getField($name): ?FieldResult
     {
         return $this->fields[$name] ?? null;
-    }
-
-    /**
-     * @return CollectionResult[]
-     */
-    public function getRelations(): array
-    {
-        return $this->relations;
-    }
-
-    public function getRelationResult($name): ?CollectionResult
-    {
-        return $this->relations[$name] ?? null;
     }
 
     public function addField(FieldResult $field): self
@@ -87,7 +74,20 @@ class ObjectResult extends AbstractResult
         return $this;
     }
 
-    public function addRelation(CollectionResult $result): self
+    /**
+     * @return CollectionResult[]
+     */
+    public function getCollections(): array
+    {
+        return $this->relations;
+    }
+
+    public function getCollection($name): ?CollectionResult
+    {
+        return $this->relations[$name] ?? null;
+    }
+
+    public function addCollection(CollectionResult $result): self
     {
         $this->relations[$result->getName()] = $result;
         return $this;
@@ -95,7 +95,7 @@ class ObjectResult extends AbstractResult
 
     public function __get(string $name)
     {
-        if ($field = $this->getFieldResult($name)) {
+        if ($field = $this->getField($name)) {
             return $field->getValue();
         }
 
@@ -103,7 +103,7 @@ class ObjectResult extends AbstractResult
             return $attr;
         }
 
-        if ($collection = $this->getRelationResult($name)) {
+        if ($collection = $this->getCollection($name)) {
             return $collection->getItems();
         }
 

@@ -23,9 +23,9 @@ class ObjectParserTest extends FunctionalTest
 
         $this->assertNotNull($objectResult, 'Object result should be set');
         $this->assertEquals('123', $objectResult->getId());
-        $this->assertEquals('Varchar', $objectResult->getFieldResult('ObjAcquisitionYearTxt')->getType());
+        $this->assertEquals('Varchar', $objectResult->getField('ObjAcquisitionYearTxt')->getType());
         $this->assertCount(4, $objectResult->getFields());
-        $this->assertCount(0, $objectResult->getRelations(), 'Relations aren\'t imported by default');
+        $this->assertCount(0, $objectResult->getCollections(), 'Relations aren\'t imported by default');
         $this->assertEquals(
             ['id' => '123', 'hasAttachments' => 'true', 'uuid' => '2624c885-af51-4da6-a91c-b0233a8ffef9'],
             $objectResult->getAttributes()
@@ -43,8 +43,8 @@ class ObjectParserTest extends FunctionalTest
     {
         $fields = new ObjectParser();
         $fields->setFieldList(['ObjCategoryVoc']);
-        $fields->setRelationParser('ObjBriefDescriptionGrp', new CollectionParser('repeatableGroup', new ObjectParser('repeatableGroupItem')));
-        $fields->setRelationParser('ObjMultimediaRef', new CollectionParser('moduleReference', new ObjectParser('moduleReferenceItem')));
+        $fields->setCollectionParser('ObjBriefDescriptionGrp', new CollectionParser('repeatableGroup', new ObjectParser('repeatableGroupItem')));
+        $fields->setCollectionParser('ObjMultimediaRef', new CollectionParser('moduleReference', new ObjectParser('moduleReferenceItem')));
 
         $parser = new Parser();
         /** @var ObjectResult $objectResult */
@@ -53,9 +53,9 @@ class ObjectParserTest extends FunctionalTest
         $this->assertNotNull($objectResult, 'Object result should be set');
         $this->assertEquals('123', $objectResult->getId());
         $this->assertCount(1, $objectResult->getFields());
-        $this->assertCount(2, $objectResult->getRelations());
+        $this->assertCount(2, $objectResult->getCollections());
         $this->assertEquals('Druckgrafik', $objectResult->ObjCategoryVoc);
-        $this->assertEquals('repeatableGroup', $objectResult->getRelationResult('ObjBriefDescriptionGrp')->getTag());
+        $this->assertEquals('repeatableGroup', $objectResult->getCollection('ObjBriefDescriptionGrp')->getTag());
         $this->assertCount(2, $objectResult->ObjBriefDescriptionGrp);
         $this->assertCount(7, $objectResult->ObjMultimediaRef);
 

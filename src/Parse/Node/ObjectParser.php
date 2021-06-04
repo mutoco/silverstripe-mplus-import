@@ -70,20 +70,20 @@ class ObjectParser extends AbstractParser
         return $this;
     }
 
-    public function getRelationParser($name) : ?CollectionParser
+    public function getCollectionParser($name) : ?CollectionParser
     {
         return $this->relationParsers[$name] ?? null;
     }
 
-    public function setRelationParser(string $name, ?CollectionParser $parser): self
+    public function setCollectionParser(string $name, ?CollectionParser $parser): self
     {
         if (isset($this->relationParsers[$name])) {
-            $this->relationParsers[$name]->removeListener('parse:result', [$this, 'onRelationParsed']);
+            $this->relationParsers[$name]->removeListener('parse:result', [$this, 'onCollectionParsed']);
             unset($this->relationParsers[$name]);
         }
 
         if ($parser) {
-            $parser->on('parse:result', [$this, 'onRelationParsed']);
+            $parser->on('parse:result', [$this, 'onCollectionParsed']);
             $this->relationParsers[$name] = $parser;
         }
 
@@ -114,7 +114,7 @@ class ObjectParser extends AbstractParser
                 return;
             } else if (isset($this->relationTags[$name])) {
                 $relationName = $attributes['name'] ?? null;
-                if ($relationName && ($collectionParser = $this->getRelationParser($relationName))) {
+                if ($relationName && ($collectionParser = $this->getCollectionParser($relationName))) {
                     $parser->pushStack($collectionParser);
                     $collectionParser->handleElementStart($parser, $name, $attributes);
                     return;
@@ -125,9 +125,9 @@ class ObjectParser extends AbstractParser
         parent::handleElementStart($parser, $name, $attributes);
     }
 
-    protected function onRelationParsed(CollectionResult $result)
+    protected function onCollectionParsed(CollectionResult $result)
     {
-        $this->result->addRelation($result);
+        $this->result->addCollection($result);
         $this->parser->popStack();
     }
 

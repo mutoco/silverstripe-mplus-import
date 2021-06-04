@@ -82,7 +82,7 @@ class LoadModuleStep implements StepInterface
     public function deactivate(ImportEngine $engine): void
     {
         if ($this->result) {
-            foreach($this->result->getRelations() as $relation) {
+            foreach($this->result->getCollections() as $relation) {
                 // Must also load module references
                 if ($relation->getTag() === 'moduleReference') {
                     // Look up the module from config, otherwise directly from the parsed data

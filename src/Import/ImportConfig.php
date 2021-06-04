@@ -68,7 +68,7 @@ class ImportConfig implements \Serializable
             $tag = str_ends_with($relationName, 'Ref') ? 'moduleReference' : 'repeatableGroup';
             $objParser->setTag($tag . 'Item');
             $collectionParser = new CollectionParser($tag, $objParser);
-            $parser->setRelationParser($relationName, $collectionParser);
+            $parser->setCollectionParser($relationName, $collectionParser);
         }
 
         return $parser;

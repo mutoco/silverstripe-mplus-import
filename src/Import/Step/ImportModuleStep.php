@@ -55,7 +55,7 @@ class ImportModuleStep implements StepInterface
         $engine->getRegistry()->reportImportedModule($type, $target->MplusID);
 
         foreach ($config['relations'] as $relationName => $relationCfg) {
-            if ($collectionResult = $this->result->getRelationResult($relationCfg['name'])) {
+            if ($collectionResult = $this->result->getCollection($relationCfg['name'])) {
                 // If main import was skipped and the relation isn't an external module, then we can skip
                 if ($isSkipped && $collectionResult->getTag() !== 'moduleReference') {
                     continue;
@@ -106,7 +106,7 @@ class ImportModuleStep implements StepInterface
         // Skip over existing records that were not modified remotely
         if ($target->isInDB()) {
             $lastModified = 0;
-            if ($lastModifiedField = $this->result->getFieldResult('__lastModified')) {
+            if ($lastModifiedField = $this->result->getField('__lastModified')) {
                 $lastModified = strtotime($lastModifiedField->getValue());
             }
 
@@ -134,7 +134,7 @@ class ImportModuleStep implements StepInterface
                 continue;
             }
 
-            if ($target->hasDatabaseField($fieldName) && ($fieldResult = $this->result->getFieldResult($mplusName))) {
+            if ($target->hasDatabaseField($fieldName) && ($fieldResult = $this->result->getField($mplusName))) {
                 $target->setField($fieldName, $fieldResult->getValue());
             }
         }

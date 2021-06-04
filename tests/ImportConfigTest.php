@@ -73,7 +73,7 @@ class ImportConfigTest extends FunctionalTest
         $this->assertNull($parser->getFieldList());
         $this->assertEquals('Test', $parser->getType());
 
-        $collectionParser = $parser->getRelationParser('ExhTextGrp');
+        $collectionParser = $parser->getCollectionParser('ExhTextGrp');
         $this->assertInstanceOf(CollectionParser::class, $collectionParser);
         $this->assertEquals('repeatableGroup', $collectionParser->getTag());
 
@@ -81,11 +81,11 @@ class ImportConfigTest extends FunctionalTest
         $childParser = $collectionParser->getChildParser();
         $this->assertInstanceOf(ObjectParser::class, $childParser);
         $this->assertEquals('ExhTextGrp', $childParser->getType());
-        $collectionParser = $childParser->getRelationParser('AuthorRef');
+        $collectionParser = $childParser->getCollectionParser('AuthorRef');
         $this->assertInstanceOf(CollectionParser::class, $collectionParser);
 
 
-        $collectionParser = $parser->getRelationParser('ExhPersonRef');
+        $collectionParser = $parser->getCollectionParser('ExhPersonRef');
         $this->assertInstanceOf(CollectionParser::class, $collectionParser);
         $this->assertEquals('moduleReference', $collectionParser->getTag());
 
