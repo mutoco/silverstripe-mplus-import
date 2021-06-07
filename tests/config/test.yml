@@ -35,6 +35,11 @@ SearchLoader:
 
 ImportNested:
   modules:
+    TextBlock:
+      modelClass: Mutoco\Mplus\Tests\Model\TextBlock
+      fields:
+        Text: TextClb
+        Author: AuthorTxt
     Object:
       modelClass:  Mutoco\Mplus\Tests\Model\Work
       fields:
@@ -48,6 +53,30 @@ ImportNested:
         DateTo: ExhDateToDat
         DateFrom: ExhDateFromDat
       relations:
+        Texts:
+          name: ExhTextGrp
+          type: TextBlock
         Works:
           name: ExhRegistrarRef.RegObjectRef
-          module: Object
+          fields:
+            Sort: ExhRegistrarRef.RegSortLnu
+          type: Object
+
+ParserSettings:
+  dataField:
+    type: leaf
+    valueTag: value
+  systemField:
+    type: leaf
+    valueTag: value
+  virtualField:
+    type: leaf
+    valueTag: value
+
+  vocabularyReference:
+    type: collection
+
+
+doodle2:
+  Exhibition:
+

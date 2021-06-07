@@ -5,32 +5,42 @@ namespace Mutoco\Mplus\Parse;
 
 
 use GuzzleHttp\Psr7\Utils;
+use Mutoco\Mplus\Parse\Node\FieldParser;
+use Mutoco\Mplus\Parse\Node\TreeParser;
 use Mutoco\Mplus\Parse\Node\ParserInterface;
-use Mutoco\Mplus\Parse\Result\ResultInterface;
+use Mutoco\Mplus\Parse\Result\TreeNode;
 use Psr\Http\Message\StreamInterface;
 
 class Parser
 {
-    protected \SplStack $nodeStack;
-    protected \SplStack $parserStack;
+    protected TreeNode $tree;
+    protected TreeNode $current;
+    protected \SplStack $parsers;
+    protected int $depth;
 
-    public function __construct()
-    {
-        $this->nodeStack = new \SplStack();
-        $this->parserStack = new \SplStack();
-    }
+    protected array $fields = [
+        'systemField' => 'value',
+        'dataField' => 'value',
+        'virtualField' => 'value'
+    ];
 
     public function getDepth(): int
     {
-        return $this->nodeStack->count();
+        return $this->depth;
     }
 
-    public function parse(StreamInterface $stream, ?ParserInterface $rootParser = null): ?ResultInterface
+    public function getCurrent(): TreeNode
+    {
+        return $this->current;
+    }
+
+    public function parse(StreamInterface $stream): TreeNode
     {
         $parser = $this->setupParser();
-        if ($rootParser) {
-            $this->pushStack($rootParser);
-        }
+        $this->depth = 0;
+        $this->tree = $this->current = new TreeNode();
+        $this->parsers = new \SplStack();
+        $this->parsers->push(new TreeParser());
 
         while (!$stream->eof()) {
             xml_parse($parser, $stream->read(16384));
@@ -39,65 +49,63 @@ class Parser
         xml_parse($parser, '', true); // finalize parsing
         xml_parser_free($parser);
 
-        $this->nodeStack = new \SplStack();
-        $this->parserStack = new \SplStack();
+        return $this->tree;
+    }
 
-        if ($rootParser) {
-            return $rootParser->getValue();
+    public function parseFile(string $file): TreeNode
+    {
+        return $this->parse(Utils::streamFor(fopen($file, 'r')));
+    }
+
+    public function pushStack(): TreeNode
+    {
+        $node = new TreeNode();
+        $this->current->addChild($node);
+        $this->current = $node;
+        return $node;
+    }
+
+    public function popStack(): TreeNode
+    {
+        $node = $this->current;
+        if (($parent = $node->getParent()) && $parent instanceof TreeNode) {
+            $this->current = $parent;
         }
-
-        return null;
-    }
-
-    public function parseFile(string $file, ?ParserInterface $rootParser = null): ?ResultInterface
-    {
-        return $this->parse(Utils::streamFor(fopen($file, 'r')), $rootParser);
-    }
-
-    public function pushStack(ParserInterface $parser)
-    {
-        $this->parserStack->push($parser);
-    }
-
-    public function popStack(): ParserInterface
-    {
-        return $this->parserStack->pop();
+        return $node;
     }
 
     public function handleCharacterData($parser, string $data)
     {
         /** @var ParserInterface $current */
-        if (!$this->parserStack->isEmpty() && ($current = $this->parserStack->top())) {
+        if (!$this->parsers->isEmpty() && ($current = $this->parsers->top())) {
             $current->handleCharacterData($this, $data);
         }
     }
 
     public function handleElementStart($parser, string $name, array $attributes)
     {
-        $this->nodeStack->push($name);
+        $this->depth++;
 
-        /** @var ParserInterface $current */
-        if (!$this->parserStack->isEmpty() && ($current = $this->parserStack->top())) {
-            $current->handleElementStart($this, $name, $attributes);
+        if (!$this->parsers->isEmpty() && ($current = $this->parsers->top())) {
+            if ($new = $current->handleElementStart($this, $name, $attributes)) {
+                $this->parsers->push($new);
+            }
         }
     }
 
     public function handleElementEnd($parser, string $name)
     {
-        /** @var ParserInterface $current */
-        if (!$this->parserStack->isEmpty() && ($current = $this->parserStack->top())) {
-            $current->handleElementEnd($this, $name);
+        if (!$this->parsers->isEmpty() && ($current = $this->parsers->top())) {
+            if ($current->handleElementEnd($this, $name)) {
+                $this->parsers->pop();
+            }
         }
 
-        $this->nodeStack->pop();
+        $this->depth--;
     }
 
     public function handleDefault($parser, string $data)
     {
-        /** @var ParserInterface $current */
-        if (!$this->parserStack->isEmpty() && ($current = $this->parserStack->top())) {
-            $current->handleDefault($this, $data);
-        }
     }
 
     protected function setupParser()

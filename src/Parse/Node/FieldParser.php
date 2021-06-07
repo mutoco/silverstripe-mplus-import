@@ -5,60 +5,50 @@ namespace Mutoco\Mplus\Parse\Node;
 
 
 use Mutoco\Mplus\Parse\Parser;
-use Mutoco\Mplus\Parse\Result\FieldResult;
-use Mutoco\Mplus\Parse\Result\ResultInterface;
 
-class FieldParser extends AbstractParser
+class FieldParser implements ParserInterface
 {
-    protected int $subState;
+    protected string $tag;
     protected string $value;
-    protected string $valueTag;
+    protected int $startDepth;
 
-    public function __construct(string $tagName, string $valueTag = 'value')
+    public function __construct(string $tagName)
     {
-        parent::__construct($tagName);
-        $this->valueTag = $valueTag;
-    }
-
-    public function reset()
-    {
-        parent::reset();
+        $this->tag = $tagName;
+        $this->startDepth = -1;
         $this->value = '';
-        $this->subState = self::STATE_SEEKING;
     }
 
-    public function handleElementStart(Parser $parser, string $name, array $attributes)
+    public function handleElementStart(Parser $parser, string $name, array $attributes):?ParserInterface
     {
-        parent::handleElementStart($parser, $name, $attributes);
-
-        if ($this->subState === self::STATE_SEEKING && $this->isInside()) {
-            if ($name === $this->valueTag) {
-                $this->subState = self::STATE_PARSING;
-                $this->value = '';
-            }
+        if ($this->tag === $name) {
+            $this->startDepth = $parser->getDepth();
+            $this->value = '';
         }
+
+        return null;
     }
 
     public function handleCharacterData(Parser $parser, string $data)
     {
-        if ($this->subState === self::STATE_PARSING) {
+        if ($parser->getDepth() >= $this->startDepth) {
             $this->value .= $data;
         }
     }
 
-    public function handleElementEnd(Parser $parser, string $name)
+    public function handleElementEnd(Parser $parser, string $name): bool
     {
-        if ($this->subState === self::STATE_PARSING && $this->isInside()) {
-            if ($name === $this->valueTag) {
-                $this->subState = self::STATE_DONE;
-            }
+        if ($this->tag === $name && $this->startDepth === $parser->getDepth()) {
+            $parser->getCurrent()->setValue(
+                preg_replace('{\s+}', ' ', trim($this->value))
+            );
+            return true;
         }
 
-        parent::handleElementEnd($parser, $name);
+        return false;
     }
 
-    public function getValue(): ResultInterface
+    public function handleDefault(Parser $parser, string $data)
     {
-        return new FieldResult($this->tag, $this->attributes, preg_replace('{\s+}', ' ', trim($this->value)));
     }
 }
