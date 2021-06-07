@@ -5,6 +5,7 @@ namespace Mutoco\Mplus\Parse\Node;
 
 
 use Mutoco\Mplus\Parse\Parser;
+use Mutoco\Mplus\Parse\Result\TreeNode;
 
 class TreeParser implements ParserInterface
 {
@@ -12,13 +13,13 @@ class TreeParser implements ParserInterface
     protected array $attributes;
     protected \SplStack $depths;
 
-    protected array $fields = [
+    protected array $fieldTags = [
         'systemField' => 'value',
         'dataField' => 'value',
         'virtualField' => 'value'
     ];
 
-    protected array $collections = [
+    protected array $collectionTags = [
         'repeatableGroupItem' => true,
         'moduleReferenceItem' => true
     ];
@@ -28,17 +29,54 @@ class TreeParser implements ParserInterface
         $this->depths = new \SplStack();
     }
 
+    /**
+     * @return string[]
+     */
+    public function getFieldTags(): array
+    {
+        return $this->fieldTags;
+    }
+
+    /**
+     * @param string[] $fields
+     * @return TreeParser
+     */
+    public function setFieldTags(array $fields): self
+    {
+        $this->fieldTags = $fields;
+        return $this;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getCollectionTags(): array
+    {
+        return array_keys($this->collectionTags);
+    }
+
+    /**
+     * @param string[] $collections
+     * @return TreeParser
+     */
+    public function setCollectionTags(array $collections): self
+    {
+        $this->collectionTags = array_flip($collections);
+        return $this;
+    }
+
     public function handleElementStart(Parser $parser, string $name, array $attributes): ?ParserInterface
     {
-        if (isset($attributes['name']) || isset($this->collections[$name])) {
+        if ((isset($attributes['name']) && $parser->isAllowedNext($attributes['name'])) || isset($this->collectionTags[$name])) {
             $this->depths->push($parser->getDepth());
-            $node = $parser->pushStack();
+            $node = new TreeNode();
             $node->setTag($name);
             $node->setAttributes($attributes);
+            $parser->addNode($node);
         }
 
-        if (!$this->depths->isEmpty() && $this->depths->top() >= $parser->getDepth() && isset($this->fields[$name])) {
-            return new FieldParser($this->fields[$name]);
+        if (!$this->depths->isEmpty() && $this->depths->top() >= $parser->getDepth() && isset($this->fieldTags[$name])) {
+            return new FieldParser($this->fieldTags[$name]);
         }
 
         return null;
@@ -48,7 +86,7 @@ class TreeParser implements ParserInterface
     {
         if ($name === $parser->getCurrent()->getTag() && $this->depths->top() === $parser->getDepth()) {
             $this->depths->pop();
-            $parser->popStack();
+            $parser->popNode();
         }
 
         return false;

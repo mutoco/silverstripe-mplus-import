@@ -5,24 +5,66 @@ namespace Mutoco\Mplus\Parse;
 
 
 use GuzzleHttp\Psr7\Utils;
-use Mutoco\Mplus\Parse\Node\FieldParser;
-use Mutoco\Mplus\Parse\Node\TreeParser;
 use Mutoco\Mplus\Parse\Node\ParserInterface;
+use Mutoco\Mplus\Parse\Node\TreeParser;
 use Mutoco\Mplus\Parse\Result\TreeNode;
 use Psr\Http\Message\StreamInterface;
+use Tree\Node\Node;
 
 class Parser
 {
-    protected TreeNode $tree;
     protected TreeNode $current;
     protected \SplStack $parsers;
     protected int $depth;
+    protected array $allowedPaths = [];
+    protected ?Node $pathTree = null;
 
-    protected array $fields = [
-        'systemField' => 'value',
-        'dataField' => 'value',
-        'virtualField' => 'value'
-    ];
+    /**
+     * @return string[]
+     */
+    public function getAllowedPaths(): array
+    {
+        return $this->allowedPaths;
+    }
+
+    /**
+     * @param string[] $allowedPaths
+     * @return Parser
+     */
+    public function setAllowedPaths(array $allowedPaths): self
+    {
+        $this->allowedPaths = $allowedPaths;
+
+        if (!empty($allowedPaths)) {
+            $this->pathTree = new Node();
+            foreach ($this->allowedPaths as $path) {
+                $parts = explode('.', $path);
+                $node = $this->pathTree;
+                foreach ($parts as $part) {
+                    $found = false;
+                    foreach ($node->getChildren() as $child) {
+                        if ($child->getValue() === $part) {
+                            $found = true;
+                            $node = $child;
+                            break;
+                        }
+                    }
+                    if (!$found) {
+                        $node->addChild($node = new Node($part));
+                    }
+                }
+            }
+        } else {
+            $this->pathTree = null;
+        }
+
+        return $this;
+    }
+
+    public function getPathTree(): ?Node
+    {
+        return $this->pathTree;
+    }
 
     public function getDepth(): int
     {
@@ -34,11 +76,52 @@ class Parser
         return $this->current;
     }
 
+    public function isAllowedPath($value): bool
+    {
+        if ($this->pathTree === null) {
+            return true;
+        }
+
+        if (is_string($value)) {
+            $value = explode('.', $value);
+        }
+
+        if (empty($value)) {
+            return false;
+        }
+
+        $node = $this->pathTree;
+        for ($i = 0; $i < count($value); $i++) {
+            $segment = $value[$i];
+            $found = false;
+            foreach ($node->getChildren() as $child) {
+                if ($child->getValue() === $segment) {
+                    $node = $child;
+                    $found = true;
+                    break;
+                }
+            }
+
+            if (!$found) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function isAllowedNext(string $name): bool
+    {
+        $segments = isset($this->current) ? $this->current->getPathSegments() : [];
+        array_push($segments, $name);
+        return $this->isAllowedPath($segments);
+    }
+
     public function parse(StreamInterface $stream): TreeNode
     {
         $parser = $this->setupParser();
         $this->depth = 0;
-        $this->tree = $this->current = new TreeNode();
+        $this->current = new TreeNode();
         $this->parsers = new \SplStack();
         $this->parsers->push(new TreeParser());
 
@@ -49,7 +132,7 @@ class Parser
         xml_parse($parser, '', true); // finalize parsing
         xml_parser_free($parser);
 
-        return $this->tree;
+        return $this->current->root();
     }
 
     public function parseFile(string $file): TreeNode
@@ -57,15 +140,14 @@ class Parser
         return $this->parse(Utils::streamFor(fopen($file, 'r')));
     }
 
-    public function pushStack(): TreeNode
+    public function addNode(TreeNode $node): TreeNode
     {
-        $node = new TreeNode();
         $this->current->addChild($node);
         $this->current = $node;
         return $node;
     }
 
-    public function popStack(): TreeNode
+    public function popNode(): TreeNode
     {
         $node = $this->current;
         if (($parent = $node->getParent()) && $parent instanceof TreeNode) {

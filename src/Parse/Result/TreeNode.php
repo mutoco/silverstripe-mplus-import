@@ -57,6 +57,22 @@ class TreeNode extends Node
         return $this->attributes['name'] ?? null;
     }
 
+    public function getPath(): string
+    {
+        return implode('.', $this->getPathSegments());
+    }
+
+    public function getPathSegments(): array
+    {
+        $segments = [];
+        foreach($this->getAncestorsAndSelf() as $item) {
+            if (($item instanceof TreeNode) && ($name = $item->getName())) {
+                $segments[] = $name;
+            }
+        }
+        return $segments;
+    }
+
     public function getNestedNode($value): ?TreeNode
     {
         if (is_string($value)) {
