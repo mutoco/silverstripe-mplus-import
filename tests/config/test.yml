@@ -12,10 +12,14 @@ ImportEngine:
         DateTo: ExhDateToDat
         DateFrom: ExhDateFromDat
       relations:
-        Texts: ExhTextGrp
+        Texts:
+          name: ExhTextGrp
+          type: ExhTextGrp
+          fields:
+            Sort: seqNo
         Persons:
           name: ExhPersonRef
-          module: Person
+          type: Person
     Person:
       modelClass: Mutoco\Mplus\Tests\Model\Person
       fields:
@@ -61,22 +65,4 @@ ImportNested:
           fields:
             Sort: ExhRegistrarRef.RegSortLnu
           type: Object
-
-ParserSettings:
-  dataField:
-    type: leaf
-    valueTag: value
-  systemField:
-    type: leaf
-    valueTag: value
-  virtualField:
-    type: leaf
-    valueTag: value
-
-  vocabularyReference:
-    type: collection
-
-
-doodle2:
-  Exhibition:
 

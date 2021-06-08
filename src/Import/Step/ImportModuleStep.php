@@ -7,8 +7,7 @@ namespace Mutoco\Mplus\Import\Step;
 use Mutoco\Mplus\Exception\ImportException;
 use Mutoco\Mplus\Extension\DataRecordExtension;
 use Mutoco\Mplus\Import\ImportEngine;
-use Mutoco\Mplus\Parse\Result\ObjectResult;
-use Mutoco\Mplus\Parse\Util;
+use Mutoco\Mplus\Parse\Result\TreeNode;
 use Mutoco\Mplus\Serialize\SerializableTrait;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\DataObject;
@@ -18,11 +17,22 @@ class ImportModuleStep implements StepInterface
 {
     use SerializableTrait;
 
-    protected ?ObjectResult $result;
+    protected string $module;
+    protected string $id;
+    protected ?TreeNode $tree;
 
-    public function __construct(ObjectResult $result)
+    protected DataObject $target;
+
+    public function __construct(string $module, string $id, ?TreeNode $tree = null)
     {
-        $this->result = $result;
+        $this->module = $module;
+        $this->id = $id;
+        $this->tree = $tree;
+    }
+
+    public function getId(): ?string
+    {
+        return $this->id;
     }
 
     public function getDefaultQueue(): string
@@ -42,18 +52,26 @@ class ImportModuleStep implements StepInterface
      */
     public function run(ImportEngine $engine): bool
     {
-        $id = $this->result->__id ?? $this->result->getId() ?? null;
-        $type = $this->result->getType();
-
         // If the exact same module was already imported it's safe to skip
-        if ($engine->getRegistry()->hasImportedModule($type, $id)) {
+        if ($engine->getRegistry()->hasImportedModule($this->module, $this->id)) {
             return false;
         }
 
-        $config = $engine->getConfig()->getModuleConfig($this->result->getType());
-        $target = $this->createOrUpdate($config, $isSkipped);
-        $engine->getRegistry()->reportImportedModule($type, $target->MplusID);
+        if (!$this->tree) {
+            $this->tree = $engine->getRegistry()->getImportedTree($this->module, $this->id);
+        }
 
+        if (!$this->tree) {
+            throw new ImportException(sprintf('Cannot import module (%s #%s) without an imported tree', $this->module, $this->id));
+        }
+
+        $config = $engine->getConfig()->getModuleConfig($this->module);
+        $this->target = $this->createOrUpdate($config, $this->tree, $isSkipped);
+        $engine->getRegistry()->reportImportedModule($this->module, $this->target->MplusID);
+
+
+
+        /*
         foreach ($config['relations'] as $relationName => $relationCfg) {
             if ($collectionResult = $this->result->getCollection($relationCfg['name'])) {
                 // If main import was skipped and the relation isn't an external module, then we can skip
@@ -74,7 +92,7 @@ class ImportModuleStep implements StepInterface
                 }
             }
         }
-
+        */
         return false;
     }
 
@@ -83,13 +101,32 @@ class ImportModuleStep implements StepInterface
      */
     public function deactivate(ImportEngine $engine): void
     {
-        $this->result = null;
+        $config = $engine->getConfig()->getModuleConfig($this->module);
+
+        foreach ($config['relations'] as $relationName => $relationCfg) {
+            $node = $this->tree->getNestedNode($relationCfg['name']);
+            if (!($node instanceof TreeNode)) {
+                continue;
+            }
+            $ids = [];
+
+            foreach ($node->getExpandedChildren() as $child) {
+                if ($child instanceof TreeNode) {
+                    $engine->addStep(new ImportModuleStep($relationCfg['type'], $child->getId(), $child));
+                    $ids[] = $child->getId();
+                }
+            }
+
+            if (!empty($ids)) {
+                $engine->addStep(new LinkRelationStep($this->target->getClassName(), $this->target->MplusID, $relationName, $ids));
+            }
+        }
     }
 
-    protected function createOrUpdate(array $config, &$skipped = false): DataObject
+    protected function createOrUpdate(array $config, TreeNode $tree, &$skipped = false): DataObject
     {
         $modelClass = $config['modelClass'] ?? null;
-        $id = $this->result->__id ?? $this->result->getId() ?? null;
+        $id = $this->getId();
 
         if (!$modelClass || !$id) {
             throw new ImportException('Cannot import Module without modelClass or ID');
@@ -106,7 +143,7 @@ class ImportModuleStep implements StepInterface
         // Skip over existing records that were not modified remotely
         if ($target->isInDB()) {
             $lastModified = 0;
-            if ($lastModifiedField = $this->result->getField('__lastModified')) {
+            if ($lastModifiedField = $tree->getNestedNode('__lastModified')) {
                 $lastModified = strtotime($lastModifiedField->getValue());
             }
 
@@ -134,13 +171,13 @@ class ImportModuleStep implements StepInterface
                 continue;
             }
 
-            if ($target->hasDatabaseField($fieldName) && ($fieldResult = $this->result->getField($mplusName))) {
+            if ($target->hasDatabaseField($fieldName) && ($fieldResult = $tree->getNestedNode($mplusName))) {
                 $target->setField($fieldName, $fieldResult->getValue());
             }
         }
 
         $target->MplusID = $id;
-        $target->Module = $this->result->getType();
+        $target->Module = $this->module;
         $target->setField('Imported', DBDatetime::now());
 
         $target->write();
@@ -153,11 +190,13 @@ class ImportModuleStep implements StepInterface
     {
         $obj = new \stdClass();
         $obj->result = $this->result;
+        $obj->module = $this->module;
         return $obj;
     }
 
     protected function unserializeFromObject(\stdClass $obj): void
     {
         $this->result = $obj->result;
+        $this->module = $obj->module;
     }
 }

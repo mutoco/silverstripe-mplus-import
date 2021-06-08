@@ -24,6 +24,11 @@ class TreeNode implements NodeInterface, \Serializable
         $this->subTree = null;
     }
 
+    public function getId(): ?string
+    {
+        return $this->attributes['id'] ?? $this->attributes['moduleItemId'] ?? null;
+    }
+
     /**
      * @return string|null
      */
@@ -123,10 +128,12 @@ class TreeNode implements NodeInterface, \Serializable
             throw new \InvalidArgumentException('Value parameter needs to be string or array');
         }
 
-        $node = $this;
+        $node = null;
         $first = array_shift($value);
         if (!$this->getName()) {
             $node = $this->getChildByName($first);
+        } else if ($this->getName() === $first) {
+            $node = $this;
         }
 
         if ($node) {
@@ -144,6 +151,22 @@ class TreeNode implements NodeInterface, \Serializable
         }
 
         return null;
+    }
+
+    public function getNestedValue($path)
+    {
+        if (is_string($path)) {
+            $path = explode('.', $path);
+        }
+
+        if (!is_array($path)) {
+            throw new \InvalidArgumentException('Path parameter needs to be string or array');
+        }
+
+        $last = array_pop($path);
+        if ($node = $this->getNestedNode($path)) {
+            return $node->__get($last);
+        }
     }
 
     public function getChildByName(string $name) : ?TreeNode
@@ -173,7 +196,7 @@ class TreeNode implements NodeInterface, \Serializable
 
         foreach ($this->getChildren() as $child) {
             if ($child instanceof TreeNode && $child->getName() === $name) {
-                return $child;
+                return $child->getValue();
             }
         }
 

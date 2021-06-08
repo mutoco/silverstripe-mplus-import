@@ -17,7 +17,6 @@ class TestStep implements StepInterface
     private int $step;
     private bool $enqueue;
     private string $name;
-    public bool $illegal = false;
 
     public function __construct($loops = 1, bool $enqueue = false, $name = 'A')
     {
@@ -49,11 +48,7 @@ class TestStep implements StepInterface
         $this->step++;
 
         if ($this->enqueue) {
-            if ($this->illegal) {
-                $engine->getCurrentQueue()->unshift(new TestStep(1, false, 'B'));
-            } else {
-                $engine->enqueue(new TestStep(1, false, 'B'), ImportEngine::QUEUE_LOAD);
-            }
+            $engine->addStep(new TestStep(1, false, 'B'), ImportEngine::QUEUE_LOAD);
             $this->enqueue = false;
         }
 

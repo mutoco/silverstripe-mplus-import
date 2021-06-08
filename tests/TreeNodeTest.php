@@ -4,6 +4,7 @@
 namespace Mutoco\Mplus\Tests;
 
 
+use Mutoco\Mplus\Parse\Result\ReferenceCollector;
 use Mutoco\Mplus\Parse\Result\TreeNode;
 use SilverStripe\Dev\FunctionalTest;
 
@@ -65,5 +66,22 @@ class TreeNodeTest extends FunctionalTest
 
         $this->assertEquals('Sit amet', $this->tree->getNestedNode('Foo.Bar.Title')->getValue());
         $this->assertEquals('May the force be with you', $this->tree->getNestedNode('Foo.Bar.Group.Title')->getValue());
+    }
+
+    public function testReferenceCollector()
+    {
+        $visitor = new ReferenceCollector();
+        $nodes = $this->tree->accept($visitor);
+        $this->assertCount(3, $nodes);
+        $ids = array_map(function ($item) { return $item->moduleItemId; }, $nodes);
+        $this->assertEquals([1,2,3], $ids);
+        $this->assertEquals('Test', $nodes[0]->getModuleName());
+    }
+
+    public function testAccessors()
+    {
+        $this->assertEquals('Test' ,$this->tree->getNestedValue('Foo.Bar.targetModule'));
+        $this->assertEquals('Han Solo', $this->tree->getNestedValue('Foo.Baz.Author'));
+        $this->assertEquals('Test', $this->tree->getNestedNode('Foo.Bar')->targetModule);
     }
 }

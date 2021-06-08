@@ -38,10 +38,9 @@ class LoadModuleStepTest extends FunctionalTest
     {
         $engine = new ImportEngine();
         $engine->setApi(new Client());
-        $engine->enqueue(new LoadModuleStep('Exhibition', 2));
+        $engine->addStep(new LoadModuleStep('Exhibition', 2));
         $engine->next();
         $this->assertCount(1, $engine->getQueue(ImportEngine::QUEUE_LOAD));
-        $this->assertCount(1, $engine->getQueue(ImportEngine::QUEUE_IMPORT));
         $this->assertEquals(1982, $engine->getQueue(ImportEngine::QUEUE_LOAD)->top()->getId());
         $this->assertEquals('Person', $engine->getQueue(ImportEngine::QUEUE_LOAD)->top()->getModule());
         $engine->next();

@@ -6,7 +6,6 @@ namespace Mutoco\Mplus\Import;
 
 use Mutoco\Mplus\Api\ClientInterface;
 use Mutoco\Mplus\Import\Step\StepInterface;
-use Mutoco\Mplus\Parse\Util;
 use Mutoco\Mplus\Serialize\SerializableTrait;
 use SilverStripe\Core\Config\Configurable;
 
@@ -33,10 +32,10 @@ class ImportEngine implements \Serializable
         $this->config = null;
 
         $this->queues = [
-            self::QUEUE_LOAD => new \SplQueue(),
-            self::QUEUE_IMPORT => new \SplQueue(),
-            self::QUEUE_LINK => new \SplQueue(),
-            self::QUEUE_CLEANUP => new \SplQueue(),
+            self::QUEUE_LOAD => new \SplStack(),
+            self::QUEUE_IMPORT => new \SplStack(),
+            self::QUEUE_LINK => new \SplStack(),
+            self::QUEUE_CLEANUP => new \SplStack(),
         ];
     }
 
@@ -70,7 +69,7 @@ class ImportEngine implements \Serializable
         return $this->config;
     }
 
-    public function enqueue(StepInterface $step, ?string $queue = null)
+    public function addStep(StepInterface $step, ?string $queue = null)
     {
         $queueName = $queue ?? $step->getDefaultQueue();
 
@@ -78,16 +77,16 @@ class ImportEngine implements \Serializable
             throw new \InvalidArgumentException('Not a valid queue name');
         }
 
-        $this->queues[$queueName]->enqueue($step);
+        $this->queues[$queueName]->push($step);
         $step->activate($this);
     }
 
-    public function getQueue(string $name): ?\SplQueue
+    public function getQueue(string $name): ?\SplStack
     {
         return $this->queues[$name] ?? null;
     }
 
-    public function getCurrentQueue(): ?\SplQueue
+    public function getCurrentQueue(): ?\SplStack
     {
         foreach ($this->queues as $queue) {
             if (!$queue->isEmpty()) {
@@ -109,13 +108,13 @@ class ImportEngine implements \Serializable
         $currentQueue = $this->getCurrentQueue();
 
         if ($currentQueue) {
-            $step = $currentQueue->bottom();
+            $step = $currentQueue->top();
             $isComplete = !$step->run($this);
 
             if ($isComplete) {
                 $valid = false;
                 try {
-                    $valid = ($step === $currentQueue->dequeue());
+                    $valid = ($step === $currentQueue->pop());
                     $step->deactivate($this);
                 } catch (\Exception $ex) {}
 

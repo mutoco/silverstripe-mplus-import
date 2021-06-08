@@ -6,8 +6,8 @@ namespace Mutoco\Mplus\Import\Step;
 
 use Mutoco\Mplus\Import\ImportEngine;
 use Mutoco\Mplus\Parse\Parser;
-use Mutoco\Mplus\Parse\Result\ObjectResult;
-use Mutoco\Mplus\Parse\Util;
+use Mutoco\Mplus\Parse\Result\ReferenceCollector;
+use Mutoco\Mplus\Parse\Result\TreeNode;
 use Mutoco\Mplus\Serialize\SerializableTrait;
 
 class LoadModuleStep implements StepInterface
@@ -17,14 +17,16 @@ class LoadModuleStep implements StepInterface
     protected string $module;
     protected string $id;
     protected int $runs;
-    protected ?ObjectResult $result;
+    protected ?TreeNode $result;
+    protected ?TreeNode $origin;
 
-    public function __construct(string $module, string $id)
+    public function __construct(string $module, string $id, ?TreeNode $origin = null)
     {
         $this->module = $module;
         $this->id = $id;
         $this->runs = 0;
         $this->result = null;
+        $this->origin = $origin;
     }
 
     public function getId(): string
@@ -56,6 +58,10 @@ class LoadModuleStep implements StepInterface
      */
     public function run(ImportEngine $engine): bool
     {
+        if ($engine->getRegistry()->hasImportedTree($this->module, $this->id)) {
+            return false;
+        }
+
         $this->runs++;
         //TODO: Cache results to reduce API calls
         $stream = $engine->getApi()->queryModelItem($this->module, $this->id);
@@ -66,10 +72,15 @@ class LoadModuleStep implements StepInterface
         }
 
         if ($stream) {
-            $rootParser = $engine->getConfig()->parserForModule($this->module);
             $parser = new Parser();
-            if (($result = $parser->parse($stream, $rootParser)) && $result instanceof ObjectResult) {
+            $parser->setAllowedPaths($engine->getConfig()->getImportPaths($this->module));
+
+            if ($result = $parser->parse($stream)) {
                 $this->result = $result;
+                $engine->getRegistry()->setImportedTree($this->module, $this->id, $result);
+                if ($this->origin) {
+                    $this->origin->setSubTree($result);
+                }
             }
         }
 
@@ -82,22 +93,16 @@ class LoadModuleStep implements StepInterface
     public function deactivate(ImportEngine $engine): void
     {
         if ($this->result) {
-            foreach($this->result->getCollections() as $relation) {
-                // Must also load module references
-                if ($relation->getTag() === 'moduleReference') {
-                    // Look up the module from config, otherwise directly from the parsed data
-                    $module = $engine->getConfig()->getRelationModule($this->module, $relation->getName()) ?? $relation->targetModule;
-                    if ($module) {
-                        foreach ($relation->getItems() as $item) {
-                            if ($item instanceof ObjectResult && $item->getTag() === 'moduleReferenceItem') {
-                                $engine->enqueue(new LoadModuleStep($module, $item->getId()));
-                            }
-                        }
-                    }
+            $engine->addStep(new ImportModuleStep($this->module, $this->id), ImportEngine::QUEUE_IMPORT);
+
+            $visitor = new ReferenceCollector();
+            $references = $this->result->accept($visitor);
+            /** @var TreeNode $reference */
+            foreach ($references as $reference) {
+                if (($moduleName = $reference->getModuleName()) && ($id = $reference->moduleItemId)) {
+                    $engine->addStep(new LoadModuleStep($moduleName, $id, $reference));
                 }
             }
-
-            $engine->enqueue(new ImportModuleStep($this->result), ImportEngine::QUEUE_IMPORT);
         }
 
         $this->result = null;

@@ -3,10 +3,6 @@
 
 namespace Mutoco\Mplus\Import;
 
-
-use Mutoco\Mplus\Parse\Node\CollectionParser;
-use Mutoco\Mplus\Parse\Node\ObjectParser;
-use Mutoco\Mplus\Parse\Node\ParserInterface;
 use Mutoco\Mplus\Serialize\SerializableTrait;
 use SilverStripe\Core\Config\Config;
 
@@ -19,6 +15,30 @@ class ImportConfig implements \Serializable
     public function __construct(array $config = [])
     {
         $this->applyConfig($config);
+    }
+
+    public function getImportPaths(string $module, string $prefix = ''): array
+    {
+        $cfg = $this->getModuleConfig($module);
+        $paths = [];
+        if (isset($cfg['fields'])) {
+            foreach ($cfg['fields'] as $field) {
+                $paths[] = $prefix . $field;
+            }
+        }
+
+        if (isset($cfg['relations'])) {
+            foreach ($cfg['relations'] as $relation) {
+                if (isset($relation['fields'])) {
+                    foreach ($relation['fields'] as $field) {
+                        $paths[] = $prefix . $relation['name'] . '.' . $field;
+                    }
+                }
+                $paths = array_merge($paths, $this->getImportPaths($relation['type'], $prefix . $relation['name'] . '.'));
+            }
+        }
+
+        return $paths;
     }
 
     /**
@@ -45,35 +65,6 @@ class ImportConfig implements \Serializable
         return $this;
     }
 
-    public function parserForModule(string $module): ParserInterface
-    {
-        if (!isset($this->config[$module])) {
-            throw new \InvalidArgumentException(sprintf('Module %s is not part of the config', $module));
-        }
-
-        $cfg = $this->config[$module];
-        $parser = new ObjectParser();
-        $parser->setType($module);
-
-        if (!empty($cfg['fields'])) {
-            $parser->setFieldList(array_values($cfg['fields']));
-        }
-
-        foreach ($cfg['relations'] as $relationCfg) {
-            $relationModule = $relationCfg['module'];
-            $relationName = $relationCfg['name'];
-
-            /** @var ObjectParser $objParser */
-            $objParser = $this->parserForModule($relationModule);
-            $tag = str_ends_with($relationName, 'Ref') ? 'moduleReference' : 'repeatableGroup';
-            $objParser->setTag($tag . 'Item');
-            $collectionParser = new CollectionParser($tag, $objParser);
-            $parser->setCollectionParser($relationName, $collectionParser);
-        }
-
-        return $parser;
-    }
-
     public function getModuleConfig(string $module): array
     {
         return $this->config[$module] ?? [];
@@ -96,7 +87,7 @@ class ImportConfig implements \Serializable
         $relations = $this->getRelationsForModule($module);
         foreach ($relations as $relationCfg) {
             if ($relationCfg['name'] === $relationName) {
-                return $relationCfg['module'];
+                return $relationCfg['type'];
             }
         }
         return null;
@@ -133,15 +124,12 @@ class ImportConfig implements \Serializable
         if (isset($cfg['relations'])) {
             foreach ($cfg['relations'] as $key => $relationCfg) {
                 if (is_string($relationCfg)) {
-                    $relationModule = $relationName = $relationCfg;
-                } else {
-                    $relationModule = $relationCfg['module'];
-                    $relationName = $relationCfg['name'];
+                    $relationCfg = [
+                        'type' => $relationCfg,
+                        'name' => $relationCfg
+                    ];
                 }
-                $relations[$key] = [
-                    'module' => $relationModule,
-                    'name' => $relationName
-                ];
+                $relations[$key] = $relationCfg;
             }
         }
 

@@ -40,6 +40,6 @@ class LinkRelationStep extends AbstractRelationStep
         $list = DataObject::get($relation->dataClass())->filter(['MplusID' => $this->relationIds]);
         $relation->addMany($list->getIDList());
 
-        $engine->enqueue(new CleanupRelationStep($this->targetClass, $this->targetId, $this->relationName, $list->column('MplusID')));
+        $engine->addStep(new CleanupRelationStep($this->targetClass, $this->targetId, $this->relationName, $list->column('MplusID')));
     }
 }

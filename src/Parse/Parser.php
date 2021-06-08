@@ -13,7 +13,6 @@ use Tree\Node\Node;
 
 class Parser
 {
-    protected TreeNode $current;
     protected \SplStack $parsers;
     protected int $depth;
     protected array $allowedPaths = [];

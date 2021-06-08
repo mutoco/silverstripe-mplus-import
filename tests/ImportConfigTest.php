@@ -5,9 +5,6 @@ namespace Mutoco\Mplus\Tests;
 
 
 use Mutoco\Mplus\Import\ImportConfig;
-use Mutoco\Mplus\Parse\Node\CollectionParser;
-use Mutoco\Mplus\Parse\Node\ObjectParser;
-use Mutoco\Mplus\Parse\Util;
 use SilverStripe\Config\Collections\MutableConfigCollectionInterface;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Dev\FunctionalTest;
@@ -21,7 +18,10 @@ class ImportConfigTest extends FunctionalTest
                 'Texts' => 'ExhTextGrp',
                 'Persons' => [
                     'name' => 'ExhPersonRef',
-                    'module' => 'Person'
+                    'type' => 'Person',
+                    'fields' => [
+                        'Sort' => 'seqNo'
+                    ]
                 ]
             ]
         ],
@@ -37,15 +37,14 @@ class ImportConfigTest extends FunctionalTest
             'relations' => [
                 'Author' => [
                     'name' => 'AuthorRef',
-                    'module' => 'Person'
+                    'type' => 'Person'
                 ]
             ]
         ]
     ];
 
-    public function testBasicParserFromConfig()
+    public function testImportPaths()
     {
-        /** @var ObjectParser $parser */
         $config = new ImportConfig([
             'Test' => [
                 'fields' => [
@@ -56,44 +55,37 @@ class ImportConfigTest extends FunctionalTest
             ]
         ]);
 
-        $parser = $config->parserForModule('Test');
+        $paths = $config->getImportPaths('Test');
+        $this->assertEquals(['ExhTitleTxt', 'ExhDateToDat', 'ExhDateFromDat'], $paths);
 
-        $this->assertInstanceOf(ObjectParser::class, $parser);
-        $this->assertEquals(['ExhTitleTxt', 'ExhDateToDat', 'ExhDateFromDat'], $parser->getFieldList());
-        $this->assertEquals('Test', $parser->getType());
-    }
-
-    public function testRelationParserFromConfig()
-    {
-        /** @var ObjectParser $parser */
         $config = new ImportConfig(self::$config);
-        $parser = $config->parserForModule('Test');
+        $paths = $config->getImportPaths('Test');
+        $this->assertEquals([
+            'ExhTextGrp.TextClb',
+            'ExhTextGrp.AuthorRef.PerFirstNameTxt',
+            'ExhPersonRef.seqNo',
+            'ExhPersonRef.PerFirstNameTxt'
+        ], $paths);
 
-        $this->assertInstanceOf(ObjectParser::class, $parser);
-        $this->assertNull($parser->getFieldList());
-        $this->assertEquals('Test', $parser->getType());
+        Config::withConfig(function(MutableConfigCollectionInterface $config) {
+            // update your config
+            $config->set('Test', 'mplus_import_fields', ['MplusID' => '__id']);
+            $moduleConfig = [
+                'Test' => [
+                    'modelClass' => 'Test',
+                    'fields' => [
+                        'Title' => 'ExhTitleTxt'
+                    ]
+                ]
+            ];
 
-        $collectionParser = $parser->getCollectionParser('ExhTextGrp');
-        $this->assertInstanceOf(CollectionParser::class, $collectionParser);
-        $this->assertEquals('repeatableGroup', $collectionParser->getTag());
-
-        /** @var ObjectParser $childParser */
-        $childParser = $collectionParser->getChildParser();
-        $this->assertInstanceOf(ObjectParser::class, $childParser);
-        $this->assertEquals('ExhTextGrp', $childParser->getType());
-        $collectionParser = $childParser->getCollectionParser('AuthorRef');
-        $this->assertInstanceOf(CollectionParser::class, $collectionParser);
-
-
-        $collectionParser = $parser->getCollectionParser('ExhPersonRef');
-        $this->assertInstanceOf(CollectionParser::class, $collectionParser);
-        $this->assertEquals('moduleReference', $collectionParser->getTag());
-
-        /** @var ObjectParser $childParser */
-        $childParser = $collectionParser->getChildParser();
-        $this->assertInstanceOf(ObjectParser::class, $childParser);
-        $this->assertEquals('Person', $childParser->getType());
-        $this->assertEquals(['PerFirstNameTxt'], $childParser->getFieldList());
+            $config = new ImportConfig($moduleConfig);
+            $paths = $config->getImportPaths('Test');
+            $this->assertEquals([
+                'ExhTitleTxt',
+                '__id'
+            ], $paths);
+        });
     }
 
     public function testRelationModule()
@@ -109,11 +101,12 @@ class ImportConfigTest extends FunctionalTest
         $this->assertEquals([
             'Texts' => [
                 'name' => 'ExhTextGrp',
-                'module' => 'ExhTextGrp'
+                'type' => 'ExhTextGrp',
             ],
             'Persons' => [
                 'name' => 'ExhPersonRef',
-                'module' => 'Person'
+                'type' => 'Person',
+                'fields' => ['Sort' => 'seqNo']
             ]
         ], $config->getRelationsForModule('Test'));
     }
@@ -153,28 +146,15 @@ class ImportConfigTest extends FunctionalTest
                 'relations' => [
                     'Texts' => [
                         'name' => 'ExhTextGrp',
-                        'module' => 'ExhTextGrp'
+                        'type' => 'ExhTextGrp',
                     ],
                     'Persons' => [
                         'name' => 'ExhPersonRef',
-                        'module' => 'Person'
+                        'type' => 'Person',
+                        'fields' => ['Sort' => 'seqNo']
                     ]
                 ]
             ], $cfg->getModuleConfig('Test'));
         });
-    }
-
-    public function testIncompleteRelationFromConfig()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        $config = new ImportConfig([
-            'Test' => [
-                'relations' => [
-                    'Texts' => 'ExhTextGrp'
-                ]
-            ]
-        ]);
-        /** @var ObjectParser $parser */
-        $parser = $config->parserForModule('Test');
     }
 }
