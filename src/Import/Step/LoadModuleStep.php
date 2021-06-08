@@ -73,6 +73,7 @@ class LoadModuleStep implements StepInterface
 
         if ($stream) {
             $parser = new Parser();
+            //TODO: Make sure import paths are set for intermediate modules without config!!
             $parser->setAllowedPaths($engine->getConfig()->getImportPaths($this->module));
 
             if ($result = $parser->parse($stream)) {

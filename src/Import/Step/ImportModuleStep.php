@@ -69,30 +69,6 @@ class ImportModuleStep implements StepInterface
         $this->target = $this->createOrUpdate($config, $this->tree, $isSkipped);
         $engine->getRegistry()->reportImportedModule($this->module, $this->target->MplusID);
 
-
-
-        /*
-        foreach ($config['relations'] as $relationName => $relationCfg) {
-            if ($collectionResult = $this->result->getCollection($relationCfg['name'])) {
-                // If main import was skipped and the relation isn't an external module, then we can skip
-                if ($isSkipped && $collectionResult->getTag() !== 'moduleReference') {
-                    continue;
-                }
-
-                $ids = [];
-                foreach ($collectionResult->getItems() as $result) {
-                    if ($result instanceof ObjectResult) {
-                        $engine->enqueue(new ImportModuleStep($result));
-                        $ids[] = $result->getId();
-                    }
-                }
-
-                if (!empty($ids)) {
-                    $engine->enqueue(new LinkRelationStep($target->getClassName(), $target->MplusID, $relationName, $ids));
-                }
-            }
-        }
-        */
         return false;
     }
 
@@ -113,7 +89,13 @@ class ImportModuleStep implements StepInterface
             foreach ($node->getExpandedChildren() as $child) {
                 if ($child instanceof TreeNode) {
                     $engine->addStep(new ImportModuleStep($relationCfg['type'], $child->getId(), $child));
-                    $ids[] = $child->getId();
+                    $data = [];
+                    if (isset($relationCfg['fields'])) {
+                        foreach ($relationCfg['fields'] as $field => $path) {
+                            $data[$field] = $child->getNestedValue($path);
+                        }
+                    }
+                    $ids[$child->getId()] = $data;
                 }
             }
 

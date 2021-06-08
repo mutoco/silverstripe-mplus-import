@@ -118,7 +118,7 @@ class ImportModuleStepTest extends SapphireTest
         });
     }
 
-    /*
+    //*
     public function testNestedFields()
     {
         Config::withConfig(function(MutableConfigCollectionInterface $config) {
@@ -138,5 +138,5 @@ class ImportModuleStepTest extends SapphireTest
             $this->assertEquals(['Edvard Munch', 'Edvard Munch'], $exhibition->Works()->column('Artist'));
         });
     }
-    */
+    //*/
 }

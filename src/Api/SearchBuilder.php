@@ -8,6 +8,7 @@ namespace Mutoco\Mplus\Api;
 
 
 use Mutoco\Mplus\Serialize\SerializableTrait;
+use Mutoco\Mplus\Util;
 
 class SearchBuilder implements \Serializable
 {
@@ -239,7 +240,7 @@ class SearchBuilder implements \Serializable
             if (!is_array($value)) {
                 continue;
             }
-            if ($this->isAssoc($value)) {
+            if (Util::isAssoc($value)) {
                 $child = $doc->createElementNS(XmlNS::SEARCH, $value['type']);
                 foreach ($value as $k => $v) {
                     if ($k === 'type') {
@@ -254,12 +255,6 @@ class SearchBuilder implements \Serializable
                 $this->buildExpertTree($value, $child, $doc);
             }
         }
-    }
-
-    protected function isAssoc(array $arr): bool
-    {
-        if (array() === $arr) return false;
-        return array_keys($arr) !== range(0, count($arr) - 1);
     }
 
     protected function getSerializableObject(): \stdClass

@@ -67,7 +67,10 @@ class TreeParser implements ParserInterface
 
     public function handleElementStart(Parser $parser, string $name, array $attributes): ?ParserInterface
     {
-        if ((isset($attributes['name']) && $parser->isAllowedNext($attributes['name'])) || isset($this->collectionTags[$name])) {
+        if (
+            (isset($attributes['name']) && $parser->isAllowedNext($attributes['name'])) ||
+            (isset($this->collectionTags[$name]) && $parser->isAllowedPath($parser->getCurrent()->getPathSegments()))
+        ) {
             $this->depths->push($parser->getDepth());
             $node = new TreeNode();
             $node->setTag($name);

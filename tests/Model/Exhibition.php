@@ -29,6 +29,10 @@ class Exhibition extends DataObject implements TestOnly
         ]
     ];
 
+	private static $many_many_extraFields = [
+	    'Persons' => ['Sort' => 'Int']
+    ];
+
 	private static $extensions = [
 		DataRecordExtension::class
 	];

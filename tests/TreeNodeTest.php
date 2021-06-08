@@ -83,5 +83,8 @@ class TreeNodeTest extends FunctionalTest
         $this->assertEquals('Test' ,$this->tree->getNestedValue('Foo.Bar.targetModule'));
         $this->assertEquals('Han Solo', $this->tree->getNestedValue('Foo.Baz.Author'));
         $this->assertEquals('Test', $this->tree->getNestedNode('Foo.Bar')->targetModule);
+        $node = $this->tree->getNestedNode('Foo.Bar');
+        $this->assertEquals('Test', $node->getNestedValue('targetModule'));
+        $this->assertEquals('Test', $node->targetModule);
     }
 }

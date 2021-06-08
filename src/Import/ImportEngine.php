@@ -32,10 +32,10 @@ class ImportEngine implements \Serializable
         $this->config = null;
 
         $this->queues = [
-            self::QUEUE_LOAD => new \SplStack(),
-            self::QUEUE_IMPORT => new \SplStack(),
-            self::QUEUE_LINK => new \SplStack(),
-            self::QUEUE_CLEANUP => new \SplStack(),
+            self::QUEUE_LOAD => new \SplQueue(),
+            self::QUEUE_IMPORT => new \SplQueue(),
+            self::QUEUE_LINK => new \SplQueue(),
+            self::QUEUE_CLEANUP => new \SplQueue(),
         ];
     }
 
@@ -77,16 +77,16 @@ class ImportEngine implements \Serializable
             throw new \InvalidArgumentException('Not a valid queue name');
         }
 
-        $this->queues[$queueName]->push($step);
+        $this->queues[$queueName]->enqueue($step);
         $step->activate($this);
     }
 
-    public function getQueue(string $name): ?\SplStack
+    public function getQueue(string $name): ?\SplQueue
     {
         return $this->queues[$name] ?? null;
     }
 
-    public function getCurrentQueue(): ?\SplStack
+    public function getCurrentQueue(): ?\SplQueue
     {
         foreach ($this->queues as $queue) {
             if (!$queue->isEmpty()) {
@@ -108,13 +108,13 @@ class ImportEngine implements \Serializable
         $currentQueue = $this->getCurrentQueue();
 
         if ($currentQueue) {
-            $step = $currentQueue->top();
+            $step = $currentQueue->bottom();
             $isComplete = !$step->run($this);
 
             if ($isComplete) {
                 $valid = false;
                 try {
-                    $valid = ($step === $currentQueue->pop());
+                    $valid = ($step === $currentQueue->dequeue());
                     $step->deactivate($this);
                 } catch (\Exception $ex) {}
 

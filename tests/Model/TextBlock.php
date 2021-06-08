@@ -12,7 +12,8 @@ class TextBlock extends DataObject implements TestOnly
 {
 	private static $db = [
 		'Text' => 'Text',
-		'Author' => 'Varchar(127)'
+		'Author' => 'Varchar(127)',
+        'Sort' => 'Int'
 	];
 
 	private static $has_one = [

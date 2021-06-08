@@ -12,11 +12,7 @@ ImportEngine:
         DateTo: ExhDateToDat
         DateFrom: ExhDateFromDat
       relations:
-        Texts:
-          name: ExhTextGrp
-          type: ExhTextGrp
-          fields:
-            Sort: seqNo
+        Texts: ExhTextGrp
         Persons:
           name: ExhPersonRef
           type: Person

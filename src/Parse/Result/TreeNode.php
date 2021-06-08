@@ -164,7 +164,9 @@ class TreeNode implements NodeInterface, \Serializable
         }
 
         $last = array_pop($path);
-        if ($node = $this->getNestedNode($path)) {
+        if (empty($path)) {
+            return $this->__get($last);
+        } else if ($node = $this->getNestedNode($path)) {
             return $node->__get($last);
         }
     }

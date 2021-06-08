@@ -17,6 +17,7 @@ class Parser
     protected int $depth;
     protected array $allowedPaths = [];
     protected ?Node $pathTree = null;
+    protected ?TreeNode $current = null;
 
     /**
      * @return string[]
