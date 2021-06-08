@@ -4,12 +4,25 @@
 namespace Mutoco\Mplus\Parse\Result;
 
 
-use Tree\Node\Node;
+use Mutoco\Mplus\Serialize\SerializableTrait;
+use Tree\Node\NodeInterface;
+use Tree\Node\NodeTrait;
 
-class TreeNode extends Node
+class TreeNode implements NodeInterface, \Serializable
 {
-    protected ?string $tag = null;
-    protected array $attributes = [];
+    use NodeTrait;
+    use SerializableTrait;
+
+    protected ?string $tag;
+    protected array $attributes;
+    protected ?TreeNode $subTree;
+
+    public function __construct(?string $tag = null, array $attributes = [])
+    {
+        $this->tag = $tag;
+        $this->attributes = $attributes;
+        $this->subTree = null;
+    }
 
     /**
      * @return string|null
@@ -47,9 +60,36 @@ class TreeNode extends Node
         return $this;
     }
 
+    /**
+     * @return TreeNode
+     */
+    public function getSubTree(): TreeNode
+    {
+        return $this->subTree;
+    }
+
+    /**
+     * @param TreeNode $subTree
+     * @return TreeNode
+     */
+    public function setSubTree(TreeNode $subTree): self
+    {
+        $this->subTree = $subTree;
+        return $this;
+    }
+
     public function isReferenceNode(): bool
     {
         return $this->tag === 'moduleReferenceItem' && isset($this->attributes['moduleItemId']);
+    }
+
+    public function getModuleName(): ?string
+    {
+        if ($this->isReferenceNode() && ($parent = $this->getParent()) && $parent instanceof TreeNode) {
+            return $parent->targetModule;
+        }
+
+        return null;
     }
 
     public function getName(): ?string
@@ -95,7 +135,7 @@ class TreeNode extends Node
                     return $node;
                 }
             } else {
-                foreach ($node->getChildren() as $child) {
+                foreach ($node->getExpandedChildren() as $child) {
                     if (($child instanceof TreeNode) && ($found = $child->getNestedNode($value))) {
                         return $found;
                     }
@@ -108,12 +148,21 @@ class TreeNode extends Node
 
     public function getChildByName(string $name) : ?TreeNode
     {
-        foreach ($this->getChildren() as $child) {
+        foreach ($this->getExpandedChildren() as $child) {
             if ($child instanceof TreeNode && $child->getName() === $name) {
                 return $child;
             }
         }
         return null;
+    }
+
+    public function getExpandedChildren(): array
+    {
+        if ($this->subTree) {
+            return $this->subTree->getChildren();
+        }
+
+        return $this->getChildren();
     }
 
     public function __get(string $name)
@@ -129,5 +178,31 @@ class TreeNode extends Node
         }
 
         return null;
+    }
+
+    protected function getSerializableObject(): \stdClass
+    {
+        $obj = new \stdClass();
+
+        $obj->attributes = $this->attributes;
+        $obj->tag = $this->tag;
+        $obj->value = $this->value;
+        $obj->children = $this->children;
+        $obj->subTree = $this->subTree;
+
+        return $obj;
+    }
+
+    protected function unserializeFromObject(\stdClass $obj): void
+    {
+        $this->attributes = $obj->attributes;
+        $this->tag = $obj->tag;
+        $this->value = $obj->value;
+        $this->children = $obj->children;
+        $this->subTree = $obj->subTree;
+
+        foreach ($this->children as $child) {
+            $child->setParent($this);
+        }
     }
 }

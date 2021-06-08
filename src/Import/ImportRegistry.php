@@ -4,6 +4,7 @@
 namespace Mutoco\Mplus\Import;
 
 
+use Mutoco\Mplus\Parse\Result\TreeNode;
 use Mutoco\Mplus\Serialize\SerializableTrait;
 
 class ImportRegistry implements \Serializable
@@ -12,6 +13,25 @@ class ImportRegistry implements \Serializable
 
     protected array $modules = [];
     protected array $relations = [];
+    protected array $trees = [];
+
+    public function hasImportedTree(string $module, string $id): bool
+    {
+        $key = $module . '.' . $id;
+        return isset($this->trees[$key]);
+    }
+
+    public function getImportedTree(string $module, string $id): ?TreeNode
+    {
+        $key = $module . '.' . $id;
+        return $this->trees[$key] ?? null;
+    }
+
+    public function setImportedTree(string $module, string $id, TreeNode $tree)
+    {
+        $key = $module . '.' . $id;
+        $this->trees[$key] = $tree;
+    }
 
     public function reportImportedRelation(string $class, string $name, array $ids)
     {
@@ -63,6 +83,7 @@ class ImportRegistry implements \Serializable
         $obj = new \stdClass();
         $obj->modules = $this->modules;
         $obj->relations = $this->relations;
+        $obj->trees = $this->trees;
         return $obj;
     }
 
@@ -70,5 +91,6 @@ class ImportRegistry implements \Serializable
     {
         $this->modules = $obj->modules;
         $this->relations = $obj->relations;
+        $this->trees = $obj->trees;
     }
 }
