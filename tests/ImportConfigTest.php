@@ -20,7 +20,7 @@ class ImportConfigTest extends FunctionalTest
                     'name' => 'ExhPersonRef',
                     'type' => 'Person',
                     'fields' => [
-                        'Sort' => 'seqNo'
+                        'Sort' => 'ExhPersonRef.seqNo'
                     ]
                 ]
             ]
@@ -39,6 +39,29 @@ class ImportConfigTest extends FunctionalTest
                     'name' => 'AuthorRef',
                     'type' => 'Person'
                 ]
+            ]
+        ]
+    ];
+
+    private static array $config2 = [
+        'Exhibition' => [
+            'fields' => [
+            ],
+            'relations' => [
+                'Works' => [
+                    'name' => 'ExhRegistrarRef.RegObjectRef',
+                    'fields' => [
+                        'Sort' => 'ExhRegistrarRef.RegSortLnu'
+                    ],
+                    'type' => 'Object'
+                ]
+            ]
+        ],
+        'Object' => [
+            'fields' => [
+                'Title' => 'ObjObjectTitleGrp.TitleTxt',
+                'Subtitle' => 'ObjObjectTitleGrp.AdditionTxt',
+                'Artist' => 'ObjContentDescriptionGrp.PersonRef.PerPersonVrt'
             ]
         ]
     ];
@@ -65,6 +88,15 @@ class ImportConfigTest extends FunctionalTest
             'ExhTextGrp.AuthorRef.PerFirstNameTxt',
             'ExhPersonRef.seqNo',
             'ExhPersonRef.PerFirstNameTxt'
+        ], $paths);
+
+        $config = new ImportConfig(self::$config2);
+        $paths = $config->getImportPaths('Exhibition');
+        $this->assertEquals([
+            'ExhRegistrarRef.RegSortLnu',
+            'ExhRegistrarRef.RegObjectRef.ObjObjectTitleGrp.TitleTxt',
+            'ExhRegistrarRef.RegObjectRef.ObjObjectTitleGrp.AdditionTxt',
+            'ExhRegistrarRef.RegObjectRef.ObjContentDescriptionGrp.PersonRef.PerPersonVrt',
         ], $paths);
 
         Config::withConfig(function(MutableConfigCollectionInterface $config) {
@@ -106,7 +138,7 @@ class ImportConfigTest extends FunctionalTest
             'Persons' => [
                 'name' => 'ExhPersonRef',
                 'type' => 'Person',
-                'fields' => ['Sort' => 'seqNo']
+                'fields' => ['Sort' => 'ExhPersonRef.seqNo']
             ]
         ], $config->getRelationsForModule('Test'));
     }
@@ -139,6 +171,44 @@ class ImportConfigTest extends FunctionalTest
             // update your config
             $config->set('Test', 'mplus_import_fields', ['MplusID' => '__id']);
             $cfg = new ImportConfig(self::$config);
+            $cfg->applyConfig([
+                'Test' => [
+                    'fields' => ['Date' => 'DateFrom']
+                ],
+                'Object' => [
+                    'fields' => ['Interesting' => 'Stuff']
+                ]
+            ], true);
+
+            $this->assertEquals([
+                'modelClass' => 'Test',
+                'fields' => ['MplusID' => '__id', 'Date' => 'DateFrom'],
+                'relations' => [
+                    'Texts' => [
+                        'name' => 'ExhTextGrp',
+                        'type' => 'ExhTextGrp',
+                    ],
+                    'Persons' => [
+                        'name' => 'ExhPersonRef',
+                        'type' => 'Person',
+                        'fields' => ['Sort' => 'ExhPersonRef.seqNo']
+                    ]
+                ]
+            ], $cfg->getModuleConfig('Test'));
+
+            $this->assertEquals([
+                'fields' => ['Interesting' => 'Stuff'],
+                'relations' => []
+            ], $cfg->getModuleConfig('Object'));
+        });
+    }
+
+    public function testConfigMerge()
+    {
+        Config::withConfig(function(MutableConfigCollectionInterface $config) {
+            // update your config
+            $config->set('Test', 'mplus_import_fields', ['MplusID' => '__id']);
+            $cfg = new ImportConfig(self::$config);
 
             $this->assertEquals([
                 'modelClass' => 'Test',
@@ -151,7 +221,7 @@ class ImportConfigTest extends FunctionalTest
                     'Persons' => [
                         'name' => 'ExhPersonRef',
                         'type' => 'Person',
-                        'fields' => ['Sort' => 'seqNo']
+                        'fields' => ['Sort' => 'ExhPersonRef.seqNo']
                     ]
                 ]
             ], $cfg->getModuleConfig('Test'));

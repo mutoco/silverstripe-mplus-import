@@ -21,7 +21,8 @@ class TreeParser implements ParserInterface
 
     protected array $collectionTags = [
         'repeatableGroupItem' => true,
-        'moduleReferenceItem' => true
+        'moduleReferenceItem' => true,
+        'moduleItem' => true
     ];
 
     public function __construct()

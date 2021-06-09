@@ -31,7 +31,7 @@ class ImportConfig implements \Serializable
             foreach ($cfg['relations'] as $relation) {
                 if (isset($relation['fields'])) {
                     foreach ($relation['fields'] as $field) {
-                        $paths[] = $prefix . $relation['name'] . '.' . $field;
+                        $paths[] = $prefix . $field;
                     }
                 }
                 $paths = array_merge($paths, $this->getImportPaths($relation['type'], $prefix . $relation['name'] . '.'));
@@ -54,12 +54,16 @@ class ImportConfig implements \Serializable
      * @param array $config
      * @return ImportConfig
      */
-    public function applyConfig(array $config): self
+    public function applyConfig(array $config, bool $merge = false): self
     {
-        $this->config = [];
+        if (!$merge) {
+            $this->config = [];
+        }
 
         foreach ($config as $module => $cfg) {
-            $this->config[$module] = $this->getNormalizedModuleConfig($cfg);
+            $this->config[$module] = array_merge_recursive(
+                $this->config[$module] ?? [], $this->getNormalizedModuleConfig($cfg)
+            );
         }
 
         return $this;

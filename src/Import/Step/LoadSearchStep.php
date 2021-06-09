@@ -6,11 +6,8 @@ namespace Mutoco\Mplus\Import\Step;
 
 use Mutoco\Mplus\Api\SearchBuilder;
 use Mutoco\Mplus\Import\ImportEngine;
-use Mutoco\Mplus\Parse\Node\CollectionParser;
 use Mutoco\Mplus\Parse\Parser;
-use Mutoco\Mplus\Parse\Result\CollectionResult;
-use Mutoco\Mplus\Parse\Result\ObjectResult;
-use Mutoco\Mplus\Parse\Util;
+use Mutoco\Mplus\Parse\Result\TreeNode;
 use Mutoco\Mplus\Serialize\SerializableTrait;
 
 /**
@@ -56,18 +53,14 @@ class LoadSearchStep implements StepInterface
         $stream = $engine->getApi()->search($this->search->getModule(), (string)$this->search);
 
         if ($stream) {
-            $moduleParser = $engine->getConfig()->parserForModule($this->search->getModule());
-            $rootParser = new CollectionParser('module', $moduleParser);
             $parser = new Parser();
-            $result = $parser->parse($stream, $rootParser);
-            if ($result instanceof CollectionResult) {
-                foreach ($result->getItems() as $item) {
-                    if ($item instanceof ObjectResult) {
-                        $engine->enqueue(new ImportModuleStep($item));
-                    }
+            $result = $parser->parse($stream);
+            if ($result instanceof TreeNode && ($tree = $result->getNestedNode($this->search->getModule()))) {
+                foreach ($tree->getChildren() as $child) {
+                    $engine->addStep(new ImportModuleStep($this->search->getModule(), $child->id, $child));
                 }
 
-                $total = (int)$result->getAttribute('totalSize');
+                $total = (int)$tree->totalSize;
                 $this->page++;
                 if ($this->page * $pageSize < $total) {
                     return true;

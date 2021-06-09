@@ -44,7 +44,7 @@ class LoadSearchStepTest extends SapphireTest
             $engine = new ImportEngine();
             $engine->setApi(new Client());
             $search = new SearchBuilder('Exhibition', 0, 5);
-            $engine->enqueue(new LoadSearchStep($search));
+            $engine->addStep(new LoadSearchStep($search));
             do {
                 $hasSteps = $engine->next();
             } while ($hasSteps);

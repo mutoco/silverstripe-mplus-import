@@ -205,6 +205,11 @@ class TreeNode implements NodeInterface, \Serializable
         return null;
     }
 
+    public function __clone()
+    {
+
+    }
+
     protected function getSerializableObject(): \stdClass
     {
         $obj = new \stdClass();

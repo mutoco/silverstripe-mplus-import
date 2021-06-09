@@ -94,13 +94,32 @@ class LoadModuleStep implements StepInterface
     public function deactivate(ImportEngine $engine): void
     {
         if ($this->result) {
-            $engine->addStep(new ImportModuleStep($this->module, $this->id), ImportEngine::QUEUE_IMPORT);
+            $cfg = $engine->getConfig()->getModuleConfig($this->module);
+            if (isset($cfg['modelClass'])) {
+                $engine->addStep(new ImportModuleStep($this->module, $this->id), ImportEngine::QUEUE_IMPORT);
+            }
+            $paths = $engine->getConfig()->getImportPaths($this->module);
 
             $visitor = new ReferenceCollector();
             $references = $this->result->accept($visitor);
             /** @var TreeNode $reference */
             foreach ($references as $reference) {
                 if (($moduleName = $reference->getModuleName()) && ($id = $reference->moduleItemId)) {
+                    if (($name = $reference->getParent()->getName()) && !empty($paths)) {
+                        $fields = [];
+                        foreach ($paths as $path) {
+                            $segments = explode('.', $path);
+                            $result = array_search($name, $segments);
+                            if ($result !== false) {
+                                $fields[] = implode('.', array_slice($segments, $result + 1));
+                            }
+                        }
+                        if (!empty($fields)) {
+                            $engine->getConfig()->applyConfig([
+                                $moduleName => ['fields' => $fields]
+                            ], true);
+                        }
+                    }
                     $engine->addStep(new LoadModuleStep($moduleName, $id, $reference));
                 }
             }
