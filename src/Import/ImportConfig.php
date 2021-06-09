@@ -29,12 +29,13 @@ class ImportConfig implements \Serializable
 
         if (isset($cfg['relations'])) {
             foreach ($cfg['relations'] as $relation) {
+                $paths[] = $prefix . $relation['name'];
                 if (isset($relation['fields'])) {
                     foreach ($relation['fields'] as $field) {
                         $paths[] = $prefix . $field;
                     }
                 }
-                $paths = array_merge($paths, $this->getImportPaths($relation['type'], $prefix . $relation['name'] . '.'));
+                //$paths = array_merge($paths, $this->getImportPaths($relation['type'], $prefix . $relation['name'] . '.'));
             }
         }
 

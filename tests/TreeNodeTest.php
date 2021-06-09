@@ -39,30 +39,27 @@ class TreeNodeTest extends FunctionalTest
         $this->assertEquals($copy->getNestedNode('Foo'), $ref->getParent());
         $this->assertEquals('Lorem ipsum dolor', $copy->getNestedNode('Foo.Baz.Text')->getValue());
 
-        $root1 = new TreeNode();
-        $root1->addChild($sub1 = new TreeNode('test', ['name' => 'Title']));
+        $sub1 = new TreeNode('test', ['name' => 'Title']);
         $sub1->setValue('Sit amet');
         $refNode = $this->tree->getNestedNode('Foo.Bar');
-        $refNode->getChildren()[0]->setSubTree($root1);
+        $refNode->getChildren()[0]->addChild($sub1);
         $copy = unserialize(serialize($this->tree));
         $this->assertEquals('Sit amet', $copy->getNestedNode('Foo.Bar.Title')->getValue());
     }
 
     public function testSubtree()
     {
-        $root1 = new TreeNode();
-        $root1->addChild($sub1 = new TreeNode('test', ['name' => 'Title']));
+        $sub1 = new TreeNode('test', ['name' => 'Title']);
         $sub1->setValue('Sit amet');
-        $root2 = new TreeNode();
-        $root2->addChild($sub2 = new TreeNode('test', ['name' => 'Group']));
+        $sub2 = new TreeNode('test', ['name' => 'Group']);
         $sub2->addChild($s1 = new TreeNode('test', ['name' => 'Title']));
         $sub2->addChild($s2 = new TreeNode('test', ['name' => 'Author']));
         $s1->setValue('May the force be with you');
         $s2->setValue('Obi-Wan Kenobi');
 
         $refNode = $this->tree->getNestedNode('Foo.Bar');
-        $refNode->getChildren()[0]->setSubTree($root1);
-        $refNode->getChildren()[2]->setSubTree($root2);
+        $refNode->getChildren()[0]->addChild($sub1);
+        $refNode->getChildren()[2]->addChild($sub2);
 
         $this->assertEquals('Sit amet', $this->tree->getNestedNode('Foo.Bar.Title')->getValue());
         $this->assertEquals('May the force be with you', $this->tree->getNestedNode('Foo.Bar.Group.Title')->getValue());

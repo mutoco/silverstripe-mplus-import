@@ -8,6 +8,7 @@ use GuzzleHttp\Psr7\Utils;
 use Mutoco\Mplus\Parse\Node\ParserInterface;
 use Mutoco\Mplus\Parse\Node\TreeParser;
 use Mutoco\Mplus\Parse\Result\TreeNode;
+use Mutoco\Mplus\Util;
 use Psr\Http\Message\StreamInterface;
 use Tree\Node\Node;
 
@@ -15,55 +16,34 @@ class Parser
 {
     protected \SplStack $parsers;
     protected int $depth;
-    protected array $allowedPaths = [];
     protected ?Node $pathTree = null;
     protected ?TreeNode $current = null;
 
     /**
-     * @return string[]
+     * @return Node|null
      */
-    public function getAllowedPaths(): array
+    public function getAllowedPaths(): ?Node
     {
-        return $this->allowedPaths;
+        return $this->pathTree;
     }
 
     /**
-     * @param string[] $allowedPaths
+     * @param Node|array|null $allowedPaths - Allowed paths as a tree of allowed paths
      * @return Parser
      */
-    public function setAllowedPaths(array $allowedPaths): self
+    public function setAllowedPaths($allowedPaths): self
     {
-        $this->allowedPaths = $allowedPaths;
+        if (is_array($allowedPaths)) {
+            $allowedPaths = Util::pathsToTree($allowedPaths);
+        }
 
-        if (!empty($allowedPaths)) {
-            $this->pathTree = new Node();
-            foreach ($this->allowedPaths as $path) {
-                $parts = explode('.', $path);
-                $node = $this->pathTree;
-                foreach ($parts as $part) {
-                    $found = false;
-                    foreach ($node->getChildren() as $child) {
-                        if ($child->getValue() === $part) {
-                            $found = true;
-                            $node = $child;
-                            break;
-                        }
-                    }
-                    if (!$found) {
-                        $node->addChild($node = new Node($part));
-                    }
-                }
-            }
-        } else {
+        if (!$allowedPaths || $allowedPaths->isLeaf()) {
             $this->pathTree = null;
+        } else {
+            $this->pathTree = $allowedPaths;
         }
 
         return $this;
-    }
-
-    public function getPathTree(): ?Node
-    {
-        return $this->pathTree;
     }
 
     public function getDepth(): int
@@ -82,32 +62,7 @@ class Parser
             return true;
         }
 
-        if (is_string($value)) {
-            $value = explode('.', $value);
-        }
-
-        if (empty($value)) {
-            return false;
-        }
-
-        $node = $this->pathTree;
-        for ($i = 0; $i < count($value); $i++) {
-            $segment = $value[$i];
-            $found = false;
-            foreach ($node->getChildren() as $child) {
-                if ($child->getValue() === $segment) {
-                    $node = $child;
-                    $found = true;
-                    break;
-                }
-            }
-
-            if (!$found) {
-                return false;
-            }
-        }
-
-        return true;
+        return Util::isValidPath($value, $this->pathTree);
     }
 
     public function isAllowedNext(string $name): bool

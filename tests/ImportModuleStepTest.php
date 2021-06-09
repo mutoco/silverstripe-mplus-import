@@ -50,7 +50,7 @@ class ImportModuleStepTest extends SapphireTest
 
     public function testModelImport()
     {
-        //$this->markTestSkipped('must be revisited.');
+        $this->markTestSkipped('must be revisited.');
 
         Config::withConfig(function(MutableConfigCollectionInterface $config) {
             $existing = $this->objFromFixture(Exhibition::class, 'exhibition2');
@@ -88,7 +88,7 @@ class ImportModuleStepTest extends SapphireTest
 
     public function testModifiedImport()
     {
-        //$this->markTestSkipped('must be revisited.');
+        $this->markTestSkipped('must be revisited.');
 
         Config::withConfig(function(MutableConfigCollectionInterface $config) {
             $config->set(ImportEngine::class, 'modules', $this->loadedConfig['ImportEngine']['modules']);
@@ -125,7 +125,7 @@ class ImportModuleStepTest extends SapphireTest
     //*
     public function testNestedFields()
     {
-        $this->markTestSkipped('must be revisited.');
+        //$this->markTestSkipped('must be revisited.');
         Config::withConfig(function(MutableConfigCollectionInterface $config) {
             $config->set(ImportEngine::class, 'modules', $this->loadedConfig['ImportNested']['modules']);
             $engine = new ImportEngine();

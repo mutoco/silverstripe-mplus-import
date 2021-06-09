@@ -84,19 +84,16 @@ class ImportConfigTest extends FunctionalTest
         $config = new ImportConfig(self::$config);
         $paths = $config->getImportPaths('Test');
         $this->assertEquals([
-            'ExhTextGrp.TextClb',
-            'ExhTextGrp.AuthorRef.PerFirstNameTxt',
+            'ExhTextGrp',
+            'ExhPersonRef',
             'ExhPersonRef.seqNo',
-            'ExhPersonRef.PerFirstNameTxt'
         ], $paths);
 
         $config = new ImportConfig(self::$config2);
         $paths = $config->getImportPaths('Exhibition');
         $this->assertEquals([
+            'ExhRegistrarRef.RegObjectRef',
             'ExhRegistrarRef.RegSortLnu',
-            'ExhRegistrarRef.RegObjectRef.ObjObjectTitleGrp.TitleTxt',
-            'ExhRegistrarRef.RegObjectRef.ObjObjectTitleGrp.AdditionTxt',
-            'ExhRegistrarRef.RegObjectRef.ObjContentDescriptionGrp.PersonRef.PerPersonVrt',
         ], $paths);
 
         Config::withConfig(function(MutableConfigCollectionInterface $config) {

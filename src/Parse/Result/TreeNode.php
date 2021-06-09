@@ -15,13 +15,11 @@ class TreeNode implements NodeInterface, \Serializable
 
     protected ?string $tag;
     protected array $attributes;
-    protected ?TreeNode $subTree;
 
     public function __construct(?string $tag = null, array $attributes = [])
     {
         $this->tag = $tag;
         $this->attributes = $attributes;
-        $this->subTree = null;
     }
 
     public function getId(): ?string
@@ -65,27 +63,9 @@ class TreeNode implements NodeInterface, \Serializable
         return $this;
     }
 
-    /**
-     * @return TreeNode
-     */
-    public function getSubTree(): TreeNode
-    {
-        return $this->subTree;
-    }
-
-    /**
-     * @param TreeNode $subTree
-     * @return TreeNode
-     */
-    public function setSubTree(TreeNode $subTree): self
-    {
-        $this->subTree = $subTree;
-        return $this;
-    }
-
     public function isReferenceNode(): bool
     {
-        return $this->tag === 'moduleReferenceItem' && isset($this->attributes['moduleItemId']);
+        return $this->tag === 'moduleReferenceItem' && $this->isLeaf() && isset($this->attributes['moduleItemId']);
     }
 
     public function getModuleName(): ?string
@@ -142,7 +122,7 @@ class TreeNode implements NodeInterface, \Serializable
                     return $node;
                 }
             } else {
-                foreach ($node->getExpandedChildren() as $child) {
+                foreach ($node->getChildren() as $child) {
                     if (($child instanceof TreeNode) && ($found = $child->getNestedNode($value))) {
                         return $found;
                     }
@@ -173,21 +153,12 @@ class TreeNode implements NodeInterface, \Serializable
 
     public function getChildByName(string $name) : ?TreeNode
     {
-        foreach ($this->getExpandedChildren() as $child) {
+        foreach ($this->getChildren() as $child) {
             if ($child instanceof TreeNode && $child->getName() === $name) {
                 return $child;
             }
         }
         return null;
-    }
-
-    public function getExpandedChildren(): array
-    {
-        if ($this->subTree) {
-            return $this->subTree->getChildren();
-        }
-
-        return $this->getChildren();
     }
 
     public function __get(string $name)

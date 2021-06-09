@@ -9,6 +9,8 @@ use Mutoco\Mplus\Parse\Parser;
 use Mutoco\Mplus\Parse\Result\ReferenceCollector;
 use Mutoco\Mplus\Parse\Result\TreeNode;
 use Mutoco\Mplus\Serialize\SerializableTrait;
+use Mutoco\Mplus\Util;
+use Tree\Node\Node;
 
 class LoadModuleStep implements StepInterface
 {
@@ -17,16 +19,20 @@ class LoadModuleStep implements StepInterface
     protected string $module;
     protected string $id;
     protected int $runs;
-    protected ?TreeNode $result;
-    protected ?TreeNode $origin;
+    protected ?TreeNode $resultTree;
+    protected ?Node $allowedPaths;
+    protected \SplQueue $pendingNodes;
+    protected array $relationNodes;
 
-    public function __construct(string $module, string $id, ?TreeNode $origin = null)
+    public function __construct(string $module, string $id)
     {
         $this->module = $module;
         $this->id = $id;
         $this->runs = 0;
-        $this->result = null;
-        $this->origin = $origin;
+        $this->resultTree = null;
+        $this->allowedPaths = null;
+        $this->pendingNodes = new \SplQueue();
+        $this->relationNodes = [];
     }
 
     public function getId(): string
@@ -50,7 +56,10 @@ class LoadModuleStep implements StepInterface
     public function activate(ImportEngine $engine): void
     {
         $this->runs = 0;
-        $this->result = null;
+        $this->resultTree = null;
+        $this->pendingNodes = new \SplQueue();
+        $this->relationNodes = [];
+        $this->allowedPaths = Util::pathsToTree($engine->getConfig()->getImportPaths($this->module));
     }
 
     /**
@@ -62,27 +71,15 @@ class LoadModuleStep implements StepInterface
             return false;
         }
 
-        $this->runs++;
-        //TODO: Cache results to reduce API calls
-        $stream = $engine->getApi()->queryModelItem($this->module, $this->id);
-        if (!$stream && $this->runs < 10) {
-            $engine->getApi()->init();
-            sleep(10);
-            return true;
+        if ($this->resultTree) {
+            return $this->resolveTree($engine);
         }
 
-        if ($stream) {
-            $parser = new Parser();
-            //TODO: Make sure import paths are set for intermediate modules without config!!
-            $parser->setAllowedPaths($engine->getConfig()->getImportPaths($this->module));
+        $this->runs++;
 
-            if ($result = $parser->parse($stream)) {
-                $this->result = $result;
-                $engine->getRegistry()->setImportedTree($this->module, $this->id, $result);
-                if ($this->origin) {
-                    $this->origin->setSubTree($result);
-                }
-            }
+        if ($result = $this->loadModule($engine, $this->module, $this->id, $this->allowedPaths)) {
+            $this->resultTree = $result;
+            return true;
         }
 
         return false;
@@ -93,7 +90,9 @@ class LoadModuleStep implements StepInterface
      */
     public function deactivate(ImportEngine $engine): void
     {
-        if ($this->result) {
+        return;
+
+        if ($this->resultTree) {
             $cfg = $engine->getConfig()->getModuleConfig($this->module);
             if (isset($cfg['modelClass'])) {
                 $engine->addStep(new ImportModuleStep($this->module, $this->id), ImportEngine::QUEUE_IMPORT);
@@ -101,7 +100,7 @@ class LoadModuleStep implements StepInterface
             $paths = $engine->getConfig()->getImportPaths($this->module);
 
             $visitor = new ReferenceCollector();
-            $references = $this->result->accept($visitor);
+            $references = $this->resultTree->accept($visitor);
             /** @var TreeNode $reference */
             foreach ($references as $reference) {
                 if (($moduleName = $reference->getModuleName()) && ($id = $reference->moduleItemId)) {
@@ -125,7 +124,47 @@ class LoadModuleStep implements StepInterface
             }
         }
 
-        $this->result = null;
+        $this->resultTree = null;
+    }
+
+    protected function resolveTree(ImportEngine $engine): bool
+    {
+        // Collect all references from the resulting tree.
+        // References are links to external modules
+        $visitor = new ReferenceCollector();
+        $references = $this->resultTree->accept($visitor);
+
+        /** @var TreeNode $reference */
+        foreach ($references as $reference) {
+            $segments = $reference->getPathSegments();
+            // Look up the node inside the tree of allowed paths
+            if ($pathNode = Util::findNodeForPath($segments, $this->allowedPaths)) {
+                // If the node has sub-nodes, it needs to resolve first
+                if (!$pathNode->isLeaf()) {
+                    //TODO: Find solution for attributes?
+                    if (($moduleName = $reference->getModuleName()) && ($id = $reference->moduleItemId)) {
+                        $result = $this->loadModule($engine, $moduleName, $id, $pathNode);
+                        foreach ($pathNode->getChildren() as $segment) {
+                            $reference->addChild($result->getNestedNode($segment->getValue()));
+                        }
+                    }
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    protected function loadModule(ImportEngine $engine, string $module, string $id, Node $allowedPaths): TreeNode
+    {
+        //TODO: Cache results to reduce API calls
+        $stream = $engine->getApi()->queryModelItem($module, $id);
+        if ($stream) {
+            $parser = new Parser();
+            $parser->setAllowedPaths($allowedPaths);
+            return $parser->parse($stream);
+        }
     }
 
     protected function getSerializableObject(): \stdClass
