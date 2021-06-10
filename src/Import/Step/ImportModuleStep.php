@@ -105,6 +105,10 @@ class ImportModuleStep implements StepInterface
                 $engine->addStep(new LinkRelationStep($this->target->getClassName(), $this->target->MplusID, $relationName, $ids));
             }
         }
+
+        if (isset($config['attachment'])) {
+            $engine->addStep(new ImportAttachmentStep($this->module, $this->id));
+        }
     }
 
     protected function createOrUpdate(array $config, TreeNode $tree, &$skipped = false): DataObject

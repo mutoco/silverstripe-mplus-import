@@ -12,5 +12,7 @@ interface ClientInterface
 
     public function search(string $module, string $xml): ?StreamInterface;
 
-    public function queryModelItem(string $model, int $id): ?StreamInterface;
+    public function queryModelItem(string $module, string $id): ?StreamInterface;
+
+    public function loadAttachment(string $module, string $id): ?StreamInterface;
 }

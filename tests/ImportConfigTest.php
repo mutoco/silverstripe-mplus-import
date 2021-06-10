@@ -28,7 +28,8 @@ class ImportConfigTest extends FunctionalTest
         'Person' => [
             'fields' => [
                 'Firstname' => 'PerFirstNameTxt'
-            ]
+            ],
+            'attachment' => 'ImageID'
         ],
         'ExhTextGrp' => [
             'fields' => [
@@ -194,6 +195,14 @@ class ImportConfigTest extends FunctionalTest
                     ]
                 ]
             ], $cfg->getModuleConfig('Test'));
+
+            $this->assertEquals([
+                'attachment' => 'ImageID',
+                'fields' => [
+                    'Firstname' => 'PerFirstNameTxt'
+                ],
+                'relations' => [],
+            ], $cfg->getModuleConfig('Person'));
 
             $this->assertEquals([
                 'fields' => ['Interesting' => 'Stuff'],

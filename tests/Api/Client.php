@@ -15,9 +15,9 @@ class Client implements ClientInterface
 
     }
 
-    public function queryModelItem(string $model, int $id): ?StreamInterface
+    public function queryModelItem(string $module, string $id): ?StreamInterface
     {
-        $filename = sprintf('%s-%d.xml', $model, $id);
+        $filename = sprintf('%s-%s.xml', $module, $id);
         $filePath = realpath(implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'data', $filename]));
         if (file_exists($filePath)) {
             return Utils::streamFor(fopen($filePath, 'r'));
@@ -38,6 +38,16 @@ class Client implements ClientInterface
 
         $filename = sprintf('%s-p%d.xml', $module, $page);
         $filePath = realpath(implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'data', 'search', $filename]));
+        if (file_exists($filePath)) {
+            return Utils::streamFor(fopen($filePath, 'r'));
+        }
+        return null;
+    }
+
+    public function loadAttachment(string $module, string $id): ?StreamInterface
+    {
+        $filename = sprintf('file-%s-%s.xml', $module, $id);
+        $filePath = realpath(implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'data', $filename]));
         if (file_exists($filePath)) {
             return Utils::streamFor(fopen($filePath, 'r'));
         }

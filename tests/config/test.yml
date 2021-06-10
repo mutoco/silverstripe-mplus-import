@@ -46,6 +46,7 @@ ImportNested:
         Title: ObjObjectTitleGrp.TitleTxt
         Subtitle: ObjObjectTitleGrp.AdditionTxt
         Artist: ObjContentDescriptionGrp.PersonRef.PerPersonVrt
+      attachment: ImageID
     Exhibition:
       modelClass: Mutoco\Mplus\Tests\Model\Exhibition
       fields:

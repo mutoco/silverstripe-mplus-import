@@ -23,96 +23,6 @@ class Client implements ClientInterface
         $this->sessionKey = null;
     }
 
-    public function init(): self
-    {
-        $this->sessionKey = null;
-        $tmpClient = new \GuzzleHttp\Client([
-            'base_uri' => $this->getBaseUrl()
-        ]);
-
-        $response = $tmpClient->get('ria-ws/application/session', [
-            'auth' => [
-                $this->username,
-                $this->password
-            ]
-        ]);
-
-        if ($response->getStatusCode() === 200) {
-            $doc = $this->parseXml($response->getBody());
-            $xpath = new \DOMXPath($doc);
-            $xpath->registerNamespace('ns', XmlNS::SESSION);
-            $session = $xpath->query('//ns:session[@pending="false"]/ns:key');
-            if ($session && $session->count()) {
-                $this->sessionKey = (string)$session[0]->nodeValue;
-                $this->client = new \GuzzleHttp\Client([
-                    'base_uri' => $this->getBaseUrl(),
-                    'auth' => [
-                        sprintf('user[%s]', $this->username),
-                        sprintf('session[%s]', $this->sessionKey)
-                    ]
-                ]);
-            }
-        } else {
-            throw new \Exception('Unable to establish session. Make sure credentials are correct');
-        }
-
-        return $this;
-    }
-
-    public function hasSession(): bool
-    {
-        return $this->sessionKey !== null;
-    }
-
-    public function destroySession(): bool
-    {
-        if ($this->hasSession()) {
-            $response = $this->client->delete('ria-ws/application/session/' . $this->sessionKey);
-            return $response->getStatusCode() === 200;
-        }
-
-        return false;
-    }
-
-    public function search(string $module, string $xml): ?StreamInterface
-    {
-        $response = $this->client->post(sprintf('ria-ws/application/module/%s/search/', $module), [
-            'body' => $xml
-        ]);
-
-        if ($response->getStatusCode() === 200) {
-            return $response->getBody();
-        }
-
-        if ($response->getStatusCode() === 403) {
-            // Automatically call init and retry the request if access was forbidden
-            $this->init();
-            if ($this->hasSession()) {
-                return $this->search($module, $xml);
-            }
-        }
-
-        return null;
-    }
-
-    public function queryModelItem(string $module, int $id): ?StreamInterface
-    {
-        $response = $this->client->get(sprintf('ria-ws/application/module/%s/%d', $module, $id));
-
-        if ($response->getStatusCode() === 200) {
-            return $response->getBody();
-        }
-
-        if ($response->getStatusCode() === 403) {
-            // Automatically call init and retry the request if access was forbidden
-            $this->init();
-            if ($this->hasSession()) {
-                return $this->queryModelItem($module, $id);
-            }
-        }
-
-        return null;
-    }
 
     /**
      * @return string
@@ -168,7 +78,102 @@ class Client implements ClientInterface
         return $this;
     }
 
-    private function parseXml(string $body)
+    public function hasSession(): bool
+    {
+        return $this->sessionKey !== null;
+    }
+
+    public function init(): self
+    {
+        $this->sessionKey = null;
+        $tmpClient = new \GuzzleHttp\Client([
+            'base_uri' => $this->getBaseUrl()
+        ]);
+
+        $response = $tmpClient->get('ria-ws/application/session', [
+            'auth' => [
+                $this->username,
+                $this->password
+            ]
+        ]);
+
+        if ($response->getStatusCode() === 200) {
+            $doc = $this->parseXml($response->getBody());
+            $xpath = new \DOMXPath($doc);
+            $xpath->registerNamespace('ns', XmlNS::SESSION);
+            $session = $xpath->query('//ns:session[@pending="false"]/ns:key');
+            if ($session && $session->count()) {
+                $this->sessionKey = (string)$session[0]->nodeValue;
+                $this->client = new \GuzzleHttp\Client([
+                    'base_uri' => $this->getBaseUrl(),
+                    'auth' => [
+                        sprintf('user[%s]', $this->username),
+                        sprintf('session[%s]', $this->sessionKey)
+                    ]
+                ]);
+            }
+        } else {
+            throw new \Exception('Unable to establish session. Make sure credentials are correct');
+        }
+
+        return $this;
+    }
+
+    public function destroySession(): bool
+    {
+        if ($this->hasSession()) {
+            $response = $this->client->delete('ria-ws/application/session/' . $this->sessionKey);
+            return $response->getStatusCode() === 200;
+        }
+
+        return false;
+    }
+
+    public function search(string $module, string $xml): ?StreamInterface
+    {
+        return $this->sendApiRequest(sprintf('ria-ws/application/module/%s/search/', $module), [
+            'body' => $xml
+        ]);
+    }
+
+    public function queryModelItem(string $module, string $id): ?StreamInterface
+    {
+        return $this->sendApiRequest(sprintf('ria-ws/application/module/%s/%s', $module, $id));
+    }
+
+
+    public function loadAttachment(string $module, string $id): ?StreamInterface
+    {
+        return $this->sendApiRequest(
+            sprintf('ria-ws/application/module/%s/%s/attachment', $module, $id),
+            [
+                'headers' => [
+                    'Accept' => 'application/octet-stream'
+                ]
+            ]
+        );
+    }
+
+    protected function sendApiRequest(string $url, array $options = []): ?StreamInterface
+    {
+        $response = $this->client->get($url, $options);
+
+        if ($response->getStatusCode() === 200) {
+            return $response->getBody();
+        }
+
+        if ($response->getStatusCode() === 403) {
+            // Automatically call init and retry the request if access was forbidden
+            $this->init();
+            if ($this->hasSession()) {
+                return $this->sendApiRequest($url, $options);
+            }
+        }
+
+        return null;
+    }
+
+    private function parseXml(string $body): \DOMDocument
     {
         $xml = new \DOMDocument();
         $xml->loadXML($body);
