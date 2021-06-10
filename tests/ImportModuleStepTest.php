@@ -118,10 +118,8 @@ class ImportModuleStepTest extends SapphireTest
         });
     }
 
-    //*
     public function testNestedFields()
     {
-        //$this->markTestSkipped('must be revisited.');
         Config::withConfig(function(MutableConfigCollectionInterface $config) {
             $config->set(ImportEngine::class, 'modules', $this->loadedConfig['ImportNested']['modules']);
             $engine = new ImportEngine();
@@ -139,5 +137,31 @@ class ImportModuleStepTest extends SapphireTest
             $this->assertEquals(['Edvard Munch', 'Edvard Munch'], $exhibition->Works()->column('Artist'));
         });
     }
-    //*/
+
+    public function testWithSerialization()
+    {
+        Config::withConfig(function(MutableConfigCollectionInterface $config) {
+            $config->set(ImportEngine::class, 'modules', $this->loadedConfig['ImportNested']['modules']);
+            $engine = new ImportEngine();
+            $engine->setApi(new Client());
+            $engine->addStep(new LoadModuleStep('Exhibition', 2));
+
+            for($i = 0; $i < 7; $i++) {
+                $engine->next();
+            }
+
+            /** @var ImportEngine $copy */
+            $copy = unserialize(serialize($engine));
+            do {
+                $hasSteps = $copy->next();
+            } while ($hasSteps);
+
+            Exhibition::flush_and_destroy_cache();
+            $exhibition = Exhibition::get()->find('MplusID', 2);
+            $this->assertEquals([435960, 47894], $exhibition->Works()->column('MplusID'));
+            $this->assertEquals(['Stillleben mit Hummer', 'Testdatensatz Portrait'], $exhibition->Works()->column('Title'));
+            $this->assertEquals(['TEST', 'Hummer'], $exhibition->Works()->column('Subtitle'));
+            $this->assertEquals(['Edvard Munch', 'Edvard Munch'], $exhibition->Works()->column('Artist'));
+        });
+    }
 }

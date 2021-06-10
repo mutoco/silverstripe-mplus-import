@@ -21,7 +21,6 @@ class LoadModuleStep implements StepInterface
     protected ?TreeNode $resultTree;
     protected ?Node $allowedPaths;
     protected \SplQueue $pendingNodes;
-    protected array $relationNodes;
 
     public function __construct(string $module, string $id)
     {
@@ -30,7 +29,6 @@ class LoadModuleStep implements StepInterface
         $this->resultTree = null;
         $this->allowedPaths = null;
         $this->pendingNodes = new \SplQueue();
-        $this->relationNodes = [];
     }
 
     public function getId(): string
@@ -55,7 +53,6 @@ class LoadModuleStep implements StepInterface
     {
         $this->resultTree = null;
         $this->pendingNodes = new \SplQueue();
-        $this->relationNodes = [];
         $this->allowedPaths = Util::pathsToTree($engine->getConfig()->getImportPaths($this->module));
     }
 
@@ -159,6 +156,9 @@ class LoadModuleStep implements StepInterface
         $obj = new \stdClass();
         $obj->module = $this->module;
         $obj->id = $this->id;
+        $obj->resultTree = $this->resultTree;
+        $obj->pendingNodes = $this->pendingNodes;
+        $obj->allowedPaths = Util::treeToPaths($this->allowedPaths);
         return $obj;
     }
 
@@ -166,5 +166,8 @@ class LoadModuleStep implements StepInterface
     {
         $this->module = $obj->module;
         $this->id = $obj->id;
+        $this->resultTree = $obj->resultTree;
+        $this->pendingNodes = $obj->pendingNodes;
+        $this->allowedPaths = Util::pathsToTree($obj->allowedPaths);
     }
 }

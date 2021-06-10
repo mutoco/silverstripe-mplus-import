@@ -8,6 +8,7 @@ use Mutoco\Mplus\Api\ClientInterface;
 use Mutoco\Mplus\Import\Step\StepInterface;
 use Mutoco\Mplus\Serialize\SerializableTrait;
 use SilverStripe\Core\Config\Configurable;
+use SilverStripe\Core\Injector\Injector;
 
 class ImportEngine implements \Serializable
 {
@@ -135,6 +136,7 @@ class ImportEngine implements \Serializable
         $obj->queues = $this->queues;
         $obj->steps = $this->steps;
         $obj->registry = $this->registry;
+        $obj->apiClass = get_class($this->api);
         return $obj;
     }
 
@@ -143,5 +145,7 @@ class ImportEngine implements \Serializable
         $this->steps = $obj->steps;
         $this->queues = $obj->queues;
         $this->registry = $obj->registry;
+        $this->config = null;
+        $this->setApi(Injector::inst()->create($obj->apiClass));
     }
 }

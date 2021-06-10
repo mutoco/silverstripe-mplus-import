@@ -11,7 +11,7 @@ class Client implements ClientInterface
     private string $baseUrl;
     private string $username;
     private string $password;
-    private string $sessionKey;
+    private ?string $sessionKey;
 
     private \GuzzleHttp\Client $client;
 
@@ -20,10 +20,12 @@ class Client implements ClientInterface
         $this->setBaseUrl($baseUrl);
         $this->setUsername($username);
         $this->setPassword($password);
+        $this->sessionKey = null;
     }
 
     public function init(): self
     {
+        $this->sessionKey = null;
         $tmpClient = new \GuzzleHttp\Client([
             'base_uri' => $this->getBaseUrl()
         ]);
@@ -57,10 +59,19 @@ class Client implements ClientInterface
         return $this;
     }
 
+    public function hasSession(): bool
+    {
+        return $this->sessionKey !== null;
+    }
+
     public function destroySession(): bool
     {
-        $response = $this->client->delete('ria-ws/application/session/' . $this->sessionKey);
-        return $response->getStatusCode() === 200;
+        if ($this->hasSession()) {
+            $response = $this->client->delete('ria-ws/application/session/' . $this->sessionKey);
+            return $response->getStatusCode() === 200;
+        }
+
+        return false;
     }
 
     public function search(string $module, string $xml): ?StreamInterface
@@ -73,6 +84,14 @@ class Client implements ClientInterface
             return $response->getBody();
         }
 
+        if ($response->getStatusCode() === 403) {
+            // Automatically call init and retry the request if access was forbidden
+            $this->init();
+            if ($this->hasSession()) {
+                return $this->search($module, $xml);
+            }
+        }
+
         return null;
     }
 
@@ -82,6 +101,14 @@ class Client implements ClientInterface
 
         if ($response->getStatusCode() === 200) {
             return $response->getBody();
+        }
+
+        if ($response->getStatusCode() === 403) {
+            // Automatically call init and retry the request if access was forbidden
+            $this->init();
+            if ($this->hasSession()) {
+                return $this->queryModelItem($module, $id);
+            }
         }
 
         return null;

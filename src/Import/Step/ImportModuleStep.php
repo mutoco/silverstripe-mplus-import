@@ -173,14 +173,16 @@ class ImportModuleStep implements StepInterface
     protected function getSerializableObject(): \stdClass
     {
         $obj = new \stdClass();
-        $obj->result = $this->result;
+        $obj->tree = $this->tree;
         $obj->module = $this->module;
+        $obj->id = $this->id;
         return $obj;
     }
 
     protected function unserializeFromObject(\stdClass $obj): void
     {
-        $this->result = $obj->result;
+        $this->tree = $obj->tree;
         $this->module = $obj->module;
+        $this->id = $obj->id;
     }
 }
