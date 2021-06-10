@@ -108,19 +108,14 @@ class TreeNode implements NodeInterface, \Serializable
             throw new \InvalidArgumentException('Value parameter needs to be string or array');
         }
 
-        $node = null;
         $first = array_shift($value);
-        if (!$this->getName()) {
-            $node = $this->getChildByName($first);
-        } else if ($this->getName() === $first) {
-            $node = $this;
-        }
+
+        $visitor = new NamedChildFinder($first);
+        $node = $this->accept($visitor);
 
         if ($node) {
             if (empty($value)) {
-                if ($node->getName() === $first) {
-                    return $node;
-                }
+                return $node;
             } else {
                 foreach ($node->getChildren() as $child) {
                     if (($child instanceof TreeNode) && ($found = $child->getNestedNode($value))) {
@@ -133,6 +128,49 @@ class TreeNode implements NodeInterface, \Serializable
         return null;
     }
 
+    public function getNodesMatchingPath($value): array
+    {
+        if (is_string($value)) {
+            $value = explode('.', $value);
+        }
+
+        if (!is_array($value)) {
+            throw new \InvalidArgumentException('Value parameter needs to be string or array');
+        }
+
+        $candidates = [];
+        $name = $value[0];
+        if ($this->getName() === $name) {
+            $candidates[] = $this;
+        }
+        $unclear = [];
+        foreach ($this->getChildren() as $child) {
+            if ($child instanceof TreeNode && ($childName = $child->getName())) {
+                if ($name === $childName) {
+                    $candidates[] = $child;
+                }
+            } else {
+                $unclear[] = $child;
+            }
+        }
+
+        foreach ($unclear as $child) {
+            $candidates = array_merge($candidates, $child->getNodesMatchingPath($value));
+        }
+
+        array_shift($value);
+        $result = [];
+        if (empty($value)) {
+            $result = $candidates;
+        } else {
+            foreach ($candidates as $child) {
+                $result = array_merge($result, $child->getNodesMatchingPath($value));
+            }
+        }
+
+        return $result;
+    }
+
     public function getNestedValue($path)
     {
         if (is_string($path)) {
@@ -141,6 +179,10 @@ class TreeNode implements NodeInterface, \Serializable
 
         if (!is_array($path)) {
             throw new \InvalidArgumentException('Path parameter needs to be string or array');
+        }
+
+        if ($node = $this->getNestedNode($path)) {
+            return $node->getValue();
         }
 
         $last = array_pop($path);

@@ -35,7 +35,10 @@ class ImportConfig implements \Serializable
                         $paths[] = $prefix . $field;
                     }
                 }
-                //$paths = array_merge($paths, $this->getImportPaths($relation['type'], $prefix . $relation['name'] . '.'));
+
+                if (!str_ends_with($relation['name'], 'Ref')) {
+                    $paths = array_merge($paths, $this->getImportPaths($relation['type'], $prefix . $relation['name'] . '.'));
+                }
             }
         }
 

@@ -4,6 +4,7 @@
 namespace Mutoco\Mplus\Tests;
 
 
+use Mutoco\Mplus\Parse\Result\NamedChildFinder;
 use Mutoco\Mplus\Parse\Result\ReferenceCollector;
 use Mutoco\Mplus\Parse\Result\TreeNode;
 use SilverStripe\Dev\FunctionalTest;
@@ -51,11 +52,16 @@ class TreeNodeTest extends FunctionalTest
     {
         $sub1 = new TreeNode('test', ['name' => 'Title']);
         $sub1->setValue('Sit amet');
-        $sub2 = new TreeNode('test', ['name' => 'Group']);
-        $sub2->addChild($s1 = new TreeNode('test', ['name' => 'Title']));
-        $sub2->addChild($s2 = new TreeNode('test', ['name' => 'Author']));
+
+        $sub2 = new TreeNode('test');
+        $sub2->addChild($sA = new TreeNode('groupA', ['name' => 'Group']));
+        $sub2->addChild($sB = new TreeNode('groupB', ['name' => 'Group']));
+        $sA->addChild($s1 = new TreeNode('testA', ['name' => 'Title']));
+        $sA->addChild($s2 = new TreeNode('testA', ['name' => 'Author']));
+        $sB->addChild($s3 = new TreeNode('testB', ['name' => 'Title']));
         $s1->setValue('May the force be with you');
         $s2->setValue('Obi-Wan Kenobi');
+        $s3->setValue('The joker');
 
         $refNode = $this->tree->getNestedNode('Foo.Bar');
         $refNode->getChildren()[0]->addChild($sub1);
@@ -63,6 +69,12 @@ class TreeNodeTest extends FunctionalTest
 
         $this->assertEquals('Sit amet', $this->tree->getNestedNode('Foo.Bar.Title')->getValue());
         $this->assertEquals('May the force be with you', $this->tree->getNestedNode('Foo.Bar.Group.Title')->getValue());
+        $this->assertEquals('groupA', $this->tree->getNestedNode('Foo.Bar.Group')->getTag());
+
+        $this->assertEquals(['foo'], array_map(function ($node) { return $node->getTag(); }, $this->tree->getNodesMatchingPath('Foo')));
+        $this->assertEquals(['child'], array_map(function ($node) { return $node->getTag(); }, $this->tree->getNodesMatchingPath('Foo.Bar')));
+        $this->assertEquals(['groupA', 'groupB'], array_map(function ($node) { return $node->getTag(); }, $this->tree->getNodesMatchingPath('Foo.Bar.Group')));
+        $this->assertEquals(['May the force be with you', 'The joker'], array_map(function ($node) { return $node->getValue(); }, $this->tree->getNodesMatchingPath('Foo.Bar.Group.Title')));
     }
 
     public function testReferenceCollector()
@@ -83,5 +95,25 @@ class TreeNodeTest extends FunctionalTest
         $node = $this->tree->getNestedNode('Foo.Bar');
         $this->assertEquals('Test', $node->getNestedValue('targetModule'));
         $this->assertEquals('Test', $node->targetModule);
+    }
+
+    public function testChildFinder()
+    {
+        $finder = new NamedChildFinder('Text');
+        $result = $finder->visit($this->tree);
+        $this->assertNull($result);
+
+        $node = $this->tree->getNestedNode('Foo.Bar');
+        $node->getChildren()[1]->addChild($anon1 = new TreeNode('test'));
+        $anon1->addChild($dummy = new TreeNode('dummy'));
+        $dummy->addChild(new TreeNode('dummy', ['name' => 'Nested']));
+        $anon1->addChild($named = new TreeNode('dummy', ['name' => 'Nested']));
+        $named->setValue('Hi!');
+
+        $finder = new NamedChildFinder('Nested');
+        $result = $finder->visit($this->tree);
+        $this->assertNull($result);
+        $result = $finder->visit($anon1);
+        $this->assertEquals('Hi!', $result->getValue());
     }
 }

@@ -88,4 +88,19 @@ class UtilTest extends FunctionalTest
         $this->assertEquals('Foo', $subNode->getValue());
         $this->assertTrue(Util::isValidPath('Baz', $subNode));
     }
+
+    public function testTreeToPaths()
+    {
+        $tree = Util::pathsToTree([
+            'Foo.Baz.Lorem',
+            'Foo.Bar',
+            'Foo.Baz.Ipsum.Dolor'
+        ]);
+
+        $this->assertEquals([
+            'Foo.Baz.Lorem',
+            'Foo.Baz.Ipsum.Dolor',
+            'Foo.Bar',
+        ], Util::treeToPaths($tree));
+    }
 }

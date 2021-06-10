@@ -15,8 +15,6 @@ ImportEngine:
         Texts: ExhTextGrp
         Persons:
           name: ExhPersonRef
-          fields:
-            Sort: ExhPersonRef.seqNo
           type: Person
     Person:
       modelClass: Mutoco\Mplus\Tests\Model\Person

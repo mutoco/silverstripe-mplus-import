@@ -5,6 +5,7 @@ namespace Mutoco\Mplus;
 
 
 use Tree\Node\Node;
+use Tree\Visitor\YieldVisitor;
 
 class Util
 {
@@ -76,5 +77,20 @@ class Util
     public static function isValidPath($value, Node $tree): bool
     {
         return self::findNodeForPath($value, $tree) !== null;
+    }
+
+    public static function treeToPaths(Node $tree): array
+    {
+        $result = [];
+        $visitor = new YieldVisitor();
+        $leaves = $tree->accept($visitor);
+        /** @var Node $leaf */
+        foreach ($leaves as $leaf) {
+            $segments = array_map(function ($node) {
+                return $node->getValue();
+            }, $leaf->getAncestorsAndSelf());
+            $result[] = implode('.', array_filter($segments));
+        }
+        return $result;
     }
 }

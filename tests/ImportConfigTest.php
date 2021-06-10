@@ -85,6 +85,8 @@ class ImportConfigTest extends FunctionalTest
         $paths = $config->getImportPaths('Test');
         $this->assertEquals([
             'ExhTextGrp',
+            'ExhTextGrp.TextClb',
+            'ExhTextGrp.AuthorRef',
             'ExhPersonRef',
             'ExhPersonRef.seqNo',
         ], $paths);

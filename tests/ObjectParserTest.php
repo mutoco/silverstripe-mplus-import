@@ -20,6 +20,9 @@ class ObjectParserTest extends FunctionalTest
         $this->assertEquals('123', $result->getNestedNode('Object.__id')->getValue());
         $this->assertEquals('Clob', $result->getNestedNode('Object.ObjBriefDescriptionGrp.DescriptionClb')->dataType);
         $this->assertEquals('Varchar', $result->getNestedNode('Object.ObjAcquisitionYearTxt')->dataType);
+        $this->assertEquals('repeatableGroup', $result->getNestedNode('Object.ObjBriefDescriptionGrp')->getTag());
+        $this->assertCount(2, $result->getNestedNode('Object.ObjBriefDescriptionGrp')->getChildren());
+        $this->assertCount(1, $result->getNodesMatchingPath('Object.ObjBriefDescriptionGrp'));
     }
 
     public function testAllowedPaths()

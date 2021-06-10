@@ -50,8 +50,6 @@ class ImportModuleStepTest extends SapphireTest
 
     public function testModelImport()
     {
-        $this->markTestSkipped('must be revisited.');
-
         Config::withConfig(function(MutableConfigCollectionInterface $config) {
             $existing = $this->objFromFixture(Exhibition::class, 'exhibition2');
             $existing->write();
@@ -88,8 +86,6 @@ class ImportModuleStepTest extends SapphireTest
 
     public function testModifiedImport()
     {
-        $this->markTestSkipped('must be revisited.');
-
         Config::withConfig(function(MutableConfigCollectionInterface $config) {
             $config->set(ImportEngine::class, 'modules', $this->loadedConfig['ImportEngine']['modules']);
             DBDatetime::set_mock_now('2021-05-10 10:00:00');
@@ -137,8 +133,8 @@ class ImportModuleStepTest extends SapphireTest
 
             Exhibition::flush_and_destroy_cache();
             $exhibition = Exhibition::get()->find('MplusID', 2);
-            $this->assertEquals([47894, 435960], $exhibition->Works()->column('MplusID'));
-            $this->assertEquals(['Testdatensatz Portrait', 'Stillleben mit Hummer'], $exhibition->Works()->column('Title'));
+            $this->assertEquals([435960, 47894], $exhibition->Works()->column('MplusID'));
+            $this->assertEquals(['Stillleben mit Hummer', 'Testdatensatz Portrait'], $exhibition->Works()->column('Title'));
             $this->assertEquals(['TEST', 'Hummer'], $exhibition->Works()->column('Subtitle'));
             $this->assertEquals(['Edvard Munch', 'Edvard Munch'], $exhibition->Works()->column('Artist'));
         });

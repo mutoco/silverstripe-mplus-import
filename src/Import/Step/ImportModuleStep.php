@@ -80,22 +80,24 @@ class ImportModuleStep implements StepInterface
         $config = $engine->getConfig()->getModuleConfig($this->module);
 
         foreach ($config['relations'] as $relationName => $relationCfg) {
-            $node = $this->tree->getNestedNode($relationCfg['name']);
-            if (!($node instanceof TreeNode)) {
+            $nodes = $this->tree->getNodesMatchingPath($relationCfg['name']);
+            if (empty($nodes)) {
                 continue;
             }
             $ids = [];
 
-            foreach ($node->getExpandedChildren() as $child) {
-                if ($child instanceof TreeNode) {
-                    $engine->addStep(new ImportModuleStep($relationCfg['type'], $child->getId(), $child));
-                    $data = [];
-                    if (isset($relationCfg['fields'])) {
-                        foreach ($relationCfg['fields'] as $field => $path) {
-                            $data[$field] = $child->getNestedValue($path);
+            foreach ($nodes as $collection) {
+                foreach ($collection->getChildren() as $child) {
+                    if ($child instanceof TreeNode) {
+                        $engine->addStep(new ImportModuleStep($relationCfg['type'], $child->getId(), $child));
+                        $data = [];
+                        if (isset($relationCfg['fields'])) {
+                            foreach ($relationCfg['fields'] as $field => $path) {
+                                $data[$field] = $this->tree->getNestedValue($path);
+                            }
                         }
+                        $ids[$child->getId()] = $data;
                     }
-                    $ids[$child->getId()] = $data;
                 }
             }
 

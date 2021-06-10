@@ -18,7 +18,6 @@ class LoadModuleStep implements StepInterface
 
     protected string $module;
     protected string $id;
-    protected int $runs;
     protected ?TreeNode $resultTree;
     protected ?Node $allowedPaths;
     protected \SplQueue $pendingNodes;
@@ -28,7 +27,6 @@ class LoadModuleStep implements StepInterface
     {
         $this->module = $module;
         $this->id = $id;
-        $this->runs = 0;
         $this->resultTree = null;
         $this->allowedPaths = null;
         $this->pendingNodes = new \SplQueue();
@@ -55,7 +53,6 @@ class LoadModuleStep implements StepInterface
      */
     public function activate(ImportEngine $engine): void
     {
-        $this->runs = 0;
         $this->resultTree = null;
         $this->pendingNodes = new \SplQueue();
         $this->relationNodes = [];
@@ -75,8 +72,6 @@ class LoadModuleStep implements StepInterface
             return $this->resolveTree($engine);
         }
 
-        $this->runs++;
-
         if ($result = $this->loadModule($engine, $this->module, $this->id, $this->allowedPaths)) {
             $this->resultTree = $result;
             return true;
@@ -90,36 +85,22 @@ class LoadModuleStep implements StepInterface
      */
     public function deactivate(ImportEngine $engine): void
     {
-        return;
-
         if ($this->resultTree) {
+            // Store the full tree result in the registry
+            $engine->getRegistry()->setImportedTree($this->module, $this->id, $this->resultTree);
+
             $cfg = $engine->getConfig()->getModuleConfig($this->module);
             if (isset($cfg['modelClass'])) {
                 $engine->addStep(new ImportModuleStep($this->module, $this->id), ImportEngine::QUEUE_IMPORT);
             }
-            $paths = $engine->getConfig()->getImportPaths($this->module);
 
+            // Collect all references again. Everything that is left now should be an external module
             $visitor = new ReferenceCollector();
             $references = $this->resultTree->accept($visitor);
             /** @var TreeNode $reference */
             foreach ($references as $reference) {
                 if (($moduleName = $reference->getModuleName()) && ($id = $reference->moduleItemId)) {
-                    if (($name = $reference->getParent()->getName()) && !empty($paths)) {
-                        $fields = [];
-                        foreach ($paths as $path) {
-                            $segments = explode('.', $path);
-                            $result = array_search($name, $segments);
-                            if ($result !== false) {
-                                $fields[] = implode('.', array_slice($segments, $result + 1));
-                            }
-                        }
-                        if (!empty($fields)) {
-                            $engine->getConfig()->applyConfig([
-                                $moduleName => ['fields' => $fields]
-                            ], true);
-                        }
-                    }
-                    $engine->addStep(new LoadModuleStep($moduleName, $id, $reference));
+                    $engine->addStep(new LoadModuleStep($moduleName, $id));
                 }
             }
         }
@@ -142,13 +123,18 @@ class LoadModuleStep implements StepInterface
                 // If the node has sub-nodes, it needs to resolve first
                 if (!$pathNode->isLeaf()) {
                     //TODO: Find solution for attributes?
-                    if (($moduleName = $reference->getModuleName()) && ($id = $reference->moduleItemId)) {
-                        $result = $this->loadModule($engine, $moduleName, $id, $pathNode);
+                    if (
+                        ($moduleName = $reference->getModuleName()) &&
+                        ($id = $reference->moduleItemId) &&
+                        ($result = $this->loadModule($engine, $moduleName, $id, $pathNode))
+                    ) {
                         foreach ($pathNode->getChildren() as $segment) {
-                            $reference->addChild($result->getNestedNode($segment->getValue()));
+                            if ($resultNode = $result->getNestedNode($segment->getValue())) {
+                                $reference->addChild($resultNode);
+                            }
                         }
+                        return true;
                     }
-                    return true;
                 }
             }
         }
@@ -156,7 +142,7 @@ class LoadModuleStep implements StepInterface
         return false;
     }
 
-    protected function loadModule(ImportEngine $engine, string $module, string $id, Node $allowedPaths): TreeNode
+    protected function loadModule(ImportEngine $engine, string $module, string $id, Node $allowedPaths): ?TreeNode
     {
         //TODO: Cache results to reduce API calls
         $stream = $engine->getApi()->queryModelItem($module, $id);
@@ -165,6 +151,7 @@ class LoadModuleStep implements StepInterface
             $parser->setAllowedPaths($allowedPaths);
             return $parser->parse($stream);
         }
+        return null;
     }
 
     protected function getSerializableObject(): \stdClass
@@ -172,7 +159,6 @@ class LoadModuleStep implements StepInterface
         $obj = new \stdClass();
         $obj->module = $this->module;
         $obj->id = $this->id;
-        $obj->runs = $this->runs;
         return $obj;
     }
 
@@ -180,6 +166,5 @@ class LoadModuleStep implements StepInterface
     {
         $this->module = $obj->module;
         $this->id = $obj->id;
-        $this->runs = $obj->runs;
     }
 }
