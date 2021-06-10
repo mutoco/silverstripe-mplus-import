@@ -4,6 +4,7 @@
 namespace Mutoco\Mplus\Tests\Api;
 
 
+use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Utils;
 use Mutoco\Mplus\Api\ClientInterface;
 use Psr\Http\Message\StreamInterface;
@@ -44,11 +45,22 @@ class Client implements ClientInterface
         return null;
     }
 
-    public function loadAttachment(string $module, string $id): ?StreamInterface
+    public function loadAttachment(string $module, string $id, ?callable $onHeaders = null): ?StreamInterface
     {
-        $filename = sprintf('file-%s-%s.xml', $module, $id);
+        $ext = $id == '1' ? 'tiff' : 'jpg';
+        $filename = sprintf('file-%s-%s.%s', $module, $id, $ext);
         $filePath = realpath(implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'data', $filename]));
         if (file_exists($filePath)) {
+            if ($onHeaders) {
+                $response = new Response('200', [
+                    'Content-Disposition' => sprintf('attachment;filename=%s', $filename)
+                ]);
+                try {
+                    $onHeaders($response);
+                } catch (\Exception $ex) {
+                    return null;
+                }
+            }
             return Utils::streamFor(fopen($filePath, 'r'));
         }
         return null;

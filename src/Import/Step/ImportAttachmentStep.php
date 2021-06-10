@@ -5,16 +5,28 @@ namespace Mutoco\Mplus\Import\Step;
 
 
 use Exception;
+use GuzzleHttp\Psr7\Header;
 use Intervention\Image\ImageManager;
+use Mutoco\Mplus\Exception\ImportException;
 use Mutoco\Mplus\Import\ImportEngine;
 use Mutoco\Mplus\Serialize\SerializableTrait;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
+use SilverStripe\AssetAdmin\Controller\AssetAdmin;
+use SilverStripe\Assets\Folder;
 use SilverStripe\Assets\Image;
+use SilverStripe\Core\Config\Configurable;
 use SilverStripe\ORM\DataObject;
 
 class ImportAttachmentStep implements StepInterface
 {
     use SerializableTrait;
+    use Configurable;
+
+    private static $max_width = 4000;
+    private static $max_height = 4000;
+    private static $quality = 90;
+    private static $folder = 'Import/Images';
 
     protected string $module;
     protected string $id;
@@ -30,7 +42,7 @@ class ImportAttachmentStep implements StepInterface
      */
     public function getDefaultQueue(): string
     {
-        // TODO: Implement getDefaultQueue() method.
+        return ImportEngine::QUEUE_IMPORT;
     }
 
     /**
@@ -47,15 +59,39 @@ class ImportAttachmentStep implements StepInterface
     public function run(ImportEngine $engine): bool
     {
         $config = $engine->getConfig()->getModuleConfig($this->module);
-
-        if (!isset($config['attachment']) || !isset($config['modelClass'])) {
-            return false;
+        $field = $config['attachment'] ?? null;
+        if (!$field || !isset($config['modelClass'])) {
+            throw new ImportException('No attachment field defined or missing modelClass');
         }
 
-        if ($stream = $engine->getApi()->loadAttachment($this->module, $this->id)) {
-            $target = DataObject::get($config['modelClass'])->find('MplusID', $this->id);
-            if ($target && $target->hasField($config['attachment'])) {
+        $target = DataObject::get($config['modelClass'])->find('MplusID', $this->id);
+        if (!$target || !$target->hasField($field)) {
+            throw new ImportException('No target found (field or DataObject missing)');
+        }
 
+        $existingFile = $target->getField($field);
+        if ($stream = $engine->getApi()->loadAttachment(
+            $this->module,
+            $this->id,
+            function (ResponseInterface $response) use ($existingFile, &$fileName) {
+                if ($header = $response->getHeaderLine('Content-Disposition')) {
+                    $parts = Header::parse($header);
+                    foreach ($parts as $part) {
+                        $fileName = $part['filename'] ?? null;
+                        if ($fileName) {
+                            $fileName = $this->sanitizeFilename($fileName);
+                            break;
+                        }
+                    }
+                    if ($existingFile && $existingFile->exists() && $existingFile->Name === $fileName) {
+                        throw new Exception('File already exists');
+                    }
+                }
+            }
+        )) {
+            if ($image = $this->createImage($stream, $fileName)) {
+                $target->setField($field, $image);
+                $target->write();
             }
         }
 
@@ -70,11 +106,50 @@ class ImportAttachmentStep implements StepInterface
         // TODO: Implement deactivate() method.
     }
 
-    protected function createImage(StreamInterface $stream): Image
+    protected function createImage(StreamInterface $stream, string $fileName): ?Image
     {
-        $manager = new ImageManager();
-        $img = $manager->make($stream);
-        
+        try {
+            $manager = new ImageManager([
+                'driver' => class_exists('Imagick') ? 'imagick' : 'gd'
+            ]);
+            $img = $manager->make($stream);
 
+            $width = $this->config()->get('max_width');
+            $height = $this->config()->get('max_height');
+            $quality = $this->config()->get('quality');
+            $folderName = $this->config()->get('folder');
+
+            // Resize image to fit into given width/height if larger than max dimensions
+            $img->resize($width, $height, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
+
+            $image = Image::create();
+            $image->setFromString(
+                $img->encode('jpg', $quality)->getEncoded(),
+                $fileName
+            );
+            $folder = Folder::find_or_make($folderName);
+            if (!$folder->exists() || !$folder->isInDB()) {
+                $folder->write();
+            }
+            $image->ParentID = $folder->ID;
+            $image->write();
+
+            AssetAdmin::create()->generateThumbnails($image);
+            $image->flushCache();
+            $image->write();
+            return $image;
+        } catch (\Exception $err) {
+
+        }
+
+        return null;
+    }
+
+    protected function sanitizeFilename(string $name): string
+    {
+        return preg_replace('{\.(je?pg|tiff|gif|png|bmp|psd|webp)$}i','.jpg', $name);
     }
 }

@@ -20,7 +20,7 @@ class ImportEngine implements \Serializable
     const QUEUE_LINK = 'LINK';
     const QUEUE_CLEANUP = 'CLEANUP';
 
-    protected ClientInterface $api;
+    protected ?ClientInterface $api = null;
     protected array $queues;
     protected int $steps;
     protected ImportRegistry $registry;
@@ -40,7 +40,7 @@ class ImportEngine implements \Serializable
         ];
     }
 
-    public function getApi(): ClientInterface
+    public function getApi(): ?ClientInterface
     {
         return $this->api;
     }
@@ -136,7 +136,7 @@ class ImportEngine implements \Serializable
         $obj->queues = $this->queues;
         $obj->steps = $this->steps;
         $obj->registry = $this->registry;
-        $obj->apiClass = get_class($this->api);
+        $obj->apiClass = $this->api ? get_class($this->api) : null;
         return $obj;
     }
 
@@ -146,6 +146,8 @@ class ImportEngine implements \Serializable
         $this->queues = $obj->queues;
         $this->registry = $obj->registry;
         $this->config = null;
-        $this->setApi(Injector::inst()->create($obj->apiClass));
+        if ($obj->apiClass) {
+            $this->setApi(Injector::inst()->create($obj->apiClass));
+        }
     }
 }

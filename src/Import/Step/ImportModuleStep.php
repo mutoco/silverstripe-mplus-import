@@ -69,6 +69,12 @@ class ImportModuleStep implements StepInterface
         $this->target = $this->createOrUpdate($config, $this->tree, $isSkipped);
         $engine->getRegistry()->reportImportedModule($this->module, $this->target->MplusID);
 
+        if (!$isSkipped) {
+            if (isset($config['attachment'])) {
+                $engine->addStep(new ImportAttachmentStep($this->module, $this->id));
+            }
+        }
+
         return false;
     }
 
@@ -104,10 +110,6 @@ class ImportModuleStep implements StepInterface
             if (!empty($ids)) {
                 $engine->addStep(new LinkRelationStep($this->target->getClassName(), $this->target->MplusID, $relationName, $ids));
             }
-        }
-
-        if (isset($config['attachment'])) {
-            $engine->addStep(new ImportAttachmentStep($this->module, $this->id));
         }
     }
 

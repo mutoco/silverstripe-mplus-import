@@ -4,6 +4,7 @@
 namespace Mutoco\Mplus\Api;
 
 
+use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\StreamInterface;
 
 class Client implements ClientInterface
@@ -142,16 +143,22 @@ class Client implements ClientInterface
     }
 
 
-    public function loadAttachment(string $module, string $id): ?StreamInterface
+    public function loadAttachment(string $module, string $id, ?callable $onHeaders = null): ?StreamInterface
     {
-        return $this->sendApiRequest(
-            sprintf('ria-ws/application/module/%s/%s/attachment', $module, $id),
-            [
-                'headers' => [
-                    'Accept' => 'application/octet-stream'
-                ]
-            ]
-        );
+        try {
+            return $this->sendApiRequest(
+                sprintf('ria-ws/application/module/%s/%s/attachment', $module, $id),
+                array_merge([
+                    'headers' => [
+                        'Accept' => 'application/octet-stream'
+                    ]
+                ], $onHeaders ? ['on_headers' => $onHeaders] : [])
+            );
+        } catch (RequestException $ex) {
+            // Request was cancelled
+        }
+
+        return null;
     }
 
     protected function sendApiRequest(string $url, array $options = []): ?StreamInterface

@@ -14,5 +14,5 @@ interface ClientInterface
 
     public function queryModelItem(string $module, string $id): ?StreamInterface;
 
-    public function loadAttachment(string $module, string $id): ?StreamInterface;
+    public function loadAttachment(string $module, string $id, ?callable $onHeaders = null): ?StreamInterface;
 }
