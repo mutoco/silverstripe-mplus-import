@@ -58,7 +58,8 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
     {
         parent::setup();
 
-        $search = new SearchBuilder($this->module, $this->cfg['search']);
+        $search = new SearchBuilder($this->module);
+        $search->setExpert($this->cfg['search']);
 
         $client = Injector::inst()->create('Mutoco\Mplus\Api\Client');
         $client->init();

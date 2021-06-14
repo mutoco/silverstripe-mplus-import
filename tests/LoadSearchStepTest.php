@@ -49,7 +49,7 @@ class LoadSearchStepTest extends SapphireTest
                 $hasSteps = $engine->next();
             } while ($hasSteps);
 
-            $this->assertEquals(15, $engine->getSteps(), 'Should have performed 3 load steps and 12 imports');
+            $this->assertEquals(27, $engine->getSteps(), 'Should have performed 3 load steps, 12 resolves and 12 imports');
 
             $this->assertEquals([
                 'Lorem',

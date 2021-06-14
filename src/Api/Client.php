@@ -134,7 +134,7 @@ class Client implements ClientInterface
     {
         return $this->sendApiRequest(sprintf('ria-ws/application/module/%s/search/', $module), [
             'body' => $xml
-        ]);
+        ],  'POST');
     }
 
     public function queryModelItem(string $module, string $id): ?StreamInterface
@@ -161,9 +161,9 @@ class Client implements ClientInterface
         return null;
     }
 
-    protected function sendApiRequest(string $url, array $options = []): ?StreamInterface
+    protected function sendApiRequest(string $url, array $options = [], string $method = 'GET'): ?StreamInterface
     {
-        $response = $this->client->get($url, $options);
+        $response = $this->client->request($method, $url, $options);
 
         if ($response->getStatusCode() === 200) {
             return $response->getBody();

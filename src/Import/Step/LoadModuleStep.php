@@ -22,11 +22,11 @@ class LoadModuleStep implements StepInterface
     protected ?Node $allowedPaths;
     protected \SplQueue $pendingNodes;
 
-    public function __construct(string $module, string $id)
+    public function __construct(string $module, string $id, ?TreeNode $resultTree = null)
     {
         $this->module = $module;
         $this->id = $id;
-        $this->resultTree = null;
+        $this->resultTree = $resultTree;
         $this->allowedPaths = null;
         $this->pendingNodes = new \SplQueue();
     }
@@ -51,7 +51,6 @@ class LoadModuleStep implements StepInterface
      */
     public function activate(ImportEngine $engine): void
     {
-        $this->resultTree = null;
         $this->pendingNodes = new \SplQueue();
         $this->allowedPaths = Util::pathsToTree($engine->getConfig()->getImportPaths($this->module));
     }

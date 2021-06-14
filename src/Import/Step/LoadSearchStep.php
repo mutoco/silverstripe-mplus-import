@@ -57,7 +57,7 @@ class LoadSearchStep implements StepInterface
             $result = $parser->parse($stream);
             if ($result instanceof TreeNode && ($tree = $result->getNestedNode($this->search->getModule()))) {
                 foreach ($tree->getChildren() as $child) {
-                    $engine->addStep(new ImportModuleStep($this->search->getModule(), $child->id, $child));
+                    $engine->addStep(new LoadModuleStep($this->search->getModule(), $child->id, $child));
                 }
 
                 $total = (int)$tree->totalSize;
