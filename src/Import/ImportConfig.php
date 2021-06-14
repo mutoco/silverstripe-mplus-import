@@ -56,6 +56,7 @@ class ImportConfig implements \Serializable
     /**
      * Set a config that gets normalized
      * @param array $config
+     * @param bool $merge
      * @return ImportConfig
      */
     public function applyConfig(array $config, bool $merge = false): self

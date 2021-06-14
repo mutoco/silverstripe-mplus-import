@@ -28,7 +28,7 @@ class ImportEngine implements \Serializable
 
     public function __construct()
     {
-        $this->steps = -1;
+        $this->steps = 0;
         $this->registry = new ImportRegistry();
         $this->config = null;
 
@@ -58,7 +58,7 @@ class ImportEngine implements \Serializable
 
     public function getSteps(): int
     {
-        return $this->steps;
+        return max(0, $this->steps - 1);
     }
 
     public function getConfig(): ImportConfig
@@ -96,6 +96,19 @@ class ImportEngine implements \Serializable
         }
 
         return null;
+    }
+
+    public function getTotalSteps(): int
+    {
+        $remaining = 0;
+
+        foreach ($this->queues as $queue) {
+            if ($queue && !$queue->isEmpty()) {
+                $remaining += $queue->count();
+            }
+        }
+
+        return $remaining + $this->getSteps();
     }
 
     public function isComplete(): bool

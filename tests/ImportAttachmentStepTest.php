@@ -82,6 +82,8 @@ class ImportAttachmentStepTest extends SapphireTest
             Work::flush_and_destroy_cache();
             $work = Work::get()->find('MplusID', 1);
             $this->assertEquals('2021-05-10 10:00:00', $work->Image()->LastEdited, 'Image should not get updated');
+
+            DBDatetime::clear_mock_now();
         });
     }
 }

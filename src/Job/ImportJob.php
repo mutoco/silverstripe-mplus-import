@@ -7,7 +7,8 @@ namespace Mutoco\Mplus\Job;
 
 
 use Mutoco\Mplus\Api\SearchBuilder;
-use Mutoco\Mplus\Import\ModelImporter;
+use Mutoco\Mplus\Import\ImportEngine;
+use Mutoco\Mplus\Import\Step\LoadSearchStep;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Injector\Injector;
 use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
@@ -17,7 +18,9 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
 {
     use Configurable;
 
-    private static $data_mapping = [];
+    protected ?ImportEngine $importer = null;
+    protected ?array $cfg = null;
+    protected ?string $module = null;
 
     public function __construct($params = [])
     {
@@ -59,13 +62,12 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
 
         $client = Injector::inst()->create('Mutoco\Mplus\Api\Client');
         $client->init();
-        $xml = $client->search($this->module, $search);
-
-        $this->importer = new ModelImporter($this->module, $this->cfg['xpath']);
+        $this->importer = new ImportEngine();
         $this->importer->setApi($client);
-        $this->importer->initialize($xml);
+        $this->importer->addStep(new LoadSearchStep($search));
+
         $this->totalSteps = $this->importer->getTotalSteps();
-        $this->currentStep = 0;
+        $this->currentStep = $this->importer->getSteps();
     }
 
     public function prepareForRestart()
@@ -78,13 +80,35 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
 
     public function process()
     {
-        $this->importer->importNext();
+        $this->importer->next();
         $this->totalSteps = $this->importer->getTotalSteps();
-        $this->currentStep++;
+        $this->currentStep = $this->importer->getSteps();
 
-        if ($this->importer->getIsFinalized()) {
-            $this->importer->cleanup($this->importer->getImportedIdsPerModel());
+        if ($this->importer->isComplete()) {
             $this->isComplete = true;
+        }
+    }
+
+    public function getJobData()
+    {
+        $data = parent::getJobData();
+
+        $jobData = $this->jobData ?? new \stdClass();
+        $jobData->importer = $this->importer;
+        $jobData->module = $this->module;
+        $jobData->cfg = $this->cfg;
+        $data->jobData = $jobData;
+
+        return $data;
+    }
+
+    public function setJobData($totalSteps, $currentStep, $isComplete, $jobData, $messages)
+    {
+        parent::setJobData($totalSteps, $currentStep, $isComplete, $jobData, $messages);
+        if ($jobData) {
+            $this->importer = $jobData->importer ?? null;
+            $this->module = $jobData->module ?? null;
+            $this->cfg = $jobData->cfg ?? null;
         }
     }
 }
