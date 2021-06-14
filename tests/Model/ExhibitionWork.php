@@ -16,8 +16,4 @@ class ExhibitionWork extends DataObject implements TestOnly
     ];
 
     private static $table_name = 'Mutoco_Test_ExhibitionWork';
-
-    private static $extensions = [
-        DataRecordExtension::class
-    ];
 }

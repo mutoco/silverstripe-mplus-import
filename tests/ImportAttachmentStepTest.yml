@@ -1,0 +1,12 @@
+Mutoco\Mplus\Tests\Model\Exhibition:
+  exhibition2:
+    MplusID: 2
+    Imported: 2021-04-01 09:00:00
+
+Mutoco\Mplus\Tests\Model\Work:
+  work1:
+    MplusID: 1
+    Title: A piece of art
+    Subtitle: Some interesting subtitle
+    Artist: Firstname Lastname
+    Exhibition: =>Mutoco\Mplus\Tests\Model\Exhibition.exhibition2

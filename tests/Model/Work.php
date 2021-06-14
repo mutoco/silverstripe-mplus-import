@@ -12,7 +12,9 @@ use SilverStripe\ORM\DataObject;
 class Work extends DataObject implements TestOnly
 {
     private static $db = [
-        'Title' => 'Varchar(255)'
+        'Title' => 'Varchar(255)',
+        'Subtitle' => 'Varchar(255)',
+        'Artist' => 'Varchar(255)'
     ];
 
     private static $has_one = [

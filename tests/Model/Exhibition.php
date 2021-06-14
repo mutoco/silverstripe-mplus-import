@@ -24,9 +24,13 @@ class Exhibition extends DataObject implements TestOnly
 	    'Persons' => Person::class,
         'Works' => [
             'through' => ExhibitionWork::class,
-            'from' => Exhibition::class,
-            'to' => Work::class,
+            'from' => 'Exhibition',
+            'to' => 'Work',
         ]
+    ];
+
+	private static $many_many_extraFields = [
+	    'Persons' => ['Sort' => 'Int']
     ];
 
 	private static $extensions = [

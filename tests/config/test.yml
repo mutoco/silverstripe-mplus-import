@@ -1,61 +1,65 @@
-ModelImporterDefault:
-  models:
+ImportEngine:
+  modules:
     ExhTextGrp:
-      class: Mutoco\Mplus\Tests\Model\TextBlock
+      modelClass: Mutoco\Mplus\Tests\Model\TextBlock
       fields:
-        Text: '//m:dataField[@name="TextClb"]/m:value'
-        Author: '//m:dataField[@name="AuthorTxt"]/m:value'
+        Text: TextClb
+        Author: AuthorTxt
     Exhibition:
-      class: Mutoco\Mplus\Tests\Model\Exhibition
+      modelClass: Mutoco\Mplus\Tests\Model\Exhibition
       fields:
-        Title: '//m:dataField[@name="ExhTitleTxt"]/m:value'
-        DateTo: '//m:dataField[@name="ExhDateToDat"]/m:value'
-        DateFrom: '//m:dataField[@name="ExhDateFromDat"]/m:value'
+        Title: ExhTitleTxt
+        DateTo: ExhDateToDat
+        DateFrom: ExhDateFromDat
+      relations:
+        Texts: ExhTextGrp
+        Persons:
+          name: ExhPersonRef
+          type: Person
+    Person:
+      modelClass: Mutoco\Mplus\Tests\Model\Person
+      fields:
+        Firstname: PerFirstNameTxt
+        Lastname: PerLastNameTxt
+        DateOfBirth: PerDateFromBeginDat
+        DateOfDeath: PerDateToEndDat
+        PlaceOfBirth: PerPlaceBirthTxt
+        PlaceOfDeath: PerPlaceDeathTxt
+
+SearchLoader:
+  modules:
+    Exhibition:
+      modelClass: Mutoco\Mplus\Tests\Model\Exhibition
+      fields:
+        Title: ExhTitleTxt
+
+ImportNested:
+  modules:
+    TextBlock:
+      modelClass: Mutoco\Mplus\Tests\Model\TextBlock
+      fields:
+        Text: TextClb
+        Author: AuthorTxt
+    Object:
+      modelClass:  Mutoco\Mplus\Tests\Model\Work
+      fields:
+        Title: ObjObjectTitleGrp.TitleTxt
+        Subtitle: ObjObjectTitleGrp.AdditionTxt
+        Artist: ObjContentDescriptionGrp.PersonRef.PerPersonVrt
+      attachment: Image
+    Exhibition:
+      modelClass: Mutoco\Mplus\Tests\Model\Exhibition
+      fields:
+        Title: ExhTitleTxt
+        DateTo: ExhDateToDat
+        DateFrom: ExhDateFromDat
       relations:
         Texts:
-          xpath: '//m:repeatableGroup[@name="ExhTextGrp"]/m:repeatableGroupItem'
-          model: ExhTextGrp
+          name: ExhTextGrp
+          type: TextBlock
+        Works:
+          name: ExhRegistrarRef.RegObjectRef
+          fields:
+            Sort: ExhRegistrarRef.RegSortLnu
+          type: Object
 
-ModelImporterRelation:
-  models:
-    Person:
-      class: Mutoco\Mplus\Tests\Model\Person
-      fields:
-        Firstname: '//m:dataField[@name="PerFirstNameTxt"]/m:value'
-        Lastname: '//m:dataField[@name="PerLastNameTxt"]/m:value'
-        PlaceOfBirth: '//m:dataField[@name="PerPlaceBirthTxt"]/m:value'
-        PlaceOfDeath: '//m:dataField[@name="PerPlaceDeathTxt"]/m:value'
-        DateOfBirth: '//m:dataField[@name="PerDateFromBeginDat"]/m:value'
-        DateOfDeath: '//m:dataField[@name="PerDateToEndDat"]/m:value'
-    Exhibition:
-      class: Mutoco\Mplus\Tests\Model\Exhibition
-      fields:
-        Title: '//m:dataField[@name="ExhTitleTxt"]/m:value'
-        DateTo: '//m:dataField[@name="ExhDateToDat"]/m:value'
-        DateFrom: '//m:dataField[@name="ExhDateFromDat"]/m:value'
-      relations:
-        Persons:
-          model: Person
-          moduleRef: ExhPersonRef
-
-ModelImporterDeepRelation:
-  models:
-    Person:
-      class: Mutoco\Mplus\Tests\Model\Person
-      fields:
-        Firstname: '//m:dataField[@name="PerFirstNameTxt"]/m:value'
-        Lastname: '//m:dataField[@name="PerLastNameTxt"]/m:value'
-        PlaceOfBirth: '//m:dataField[@name="PerPlaceBirthTxt"]/m:value'
-        PlaceOfDeath: '//m:dataField[@name="PerPlaceDeathTxt"]/m:value'
-        DateOfBirth: '//m:dataField[@name="PerDateFromBeginDat"]/m:value'
-        DateOfDeath: '//m:dataField[@name="PerDateToEndDat"]/m:value'
-    Exhibition:
-      class: Mutoco\Mplus\Tests\Model\Exhibition
-      fields:
-        Title: '//m:dataField[@name="ExhTitleTxt"]/m:value'
-        DateTo: '//m:dataField[@name="ExhDateToDat"]/m:value'
-        DateFrom: '//m:dataField[@name="ExhDateFromDat"]/m:value'
-      relations:
-        Persons:
-          model: Person
-          moduleRef: ExhRegistrarRef.RegObjectRef.ObjAcquisitionPersonRef
