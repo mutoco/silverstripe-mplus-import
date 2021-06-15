@@ -109,6 +109,8 @@ class ImportModuleStepTest extends SapphireTest
             $this->assertEquals('2021-05-10 10:00:00', $person->Imported, 'Imported date must be updated to import time');
 
             DBDatetime::set_mock_now('2021-05-11 11:00:00');
+            $engine = new ImportEngine();
+            $engine->setApi(new Client());
             $engine->addStep(new LoadModuleStep('Exhibition', 2));
             do {
                 $hasSteps = $engine->next();

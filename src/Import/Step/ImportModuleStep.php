@@ -68,7 +68,6 @@ class ImportModuleStep implements StepInterface
 
         $config = $engine->getConfig()->getModuleConfig($this->module);
         $this->target = $this->createOrUpdate($config, $this->tree, $isSkipped);
-        $engine->getRegistry()->reportImportedModule($this->module, $this->target->MplusID);
 
         if (!$isSkipped) {
             if (isset($config['attachment'])) {
@@ -84,6 +83,10 @@ class ImportModuleStep implements StepInterface
      */
     public function deactivate(ImportEngine $engine): void
     {
+        if ($engine->getRegistry()->hasImportedModule($this->module, $this->id)) {
+            return;
+        }
+
         $config = $engine->getConfig()->getModuleConfig($this->module);
 
         foreach ($config['relations'] as $relationName => $relationCfg) {
@@ -112,6 +115,9 @@ class ImportModuleStep implements StepInterface
                 $engine->addStep(new LinkRelationStep($this->target->getClassName(), $this->target->MplusID, $relationName, $ids));
             }
         }
+
+        $engine->getRegistry()->reportImportedModule($this->module, $this->id);
+        $engine->getRegistry()->clearImportedTree($this->module, $this->id);
     }
 
     protected function createOrUpdate(array $config, TreeNode $tree, &$skipped = false): DataObject

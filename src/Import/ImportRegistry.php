@@ -33,6 +33,14 @@ class ImportRegistry implements \Serializable
         $this->trees[$key] = $tree;
     }
 
+    public function clearImportedTree(string $module, string $id)
+    {
+        $key = $module . '.' . $id;
+        if (isset($this->trees[$key])) {
+            unset($this->trees[$key]);
+        }
+    }
+
     public function reportImportedRelation(string $class, string $id, string $name, array $ids)
     {
         $key = join('-', [$class, $id, $name]);
