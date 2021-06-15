@@ -6,6 +6,7 @@ namespace Mutoco\Mplus\Task;
 
 use Mutoco\Mplus\Job\ImportJob;
 use SilverStripe\Dev\BuildTask;
+use Symbiote\QueuedJobs\Services\QueuedJobService;
 
 class ImportTask extends BuildTask
 {
@@ -15,6 +16,6 @@ class ImportTask extends BuildTask
     {
         $job = new ImportJob();
         $job->hydrate('Exhibition');
-        singleton('Symbiote\\QueuedJobs\\Services\\QueuedJobService')->queueJob($job);
+        QueuedJobService::singleton()->queueJob($job);
     }
 }

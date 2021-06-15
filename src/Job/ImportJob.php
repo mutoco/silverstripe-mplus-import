@@ -11,8 +11,10 @@ use Mutoco\Mplus\Import\ImportEngine;
 use Mutoco\Mplus\Import\Step\LoadSearchStep;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\ORM\FieldType\DBDatetime;
 use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
 use Symbiote\QueuedJobs\Services\QueuedJob;
+use Symbiote\QueuedJobs\Services\QueuedJobService;
 
 class ImportJob extends AbstractQueuedJob implements QueuedJob
 {
@@ -47,11 +49,12 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
 
         $this->cfg = $mapping[$module];
         $this->module = $module;
+        $this->totalSteps = 1;
     }
 
     public function getJobType()
     {
-        return QueuedJob::LARGE;
+        return QueuedJob::QUEUED;
     }
 
     public function setup()
@@ -64,6 +67,7 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
         $client = Injector::inst()->create('Mutoco\Mplus\Api\Client');
         $client->init();
         $this->importer = new ImportEngine();
+        $this->importer->setDeleteObsoleteRecords(true);
         $this->importer->setApi($client);
         $this->importer->addStep(new LoadSearchStep($search));
 
@@ -87,6 +91,8 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
 
         if ($this->importer->isComplete()) {
             $this->isComplete = true;
+            //TODO: Make this configurable? Or just run via cron
+            //$this->reenqueue();
         }
     }
 
@@ -111,5 +117,15 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
             $this->module = $jobData->module ?? null;
             $this->cfg = $jobData->cfg ?? null;
         }
+    }
+
+    private function reenqueue()
+    {
+        $this->addMessage("Queueing the next Import Job.");
+        $job = Injector::inst()->create(self::class);
+        QueuedJobService::singleton()->queueJob(
+            $job,
+            DBDatetime::create()->setValue(DBDatetime::now()->getTimestamp() + 86400)->Rfc2822()
+        );
     }
 }
