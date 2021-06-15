@@ -21,13 +21,14 @@ class ImportModuleStep implements StepInterface
     protected string $id;
     protected ?TreeNode $tree;
 
-    protected DataObject $target;
+    protected ?DataObject $target;
 
     public function __construct(string $module, string $id, ?TreeNode $tree = null)
     {
         $this->module = $module;
         $this->id = $id;
         $this->tree = $tree;
+        $this->target = null;
     }
 
     public function getId(): ?string
@@ -182,6 +183,10 @@ class ImportModuleStep implements StepInterface
         $obj->tree = $this->tree;
         $obj->module = $this->module;
         $obj->id = $this->id;
+        if ($this->target) {
+            $obj->targetClass = $this->target->getClassName();
+            $obj->targetId = $this->target->ID;
+        }
         return $obj;
     }
 
@@ -190,5 +195,8 @@ class ImportModuleStep implements StepInterface
         $this->tree = $obj->tree;
         $this->module = $obj->module;
         $this->id = $obj->id;
+        if (isset($obj->targetClass)) {
+            $this->target = DataObject::get_by_id($obj->targetClass, $obj->targetId);
+        }
     }
 }
