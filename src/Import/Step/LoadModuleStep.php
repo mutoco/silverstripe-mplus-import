@@ -53,7 +53,7 @@ class LoadModuleStep implements StepInterface
 
     public function getDefaultQueue(): string
     {
-        return ImportEngine::QUEUE_LOAD;
+        return ImportEngine::QUEUE_IMPORT;
     }
 
     /**
@@ -95,11 +95,6 @@ class LoadModuleStep implements StepInterface
             // Store the full tree result in the registry
             $engine->getRegistry()->setImportedTree($this->module, $this->id, $this->resultTree);
 
-            $cfg = $engine->getConfig()->getModuleConfig($this->module);
-            if (isset($cfg['modelClass'])) {
-                $engine->addStep(new ImportModuleStep($this->module, $this->id), ImportEngine::QUEUE_IMPORT);
-            }
-
             // Collect all references again. Everything that is left now should be an external module
             $visitor = new ReferenceCollector();
             $references = $this->resultTree->accept($visitor);
@@ -108,6 +103,11 @@ class LoadModuleStep implements StepInterface
                 if (($moduleName = $reference->getModuleName()) && ($id = $reference->moduleItemId)) {
                     $engine->addStep(new LoadModuleStep($moduleName, $id));
                 }
+            }
+
+            $cfg = $engine->getConfig()->getModuleConfig($this->module);
+            if (isset($cfg['modelClass'])) {
+                $engine->addStep(new ImportModuleStep($this->module, $this->id));
             }
         }
 

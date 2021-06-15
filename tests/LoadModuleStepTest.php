@@ -5,6 +5,7 @@ namespace Mutoco\Mplus\Tests;
 
 
 use Mutoco\Mplus\Import\ImportEngine;
+use Mutoco\Mplus\Import\Step\ImportModuleStep;
 use Mutoco\Mplus\Import\Step\LoadModuleStep;
 use Mutoco\Mplus\Tests\Api\Client;
 use SilverStripe\Core\Config\Config;
@@ -39,14 +40,18 @@ class LoadModuleStepTest extends FunctionalTest
         $engine = new ImportEngine();
         $engine->setApi(new Client());
         $engine->addStep(new LoadModuleStep('Exhibition', 2));
+        $this->assertCount(1, $engine->getQueue(ImportEngine::QUEUE_IMPORT));
         $engine->next();
         $engine->next(); // Must run twice to resolve tree
-        $this->assertCount(1, $engine->getQueue(ImportEngine::QUEUE_LOAD));
-        $this->assertEquals(1982, $engine->getQueue(ImportEngine::QUEUE_LOAD)->bottom()->getId());
-        $this->assertEquals('Person', $engine->getQueue(ImportEngine::QUEUE_LOAD)->bottom()->getModule());
-        $engine->next();
-        $engine->next();
-        $this->assertCount(0, $engine->getQueue(ImportEngine::QUEUE_LOAD));
         $this->assertCount(2, $engine->getQueue(ImportEngine::QUEUE_IMPORT));
+        $current = $engine->getQueue(ImportEngine::QUEUE_IMPORT)->bottom();
+        $this->assertInstanceOf(LoadModuleStep::class,$current);
+        $this->assertEquals(1982, $current->getId());
+        $this->assertEquals('Person', $current->getModule());
+        $engine->next();
+        $engine->next();
+        $current = $engine->getQueue(ImportEngine::QUEUE_IMPORT)->bottom();
+        $this->assertInstanceOf(ImportModuleStep::class, $current);
+        $this->assertEquals(2, $current->getId());
     }
 }

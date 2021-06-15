@@ -16,7 +16,7 @@ class LinkRelationStep extends AbstractRelationStep
 {
     public function getDefaultQueue(): string
     {
-        return ImportEngine::QUEUE_IMPORT;
+        return ImportEngine::QUEUE_LINK;
     }
 
     public function run(ImportEngine $engine): bool

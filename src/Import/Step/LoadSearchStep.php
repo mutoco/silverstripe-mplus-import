@@ -34,7 +34,7 @@ class LoadSearchStep implements StepInterface
      */
     public function getDefaultQueue(): string
     {
-        return ImportEngine::QUEUE_LOAD;
+        return ImportEngine::QUEUE_IMPORT;
     }
 
     /**

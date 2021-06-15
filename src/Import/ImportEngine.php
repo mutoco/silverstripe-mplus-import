@@ -15,7 +15,6 @@ class ImportEngine implements \Serializable
     use Configurable;
     use SerializableTrait;
 
-    const QUEUE_LOAD = 'LOAD';
     const QUEUE_IMPORT = 'IMPORT';
     const QUEUE_LINK = 'LINK';
     const QUEUE_CLEANUP = 'CLEANUP';
@@ -33,7 +32,6 @@ class ImportEngine implements \Serializable
         $this->config = null;
 
         $this->queues = [
-            self::QUEUE_LOAD => new \SplQueue(),
             self::QUEUE_IMPORT => new \SplQueue(),
             self::QUEUE_LINK => new \SplQueue(),
             self::QUEUE_CLEANUP => new \SplQueue(),
