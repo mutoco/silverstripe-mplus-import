@@ -33,21 +33,21 @@ class ImportRegistry implements \Serializable
         $this->trees[$key] = $tree;
     }
 
-    public function reportImportedRelation(string $class, string $name, array $ids)
+    public function reportImportedRelation(string $class, string $id, string $name, array $ids)
     {
-        $key = $class . '.' . $name;
+        $key = join('-', [$class, $id, $name]);
         $this->relations[$key] = $ids;
     }
 
-    public function hasImportedRelation(string $class, string $name): bool
+    public function hasImportedRelation(string $class, string $id, string $name): bool
     {
-        $key = $class . '.' . $name;
+        $key = join('-', [$class, $id, $name]);
         return isset($this->relations[$key]);
     }
 
-    public function getRelationIds(string $class, string $name): array
+    public function getRelationIds(string $class, string $id, string $name): array
     {
-        $key = $class . '.' . $name;
+        $key = join('-', [$class, $id, $name]);
         return $this->relations[$key] ?? [];
     }
 

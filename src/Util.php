@@ -15,12 +15,12 @@ class Util
         return array_keys($arr) !== range(0, count($arr) - 1);
     }
 
-    public static function pathsToTree(array $paths): Node
+    public static function pathsToTree(array $paths, ?string $prefix = null): Node
     {
         $tree = new Node();
 
         foreach ($paths as $path) {
-            $parts = explode('.', $path);
+            $parts = explode('.', ($prefix ? $prefix . '.' : '') . $path);
             $node = $tree;
             foreach ($parts as $part) {
                 $found = false;

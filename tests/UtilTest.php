@@ -64,6 +64,26 @@ class UtilTest extends FunctionalTest
         ], $childCounts);
     }
 
+    public function testPathsToTreeWithPrefix()
+    {
+        $tree = Util::pathsToTree([
+            'Foo.Baz.Lorem',
+            'Foo.Bar',
+            'Foo.Baz.Ipsum.Dolor',
+            '42'
+        ], 'Hello.World');
+
+        $this->assertEquals('Hello', $tree->getChildren()[0]->getValue());
+        $this->assertEquals('World', $tree->getChildren()[0]->getChildren()[0]->getValue());
+
+        $this->assertEquals([
+            'Hello.World.Foo.Baz.Lorem',
+            'Hello.World.Foo.Baz.Ipsum.Dolor',
+            'Hello.World.Foo.Bar',
+            'Hello.World.42'
+        ], Util::treeToPaths($tree));
+    }
+
     public function testIsValid()
     {
         $tree = Util::pathsToTree([

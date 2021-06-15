@@ -12,6 +12,10 @@ use Mutoco\Mplus\Serialize\SerializableTrait;
 use Mutoco\Mplus\Util;
 use Tree\Node\Node;
 
+/**
+ * Loads a single model from the API and resolves all necessary relations to import the model
+ * @package Mutoco\Mplus\Import\Step
+ */
 class LoadModuleStep implements StepInterface
 {
     use SerializableTrait;
@@ -22,6 +26,12 @@ class LoadModuleStep implements StepInterface
     protected ?Node $allowedPaths;
     protected \SplQueue $pendingNodes;
 
+    /**
+     * LoadModuleStep constructor.
+     * @param string $module - the name of the Mplus Module, eg. "Exhibition"
+     * @param string $id - the ID of the module
+     * @param TreeNode|null $resultTree - if this is set, this tree will be used instead of sending a request to the API
+     */
     public function __construct(string $module, string $id, ?TreeNode $resultTree = null)
     {
         $this->module = $module;

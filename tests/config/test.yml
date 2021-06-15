@@ -32,6 +32,20 @@ SearchLoader:
       modelClass: Mutoco\Mplus\Tests\Model\Exhibition
       fields:
         Title: ExhTitleTxt
+      relations:
+        Persons:
+          name: ExhPersonRef
+          type: Person
+    Person:
+      modelClass: Mutoco\Mplus\Tests\Model\Person
+      fields:
+        Firstname: PerFirstNameTxt
+        Lastname: PerLastNameTxt
+        DateOfBirth: PerDateFromBeginDat
+        DateOfDeath: PerDateToEndDat
+        PlaceOfBirth: PerPlaceBirthTxt
+        PlaceOfDeath: PerPlaceDeathTxt
+
 
 ImportNested:
   modules:

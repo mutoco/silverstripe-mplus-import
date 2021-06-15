@@ -7,6 +7,7 @@ use Mutoco\Mplus\Import\ImportEngine;
 use Mutoco\Mplus\Import\Step\LoadSearchStep;
 use Mutoco\Mplus\Tests\Api\Client;
 use Mutoco\Mplus\Tests\Model\Exhibition;
+use Mutoco\Mplus\Tests\Model\Person;
 use SilverStripe\Config\Collections\MutableConfigCollectionInterface;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
@@ -16,7 +17,8 @@ use Symfony\Component\Yaml\Yaml;
 class LoadSearchStepTest extends SapphireTest
 {
     protected static $extra_dataobjects = [
-        Exhibition::class
+        Exhibition::class,
+        Person::class
     ];
 
     protected array $loadedConfig;
@@ -49,8 +51,6 @@ class LoadSearchStepTest extends SapphireTest
                 $hasSteps = $engine->next();
             } while ($hasSteps);
 
-            $this->assertEquals(27, $engine->getSteps(), 'Should have performed 3 load steps, 12 resolves and 12 imports');
-
             $this->assertEquals([
                 'Lorem',
                 'Ipsum',
@@ -69,6 +69,13 @@ class LoadSearchStepTest extends SapphireTest
             $this->assertEquals([
                 '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'
             ], Exhibition::get()->column('MplusID'));
+
+            $ex6 = Exhibition::get()->find('MplusID', 6);
+            $ex7 = Exhibition::get()->find('MplusID', 7);
+            $this->assertCount(1, $ex6->Persons());
+            $this->assertCount(1, $ex7->Persons());
+            $this->assertEquals('Edvard', $ex6->Persons()->First()->Firstname);
+            $this->assertEquals('Bilbo', $ex7->Persons()->First()->Firstname);
         });
     }
 }

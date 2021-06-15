@@ -9,6 +9,7 @@ use Mutoco\Mplus\Import\ImportEngine;
 use Mutoco\Mplus\Parse\Parser;
 use Mutoco\Mplus\Parse\Result\TreeNode;
 use Mutoco\Mplus\Serialize\SerializableTrait;
+use Mutoco\Mplus\Util;
 
 /**
  * A step that performs a search against the M+ API and imports all modules that were found.
@@ -53,11 +54,14 @@ class LoadSearchStep implements StepInterface
         $stream = $engine->getApi()->search($this->search->getModule(), (string)$this->search);
 
         if ($stream) {
+            $module = $this->search->getModule();
             $parser = new Parser();
+            $parser->setAllowedPaths(Util::pathsToTree($engine->getConfig()->getImportPaths($module), $module));
             $result = $parser->parse($stream);
-            if ($result instanceof TreeNode && ($tree = $result->getNestedNode($this->search->getModule()))) {
+            if ($result instanceof TreeNode && ($tree = $result->getNestedNode($module))) {
                 foreach ($tree->getChildren() as $child) {
-                    $engine->addStep(new LoadModuleStep($this->search->getModule(), $child->id, $child));
+                    // Must hand over the resulting tree to a LoadModuleStep in order to resolve the full tree
+                    $engine->addStep(new LoadModuleStep($module, $child->id, $child));
                 }
 
                 $total = (int)$tree->totalSize;

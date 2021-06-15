@@ -21,13 +21,13 @@ class LinkRelationStep extends AbstractRelationStep
 
     public function run(ImportEngine $engine): bool
     {
-        if ($engine->getRegistry()->hasImportedRelation($this->targetClass, $this->relationName)) {
+        if ($engine->getRegistry()->hasImportedRelation($this->targetClass, $this->targetId, $this->relationName)) {
             return false;
         }
 
         $result = parent::run($engine);
 
-        $engine->getRegistry()->reportImportedRelation($this->targetClass, $this->relationName, $this->relationIds);
+        $engine->getRegistry()->reportImportedRelation($this->targetClass, $this->targetId, $this->relationName, $this->relationIds);
 
         return $result;
     }
