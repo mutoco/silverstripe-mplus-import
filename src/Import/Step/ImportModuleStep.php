@@ -58,6 +58,10 @@ class ImportModuleStep implements StepInterface
             return false;
         }
 
+        if (empty($engine->getRegistry()->getImportedIds($this->module))) {
+            $engine->addStep(new CleanupRecordsStep($this->module));
+        }
+
         if (!$this->tree) {
             $this->tree = $engine->getRegistry()->getImportedTree($this->module, $this->id);
         }

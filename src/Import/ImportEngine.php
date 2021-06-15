@@ -24,6 +24,7 @@ class ImportEngine implements \Serializable
     protected int $steps;
     protected ImportRegistry $registry;
     protected ?ImportConfig $config;
+    protected bool $deleteObsoleteRecords = false;
 
     public function __construct()
     {
@@ -36,6 +37,24 @@ class ImportEngine implements \Serializable
             self::QUEUE_LINK => new \SplQueue(),
             self::QUEUE_CLEANUP => new \SplQueue(),
         ];
+    }
+
+    /**
+     * @return bool - whether or not the import engine should delete obsolete records at the end
+     */
+    public function getDeleteObsoleteRecords(): bool
+    {
+        return $this->deleteObsoleteRecords;
+    }
+
+    /**
+     * @param bool $deleteObsoleteRecords
+     * @return ImportEngine
+     */
+    public function setDeleteObsoleteRecords(bool $deleteObsoleteRecords): self
+    {
+        $this->deleteObsoleteRecords = $deleteObsoleteRecords;
+        return $this;
     }
 
     public function getApi(): ?ClientInterface

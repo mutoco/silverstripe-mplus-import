@@ -1,0 +1,18 @@
+Mutoco\Mplus\Tests\Model\Person:
+  tester:
+    MplusID: 10
+    Firstname: Example
+    Lastname: Tester
+
+Mutoco\Mplus\Tests\Model\Exhibition:
+  exhibition3:
+    MplusID: 3
+    Imported: 2021-04-01 09:00:00
+    Persons: =>Mutoco\Mplus\Tests\Model\Person.tester
+
+Mutoco\Mplus\Tests\Model\TextBlock:
+  textBlock:
+    MplusID: 4
+    Text: This is an old text.
+    Author: Firstname Lastname
+    Exhibition: =>Mutoco\Mplus\Tests\Model\Exhibition.exhibition3
