@@ -91,8 +91,6 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
 
         if ($this->importer->isComplete()) {
             $this->isComplete = true;
-            //TODO: Make this configurable? Or just run via cron
-            //$this->reenqueue();
         }
     }
 
@@ -117,15 +115,5 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
             $this->module = $jobData->module ?? null;
             $this->cfg = $jobData->cfg ?? null;
         }
-    }
-
-    private function reenqueue()
-    {
-        $this->addMessage("Queueing the next Import Job.");
-        $job = Injector::inst()->create(self::class);
-        QueuedJobService::singleton()->queueJob(
-            $job,
-            DBDatetime::create()->setValue(DBDatetime::now()->getTimestamp() + 86400)->Rfc2822()
-        );
     }
 }

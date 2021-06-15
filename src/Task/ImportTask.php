@@ -12,10 +12,20 @@ class ImportTask extends BuildTask
 {
     private static $segment = 'ImportMplusTask';
 
+    public function getDescription()
+    {
+        return _t(
+            __CLASS__ . '.Description',
+            'Task to schedule an import from M+. Pass the optional "module" parameter to set the '
+            . 'module to import. Defaults to "Exhibition"'
+        );
+    }
+
     public function run($request)
     {
         $job = new ImportJob();
-        $job->hydrate('Exhibition');
+        $job->hydrate($request['module'] ?? 'Exhibition');
         QueuedJobService::singleton()->queueJob($job);
+        echo "Import Job Queued";
     }
 }
