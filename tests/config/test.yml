@@ -79,3 +79,22 @@ ImportNested:
             Sort: ExhRegistrarRef.RegSortLnu
           type: Object
 
+TestResolveTree:
+  modules:
+    Exhibition:
+      modelClass: Mutoco\Mplus\Tests\Model\Exhibition
+      fields:
+        Title: ExhTitleTxt
+        DateTo: ExhDateToDat
+        DateFrom: ExhDateFromDat
+      relations:
+        Works:
+          name: ExhPersonRef.PerObjectAcquisitionRef
+          fields:
+            InternalRole: ExhPersonRef.TypeVoc.artist
+            ExternalName: ExhPersonRef.PerFirstNameTxt
+          type: Object
+    Object:
+      modelClass: Mutoco\Mplus\Tests\Model\Work
+      fields:
+        Title: ObjObjectTitleGrp.TitleTxt

@@ -51,6 +51,11 @@ class LoadModuleStep implements StepInterface
         return $this->module;
     }
 
+    public function getResultTree(): ?TreeNode
+    {
+        return $this->resultTree;
+    }
+
     public function getDefaultQueue(): string
     {
         return ImportEngine::QUEUE_IMPORT;
@@ -100,7 +105,7 @@ class LoadModuleStep implements StepInterface
             $references = $this->resultTree->accept($visitor);
             /** @var TreeNode $reference */
             foreach ($references as $reference) {
-                if (($moduleName = $reference->getModuleName()) && ($id = $reference->moduleItemId)) {
+                if (!$reference->isResolved() && ($moduleName = $reference->getModuleName()) && ($id = $reference->moduleItemId)) {
                     $engine->addStep(new LoadModuleStep($moduleName, $id));
                 }
             }
