@@ -5,9 +5,12 @@ namespace Mutoco\Mplus\Tests;
 use Mutoco\Mplus\Import\ImportEngine;
 use Mutoco\Mplus\Import\Step\LoadModuleStep;
 use Mutoco\Mplus\Tests\Api\Client;
+use Mutoco\Mplus\Tests\Extension\TaxonomyExtension;
 use Mutoco\Mplus\Tests\Model\Exhibition;
 use Mutoco\Mplus\Tests\Model\ExhibitionWork;
 use Mutoco\Mplus\Tests\Model\Person;
+use Mutoco\Mplus\Tests\Model\Taxonomy;
+use Mutoco\Mplus\Tests\Model\TaxonomyType;
 use Mutoco\Mplus\Tests\Model\TextBlock;
 use Mutoco\Mplus\Tests\Model\Work;
 use SilverStripe\Config\Collections\MutableConfigCollectionInterface;
@@ -24,7 +27,9 @@ class ImportModuleStepTest extends SapphireTest
         TextBlock::class,
         Person::class,
         Work::class,
-        ExhibitionWork::class
+        ExhibitionWork::class,
+        Taxonomy::class,
+        TaxonomyType::class
     ];
 
     protected array $loadedConfig;
@@ -142,6 +147,51 @@ class ImportModuleStepTest extends SapphireTest
             $this->assertEquals(['Stillleben mit Hummer', 'Testdatensatz Portrait'], $exhibition->Works()->column('Title'));
             $this->assertEquals(['TEST', 'Hummer'], $exhibition->Works()->column('Subtitle'));
             $this->assertEquals(['Edvard Munch', 'Edvard Munch'], $exhibition->Works()->column('Artist'));
+        });
+    }
+
+    public function testVocabularyItems()
+    {
+        Config::withConfig(function(MutableConfigCollectionInterface $config) {
+            $config->set(ImportEngine::class, 'modules', $this->loadedConfig['TestVocabRelations']['modules']);
+            $engine = new ImportEngine();
+            $engine->setApi(new Client());
+            $engine->addStep(new LoadModuleStep('Exhibition', 2));
+            do {
+                $hasSteps = $engine->next();
+            } while ($hasSteps);
+
+            Exhibition::flush_and_destroy_cache();
+            $exhibition = Exhibition::get()->find('MplusID', 2);
+            $text = $exhibition->Texts()->first();
+            $taxonomy = $text->Type();
+            $this->assertNotNull($taxonomy);
+            $this->assertInstanceOf(Taxonomy::class, $taxonomy);
+            $this->assertEquals('100842588', $taxonomy->MplusID);
+            $this->assertNull($taxonomy->Title);
+            $this->assertFalse($taxonomy->Type()->exists());
+
+            // Apply an extension that applies title and parent
+            $config->merge(Taxonomy::class, 'extensions', [TaxonomyExtension::class]);
+
+            $engine = new ImportEngine();
+            $engine->setApi(new Client());
+            $engine->addStep(new LoadModuleStep('Exhibition', 2));
+            do {
+                $hasSteps = $engine->next();
+            } while ($hasSteps);
+
+            Exhibition::flush_and_destroy_cache();
+            $exhibition = Exhibition::get()->find('MplusID', 2);
+            $text = $exhibition->Texts()->first();
+            $taxonomy = $text->Type();
+            $this->assertNotNull($taxonomy);
+            $this->assertInstanceOf(Taxonomy::class, $taxonomy);
+            $this->assertEquals('100842588', $taxonomy->MplusID);
+            $this->assertEquals('Press_DE', $taxonomy->Title);
+            $this->assertTrue($taxonomy->Type()->exists());
+            $this->assertEquals('ExhTextTypeVgr', $taxonomy->Type()->Title);
+            $this->assertEquals('100000205', $taxonomy->Type()->MplusID);
         });
     }
 

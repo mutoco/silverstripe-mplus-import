@@ -16,3 +16,8 @@ Mutoco\Mplus\Tests\Model\TextBlock:
     Text: Dies ist ein Pressetext.
     Author: Firstname Lastname
     Exhibition: =>Mutoco\Mplus\Tests\Model\Exhibition.exhibition2
+
+Mutoco\Mplus\Tests\Model\Taxonomy:
+  taxonomy:
+    MplusID: 2
+    Title: Test

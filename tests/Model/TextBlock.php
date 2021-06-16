@@ -17,7 +17,8 @@ class TextBlock extends DataObject implements TestOnly
 	];
 
 	private static $has_one = [
-		'Exhibition' => Exhibition::class
+		'Exhibition' => Exhibition::class,
+        'Type' => Taxonomy::class
 	];
 
 	private static $table_name = 'Mutoco_Test_TextBlock';

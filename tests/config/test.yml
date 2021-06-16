@@ -98,3 +98,21 @@ TestResolveTree:
       modelClass: Mutoco\Mplus\Tests\Model\Work
       fields:
         Title: ObjObjectTitleGrp.TitleTxt
+
+TestVocabRelations:
+  modules:
+    Taxonomy:
+      modelClass: Mutoco\Mplus\Tests\Model\Taxonomy
+    ExhTextGrp:
+      modelClass: Mutoco\Mplus\Tests\Model\TextBlock
+      fields:
+        Text: TextClb
+        Author: AuthorTxt
+      relations:
+        Type:
+          name: TypeVoc
+          type: Taxonomy
+    Exhibition:
+      modelClass: Mutoco\Mplus\Tests\Model\Exhibition
+      relations:
+        Texts: ExhTextGrp

@@ -38,6 +38,7 @@ class LinkRelationStep extends AbstractRelationStep
         $id = Util::isAssoc($this->relationIds) ? array_key_first($this->relationIds) : $this->relationIds[0];
         $item = DataObject::get($class)->find('MplusID', $id);
         $target->setField($field, $item->ID);
+        $target->write();
     }
 
     protected function handleMany(DataList $relation, ImportEngine $engine): void

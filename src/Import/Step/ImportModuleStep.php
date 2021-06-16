@@ -30,14 +30,24 @@ class ImportModuleStep implements StepInterface
         $this->target = null;
     }
 
-    public function getId(): ?string
+    public function getId(): string
     {
         return $this->id;
+    }
+
+    public function getModule(): string
+    {
+        return $this->module;
     }
 
     public function getDefaultQueue(): string
     {
         return ImportEngine::QUEUE_IMPORT;
+    }
+
+    public function getTree(): ?TreeNode
+    {
+        return $this->tree;
     }
 
     /**
@@ -150,7 +160,7 @@ class ImportModuleStep implements StepInterface
             if ($lastModified > 0 && $lastModified <= strtotime($target->Imported)) {
                 // Get result from skip call and filter out any `null` value returns
                 $skipCallbackResult = array_filter(
-                    $target->extend('beforeMplusSkip', $this),
+                    $target->invokeWithExtensions('beforeMplusSkip', $this),
                     function ($v) {
                         return !is_null($v);
                     }
@@ -163,7 +173,7 @@ class ImportModuleStep implements StepInterface
             }
         }
 
-        $target->extend('beforeMplusImport', $this);
+        $target->invokeWithExtensions('beforeMplusImport', $this);
 
         foreach ($config['fields'] as $fieldName => $mplusName) {
             // Skip ID
@@ -181,7 +191,7 @@ class ImportModuleStep implements StepInterface
         $target->setField('Imported', DBDatetime::now());
 
         $target->write();
-        $target->extend('afterMplusImport', $this);
+        $target->invokeWithExtensions('afterMplusImport', $this);
         return $target;
     }
 
