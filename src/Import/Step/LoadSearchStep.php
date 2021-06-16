@@ -29,6 +29,11 @@ class LoadSearchStep implements StepInterface
         $this->search = $search;
     }
 
+    public function getSearch(): SearchBuilder
+    {
+        return $this->search;
+    }
+
     /**
      * @inheritDoc
      */

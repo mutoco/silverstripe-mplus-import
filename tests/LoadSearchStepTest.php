@@ -78,4 +78,13 @@ class LoadSearchStepTest extends SapphireTest
             $this->assertEquals('Bilbo', $ex7->Persons()->First()->Firstname);
         });
     }
+
+    public function testSerialize()
+    {
+        $search = new SearchBuilder('Exhibition', 0, 5);
+        $step = new LoadSearchStep($search);
+        /** @var LoadSearchStep $copy */
+        $copy = unserialize(serialize($step));
+        $this->assertEquals($copy->getSearch()->__toString(), $search->__toString());
+    }
 }
