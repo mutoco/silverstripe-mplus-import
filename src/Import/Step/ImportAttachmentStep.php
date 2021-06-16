@@ -152,4 +152,18 @@ class ImportAttachmentStep implements StepInterface
     {
         return preg_replace('{\.(je?pg|tiff|gif|png|bmp|psd|webp)$}i','.jpg', $name);
     }
+
+    protected function getSerializableObject(): \stdClass
+    {
+        $obj = new \stdClass();
+        $obj->module = $this->module;
+        $obj->id = $this->id;
+        return $obj;
+    }
+
+    protected function unserializeFromObject(\stdClass $obj): void
+    {
+        $this->module = $obj->module;
+        $this->id = $obj->id;
+    }
 }

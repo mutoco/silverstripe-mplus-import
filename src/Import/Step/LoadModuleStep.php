@@ -123,13 +123,25 @@ class LoadModuleStep implements StepInterface
 
         /** @var TreeNode $reference */
         foreach ($references as $reference) {
+            if ($reference->isResolved()) {
+                continue;
+            }
+
             $segments = $reference->getPathSegments();
             // Look up the node inside the tree of allowed paths
             if ($pathNode = Util::findNodeForPath($segments, $this->allowedPaths)) {
                 // If the node has sub-nodes, it needs to resolve first
                 if (!$pathNode->isLeaf()) {
+                    $hasUnresolved = false;
+                    foreach ($pathNode->getChildren() as $segment) {
+                        if (!$reference->getNestedNode($segment->getValue()) && !$reference->getNestedValue($segment->getValue())) {
+                            $hasUnresolved = true;
+                            break;
+                        }
+                    }
                     //TODO: Find solution for attributes?
                     if (
+                        $hasUnresolved &&
                         ($moduleName = $reference->getModuleName()) &&
                         ($id = $reference->moduleItemId) &&
                         ($result = $this->loadModule($engine, $moduleName, $id, $pathNode))
@@ -139,6 +151,7 @@ class LoadModuleStep implements StepInterface
                                 $reference->addChild($resultNode);
                             }
                         }
+                        $reference->markResolved();
                         return true;
                     }
                 }

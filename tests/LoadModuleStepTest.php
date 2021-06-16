@@ -42,7 +42,7 @@ class LoadModuleStepTest extends FunctionalTest
         $engine->addStep(new LoadModuleStep('Exhibition', 2));
         $this->assertCount(1, $engine->getQueue(ImportEngine::QUEUE_IMPORT));
         $engine->next();
-        $engine->next(); // Must run twice to resolve tree
+        $engine->next(); // Must run multiple times to resolve tree
         $this->assertCount(2, $engine->getQueue(ImportEngine::QUEUE_IMPORT));
         $current = $engine->getQueue(ImportEngine::QUEUE_IMPORT)->bottom();
         $this->assertInstanceOf(LoadModuleStep::class,$current);

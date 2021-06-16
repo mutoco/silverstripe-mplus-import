@@ -10,8 +10,6 @@ use SilverStripe\ORM\DataList;
 
 class CleanupRelationStep extends AbstractRelationStep
 {
-    use SerializableTrait;
-
     /**
      * @inheritDoc
      */

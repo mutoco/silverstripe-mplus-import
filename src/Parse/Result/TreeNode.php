@@ -15,6 +15,7 @@ class TreeNode implements NodeInterface, \Serializable
 
     protected ?string $tag;
     protected array $attributes;
+    protected bool $resolved = false;
 
     public function __construct(?string $tag = null, array $attributes = [])
     {
@@ -65,8 +66,20 @@ class TreeNode implements NodeInterface, \Serializable
 
     public function isReferenceNode(): bool
     {
-        return $this->tag === 'moduleReferenceItem' && $this->isLeaf() && isset($this->attributes['moduleItemId']);
+        return $this->tag === 'moduleReferenceItem' && isset($this->attributes['moduleItemId']);
     }
+
+    public function isResolved(): bool
+    {
+        return $this->resolved;
+    }
+
+    public function markResolved($value = true): self
+    {
+        $this->resolved = $value;
+        return $this;
+    }
+
 
     public function getModuleName(): ?string
     {

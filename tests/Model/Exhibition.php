@@ -30,7 +30,7 @@ class Exhibition extends DataObject implements TestOnly
     ];
 
 	private static $many_many_extraFields = [
-	    'Persons' => ['Sort' => 'Int']
+	    'Persons' => ['Role' => 'Varchar(128)']
     ];
 
 	private static $extensions = [

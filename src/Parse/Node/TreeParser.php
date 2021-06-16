@@ -16,7 +16,8 @@ class TreeParser implements ParserInterface
     protected array $fieldTags = [
         'systemField' => 'value',
         'dataField' => 'value',
-        'virtualField' => 'value'
+        'virtualField' => 'value',
+        'vocabularyReferenceItem' => 'formattedValue'
     ];
 
     protected array $collectionTags = [

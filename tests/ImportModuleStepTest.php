@@ -70,6 +70,7 @@ class ImportModuleStepTest extends SapphireTest
             $this->assertEquals(['1982'], $exhibition->Persons()->column('MplusID'));
             $person = $exhibition->Persons()->first();
             $this->assertEquals('Løiten (Hedmark)', $person->PlaceOfBirth);
+            $this->assertEquals('Künstler/in', $person->Role);
             $this->assertEquals([
                 'Dies ist ein Pressetext.',
                 'This would be a press release.',
@@ -152,13 +153,10 @@ class ImportModuleStepTest extends SapphireTest
             $engine->setApi(new Client());
             $engine->addStep(new LoadModuleStep('Exhibition', 2));
 
-            for($i = 0; $i < 7; $i++) {
-                $engine->next();
-            }
-
-            /** @var ImportEngine $copy */
-            $copy = unserialize(serialize($engine));
+            $copy = $engine;
             do {
+                /** @var ImportEngine $copy */
+                $copy = unserialize(serialize($copy));
                 $hasSteps = $copy->next();
             } while ($hasSteps);
 

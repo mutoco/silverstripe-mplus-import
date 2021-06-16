@@ -16,6 +16,8 @@ ImportEngine:
         Persons:
           name: ExhPersonRef
           type: Person
+          fields:
+            Role: ExhPersonRef.TypeVoc.artist
     Person:
       modelClass: Mutoco\Mplus\Tests\Model\Person
       fields:

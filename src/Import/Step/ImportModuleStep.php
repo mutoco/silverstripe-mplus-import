@@ -19,9 +19,8 @@ class ImportModuleStep implements StepInterface
 
     protected string $module;
     protected string $id;
-    protected ?TreeNode $tree;
-
-    protected ?DataObject $target;
+    protected ?TreeNode $tree = null;
+    protected ?DataObject $target = null;
 
     public function __construct(string $module, string $id, ?TreeNode $tree = null)
     {

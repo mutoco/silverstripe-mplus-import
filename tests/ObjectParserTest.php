@@ -31,7 +31,8 @@ class ObjectParserTest extends FunctionalTest
         $parser->setAllowedPaths([
             'Object.__id',
             'Object.ObjBriefDescriptionGrp.DescriptionClb',
-            'Object.ObjMultimediaRef'
+            'Object.ObjMultimediaRef',
+            'Object.ObjMultimediaRef.TypeVoc.artist'
         ]);
 
         $this->assertTrue($parser->isAllowedPath('Object'));
@@ -45,6 +46,7 @@ class ObjectParserTest extends FunctionalTest
         $this->assertFalse($parser->isAllowedNext('__id'));
         $this->assertTrue($parser->isAllowedPath('Object.ObjMultimediaRef'));
         $this->assertFalse($parser->isAllowedPath('Object.ObjMultimediaRef.ThumbnailBoo'));
+        $this->assertTrue($parser->isAllowedPath('Object.ObjMultimediaRef.TypeVoc'));
 
         /** @var TreeNode $objectResult */
         $result = $parser->parseFile(__DIR__ . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'parserTest.xml');
@@ -52,6 +54,8 @@ class ObjectParserTest extends FunctionalTest
         $this->assertEquals('repeatableGroup', $result->getNestedNode('Object.ObjBriefDescriptionGrp')->getTag());
         $this->assertNull($result->getNestedNode('Object.ObjAcquisitionYearTxt'));
         $this->assertNull($result->getNestedNode('Object.ObjMultimediaRef.ThumbnailBoo'));
+        $this->assertNotNull($result->getNestedNode('Object.ObjMultimediaRef.TypeVoc'));
+        $this->assertEquals('Testing', $result->getNestedNode('Object.ObjMultimediaRef.TypeVoc.artist')->getValue());
     }
 
 }
