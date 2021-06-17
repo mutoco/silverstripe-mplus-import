@@ -5,6 +5,7 @@ namespace Mutoco\Mplus\Tests\Model;
 
 
 use Mutoco\Mplus\Extension\DataRecordExtension;
+use Mutoco\Mplus\Model\VocabularyItem;
 use SilverStripe\Dev\TestOnly;
 use SilverStripe\ORM\DataObject;
 
@@ -15,6 +16,10 @@ class Exhibition extends DataObject implements TestOnly
 		'DateTo' => 'Date',
 		'DateFrom' => 'Date'
 	];
+
+	private static $has_one = [
+	    'InternalType' => VocabularyItem::class
+    ];
 
 	private static $has_many = [
 		'Texts' => TextBlock::class

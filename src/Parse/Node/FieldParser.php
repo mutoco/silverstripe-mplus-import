@@ -24,6 +24,9 @@ class FieldParser implements ParserInterface
         if ($this->tag === $name) {
             $this->startDepth = $parser->getDepth();
             $this->value = '';
+            $node = $parser->getCurrent();
+            // Merge the attributes of this node into the ones of the "parent".
+            $node->setAttributes(array_merge($node->getAttributes(), $attributes));
         }
 
         return null;

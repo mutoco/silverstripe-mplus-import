@@ -116,3 +116,14 @@ TestVocabRelations:
       modelClass: Mutoco\Mplus\Tests\Model\Exhibition
       relations:
         Texts: ExhTextGrp
+
+TestVocabularyModels:
+  modules:
+    VocabularyItem:
+      modelClass: Mutoco\Mplus\Model\VocabularyItem
+    Exhibition:
+      modelClass: Mutoco\Mplus\Tests\Model\Exhibition
+      relations:
+        InternalType:
+          name: ExhExternalInternalVoc
+          type: VocabularyItem

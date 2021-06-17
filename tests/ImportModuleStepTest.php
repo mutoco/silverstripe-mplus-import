@@ -4,6 +4,8 @@ namespace Mutoco\Mplus\Tests;
 
 use Mutoco\Mplus\Import\ImportEngine;
 use Mutoco\Mplus\Import\Step\LoadModuleStep;
+use Mutoco\Mplus\Model\VocabularyGroup;
+use Mutoco\Mplus\Model\VocabularyItem;
 use Mutoco\Mplus\Tests\Api\Client;
 use Mutoco\Mplus\Tests\Extension\TaxonomyExtension;
 use Mutoco\Mplus\Tests\Model\Exhibition;
@@ -150,7 +152,7 @@ class ImportModuleStepTest extends SapphireTest
         });
     }
 
-    public function testVocabularyItems()
+    public function testTaxonomyItems()
     {
         Config::withConfig(function(MutableConfigCollectionInterface $config) {
             $config->set(ImportEngine::class, 'modules', $this->loadedConfig['TestVocabRelations']['modules']);
@@ -192,6 +194,38 @@ class ImportModuleStepTest extends SapphireTest
             $this->assertTrue($taxonomy->Type()->exists());
             $this->assertEquals('ExhTextTypeVgr', $taxonomy->Type()->Title);
             $this->assertEquals('100000205', $taxonomy->Type()->MplusID);
+        });
+    }
+
+    public function testVocabularyItems()
+    {
+        Config::withConfig(function(MutableConfigCollectionInterface $config) {
+            $config->set(ImportEngine::class, 'modules', $this->loadedConfig['TestVocabularyModels']['modules']);
+            $engine = new ImportEngine();
+            $engine->setApi(new Client());
+            $engine->addStep(new LoadModuleStep('Exhibition', 2));
+            do {
+                $hasSteps = $engine->next();
+            } while ($hasSteps);
+
+            Exhibition::flush_and_destroy_cache();
+            $exhibition = Exhibition::get()->find('MplusID', 2);
+
+            $vocabulary = $exhibition->InternalType();
+            $this->assertNotNull($vocabulary);
+            $this->assertInstanceOf(VocabularyItem::class, $vocabulary);
+            $this->assertTrue($vocabulary->exists());
+            $this->assertEquals('100035803', $vocabulary->MplusID);
+            $this->assertEquals('internal', $vocabulary->Title);
+            $this->assertEquals('Intern', $vocabulary->Value);
+            $this->assertEquals('de', $vocabulary->Language);
+
+            $group = $vocabulary->VocabularyGroup();
+            $this->assertNotNull($group);
+            $this->assertInstanceOf(VocabularyGroup::class, $group);
+            $this->assertTrue($group->exists());
+            $this->assertEquals('100014392', $group->MplusID);
+            $this->assertEquals('ExhExternalInternalVgr', $group->Name);
         });
     }
 

@@ -18,7 +18,8 @@ class VocabularyItem extends DataObject
 {
     private static $db = [
         'Name' => 'Varchar(127)',
-        'Value' => 'Varchar(255)'
+        'Value' => 'Varchar(255)',
+        'Language' => 'Varchar(16)'
     ];
 
     private static $has_one = [
@@ -39,11 +40,14 @@ class VocabularyItem extends DataObject
 
     public function beforeMplusImport(ImportModuleStep $step)
     {
+
         if ($tree = $step->getTree()) {
             $this->setField('Name', $tree->name);
+            $this->setField('Language', $tree->language);
+            $this->setField('Value', $tree->getValue());
 
-            if (($parent = $tree->getParent()) && $parent instanceof TreeNode) {
-                $this->setField('Type', $this->findOrCreateGroup($parent));
+            if (($parent = $tree->getParent()) && ($parent instanceof TreeNode)) {
+                $this->setField('VocabularyGroup', $this->findOrCreateGroup($parent));
             }
         }
     }
