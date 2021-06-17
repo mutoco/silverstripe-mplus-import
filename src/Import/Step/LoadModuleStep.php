@@ -163,6 +163,9 @@ class LoadModuleStep implements StepInterface
                         return true;
                     }
                 }
+            } else {
+                // Directly mark as resolved, if there's no matching path
+                $reference->markResolved();
             }
         }
 
