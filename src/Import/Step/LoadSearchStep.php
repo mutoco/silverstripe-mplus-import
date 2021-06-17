@@ -65,6 +65,8 @@ class LoadSearchStep implements StepInterface
             $result = $parser->parse($stream);
             if ($result instanceof TreeNode && ($tree = $result->getNestedNode($module))) {
                 foreach ($tree->getChildren() as $child) {
+                    // Important to clear the parent
+                    $child->setParent(null);
                     // Must hand over the resulting tree to a LoadModuleStep in order to resolve the full tree
                     $engine->addStep(new LoadModuleStep($module, $child->id, $child));
                 }

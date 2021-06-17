@@ -62,6 +62,9 @@ class UtilTest extends FunctionalTest
             0, // Bar is leaf
             0 // 42 is leaf
         ], $childCounts);
+
+        $this->assertCount(0, Util::pathsToTree([])->getChildren());
+        $this->assertCount(0, Util::pathsToTree([], 'Dude')->getChildren());
     }
 
     public function testPathsToTreeWithPrefix()

@@ -37,6 +37,9 @@ class LoadModuleStep implements StepInterface
         $this->module = $module;
         $this->id = $id;
         $this->resultTree = $resultTree;
+        if ($this->resultTree) {
+            $this->resultTree->setParent(null);
+        }
         $this->allowedPaths = null;
         $this->pendingNodes = new \SplQueue();
     }
