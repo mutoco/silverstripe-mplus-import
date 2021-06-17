@@ -7,7 +7,9 @@ use Mutoco\Mplus\Import\ImportEngine;
 use Mutoco\Mplus\Import\Step\LoadSearchStep;
 use Mutoco\Mplus\Tests\Api\Client;
 use Mutoco\Mplus\Tests\Model\Exhibition;
+use Mutoco\Mplus\Tests\Model\ExhibitionWork;
 use Mutoco\Mplus\Tests\Model\Person;
+use Mutoco\Mplus\Tests\Model\Work;
 use SilverStripe\Config\Collections\MutableConfigCollectionInterface;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
@@ -18,7 +20,8 @@ class LoadSearchStepTest extends SapphireTest
 {
     protected static $extra_dataobjects = [
         Exhibition::class,
-        Person::class
+        Work::class,
+        ExhibitionWork::class
     ];
 
     protected array $loadedConfig;
@@ -72,10 +75,10 @@ class LoadSearchStepTest extends SapphireTest
 
             $ex6 = Exhibition::get()->find('MplusID', 6);
             $ex7 = Exhibition::get()->find('MplusID', 7);
-            $this->assertCount(1, $ex6->Persons());
-            $this->assertCount(1, $ex7->Persons());
-            $this->assertEquals('Edvard', $ex6->Persons()->First()->Firstname);
-            $this->assertEquals('Bilbo', $ex7->Persons()->First()->Firstname);
+            $this->assertCount(1, $ex6->Works());
+            $this->assertCount(1, $ex7->Works());
+            $this->assertEquals('Testdatensatz Portrait', $ex6->Works()->First()->Title);
+            $this->assertEquals('Testdatensatz Portrait', $ex7->Works()->First()->Title);
         });
     }
 

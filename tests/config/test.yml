@@ -35,19 +35,13 @@ SearchLoader:
       fields:
         Title: ExhTitleTxt
       relations:
-        Persons:
-          name: ExhPersonRef
-          type: Person
-    Person:
-      modelClass: Mutoco\Mplus\Tests\Model\Person
+        Works:
+          name: ExhPersonRef.PerObjectAcquisitionRef
+          type: Object
+    Object:
+      modelClass: Mutoco\Mplus\Tests\Model\Work
       fields:
-        Firstname: PerFirstNameTxt
-        Lastname: PerLastNameTxt
-        DateOfBirth: PerDateFromBeginDat
-        DateOfDeath: PerDateToEndDat
-        PlaceOfBirth: PerPlaceBirthTxt
-        PlaceOfDeath: PerPlaceDeathTxt
-
+        Title: ObjObjectTitleGrp.TitleTxt
 
 ImportNested:
   modules:

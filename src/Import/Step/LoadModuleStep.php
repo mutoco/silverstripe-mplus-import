@@ -148,6 +148,7 @@ class LoadModuleStep implements StepInterface
                         }
                     }
                     //TODO: Find solution for attributes?
+                    //TODO: Fix issue with pathnode!
                     if (
                         $hasUnresolved &&
                         ($moduleName = $reference->getModuleName()) &&
@@ -159,6 +160,7 @@ class LoadModuleStep implements StepInterface
                                 $reference->addChild($resultNode);
                             }
                         }
+
                         $reference->markResolved();
                         return true;
                     }
@@ -178,7 +180,9 @@ class LoadModuleStep implements StepInterface
         $stream = $engine->getApi()->queryModelItem($module, $id);
         if ($stream) {
             $parser = new Parser();
-            $parser->setAllowedPaths($allowedPaths);
+            $clone = Util::cloneTree($allowedPaths);
+            $clone->setValue(null);
+            $parser->setAllowedPaths($clone);
             return $parser->parse($stream);
         }
         return null;

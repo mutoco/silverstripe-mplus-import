@@ -126,4 +126,27 @@ class UtilTest extends FunctionalTest
             'Foo.Bar',
         ], Util::treeToPaths($tree));
     }
+
+    public function testClone()
+    {
+        $tree = Util::pathsToTree([
+            'Foo.Baz.Lorem',
+            'Foo.Bar',
+            'Foo.Baz.Ipsum.Dolor'
+        ]);
+
+        $copy = Util::cloneTree($tree);
+
+        $this->assertEquals([
+            'Foo.Baz.Lorem',
+            'Foo.Baz.Ipsum.Dolor',
+            'Foo.Bar',
+        ], Util::treeToPaths($copy));
+
+        $copy = Util::cloneTree($tree->getChildren()[0]->getChildren()[0]);
+        $this->assertEquals([
+            'Baz.Lorem',
+            'Baz.Ipsum.Dolor',
+        ], Util::treeToPaths($copy));
+    }
 }

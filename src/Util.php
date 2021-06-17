@@ -93,4 +93,13 @@ class Util
         }
         return $result;
     }
+
+    public static function cloneTree(Node $tree): Node
+    {
+        $copy = new Node($tree->getValue());
+        foreach ($tree->getChildren() as $child) {
+            $copy->addChild(self::cloneTree($child));
+        }
+        return $copy;
+    }
 }
