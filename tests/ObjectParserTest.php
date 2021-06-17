@@ -60,4 +60,19 @@ class ObjectParserTest extends FunctionalTest
         $this->assertEquals('Testing', $result->getNestedNode('Object.ObjMultimediaRef.TypeVoc')->getChildren()[0]->getValue());
     }
 
+    public function testSearchResult()
+    {
+        $parser = new Parser();
+        $parser->setAllowedPaths([
+            'Exhibition.__id',
+            'Exhibition.ExhTitleTxt',
+            'Exhibition.ExhTextGrp.TextClb',
+            'Exhibition.ExhPersonRef.TypeVoc'
+        ]);
+        $result = $parser->parseFile(__DIR__ . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'SearchResult.xml');
+        $this->assertCount(1, $result->getChildren());
+        $this->assertCount(3, $result->getChildren()[0]->getChildren());
+        $this->assertCount(4, $result->getChildren()[0]->getChildren()[0]->getChildren());
+    }
+
 }
