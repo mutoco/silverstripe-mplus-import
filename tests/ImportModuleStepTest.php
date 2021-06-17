@@ -20,6 +20,7 @@ use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\FieldType\DBDatetime;
+use SilverStripe\ORM\Queries\SQLSelect;
 use Symfony\Component\Yaml\Yaml;
 
 class ImportModuleStepTest extends SapphireTest
@@ -149,6 +150,19 @@ class ImportModuleStepTest extends SapphireTest
             $this->assertEquals(['Stillleben mit Hummer', 'Testdatensatz Portrait'], $exhibition->Works()->column('Title'));
             $this->assertEquals(['TEST', 'Hummer'], $exhibition->Works()->column('Subtitle'));
             $this->assertEquals(['Edvard Munch', 'Edvard Munch'], $exhibition->Works()->column('Artist'));
+
+            $sort = [];
+            $type = [];
+            foreach ($exhibition->Works() as $work) {
+                $sort[] = $work->getJoin()->Sort;
+                $type[] = $work->getJoin()->Type();
+            }
+            $this->assertEquals([3, 4], $sort);
+            $this->assertCount(2, $type);
+            $this->assertEquals('Outgoing', $type[0]->Value);
+            $this->assertEquals('100087407', $type[0]->MplusID);
+            $this->assertEquals('100087407', $type[1]->MplusID);
+            $this->assertEquals('RegRecordTypeVgr', $type[1]->VocabularyGroup()->Name);
         });
     }
 

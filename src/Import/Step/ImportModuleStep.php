@@ -116,7 +116,17 @@ class ImportModuleStep implements StepInterface
                         $data = [];
                         if (isset($relationCfg['fields'])) {
                             foreach ($relationCfg['fields'] as $field => $path) {
-                                $data[$field] = $this->tree->getNestedValue($path);
+                                $sharedParent = $child->getSharedParent($path);
+                                $sharedPath = $sharedParent->getPath();
+                                // Check if the shared path is part of the current path
+                                if ($sharedPath && str_starts_with($path, $sharedPath . '.')) {
+                                    // Query the shared node with only the portion that is extra to the shared path
+                                    $node = $sharedParent->getNestedNode(substr($path, strlen($sharedPath) + 1));
+                                } else {
+                                    $node = $this->tree->getNestedNode($path);
+                                }
+                                $results = $this->target->invokeWithExtensions('updateMplusRelationField', $field, $node);
+                                $data[$field] = empty($results) ? $node->getValue() : $results[0];
                             }
                         }
                         $ids[$child->getId()] = $data;

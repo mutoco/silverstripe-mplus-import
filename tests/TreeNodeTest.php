@@ -116,4 +116,55 @@ class TreeNodeTest extends FunctionalTest
         $result = $finder->visit($anon1);
         $this->assertEquals('Hi!', $result->getValue());
     }
+
+    public function testSharedParent()
+    {
+        $subNode = $this->tree->getNestedNode('Foo.Baz.Text');
+        $this->assertNotNull($subNode->getSharedParent('Foo.Bar'));
+        $this->assertEquals('Foo', $subNode->getSharedParent('Foo.Bar')->getName());
+        $this->assertEquals('Baz', $subNode->getSharedParent('Foo.Baz.Author')->getName());
+        $this->assertEquals($this->tree, $subNode->getSharedParent('Some.Path'), 'Non matching paths should return tree root');
+        $this->assertEquals($this->tree, $this->tree->getSharedParent(''));
+        $this->assertEquals($this->tree, $this->tree->getSharedParent('Foo.Baz.Text'));
+
+        $barNode = $this->tree->getNestedNode('Foo.Bar');
+        $barNode->getChildren()[0]->addChild($child1 = new TreeNode('test', ['name' => 'Title']));
+        $barNode->getChildren()[1]->addChild($child2 = new TreeNode('test', ['name' => 'Title']));
+        $child1->setValue('A');
+        $child2->setValue('B');
+        $child1->addChild($grandChild1 = new TreeNode('test', ['name' => 'Author']));
+        $child2->addChild($grandChild2 = new TreeNode('test', ['name' => 'Author']));
+        $grandChild1->setValue('X');
+        $grandChild2->setValue('Y');
+
+        $this->assertEquals($grandChild2->getSharedParent('Foo.Bar.Title'), $child2, 'Grandchild 2 should have child 2 as parent');
+        $this->assertEquals($grandChild2->getSharedParent('Foo.Bar'), $barNode->getChildren()[1]);
+    }
+
+    public function testAnchorsMatchingPath()
+    {
+        $subNode = $this->tree->getNestedNode('Foo.Baz.Text');
+        $this->assertEquals(
+            $this->tree->getNestedNode('Foo.Baz')->getAncestorsAndSelf(),
+            $subNode->getAncestorsMatchingPath('Foo.Baz')
+        );
+
+        $barNode = $this->tree->getNestedNode('Foo.Bar');
+        $barNode->getChildren()[0]->addChild($child1 = new TreeNode('test', ['name' => 'Title']));
+        $barNode->getChildren()[1]->addChild($child2 = new TreeNode('test', ['name' => 'Title']));
+        $child1->setValue('A');
+        $child2->setValue('B');
+        $child2->addChild($grandChild = new TreeNode('test', ['name' => 'Author']));
+        $grandChild->setValue('Y');
+
+        $this->assertContains(
+            $child2,
+            $grandChild->getAncestorsMatchingPath('Foo.Bar.Title')
+        );
+
+        $this->assertEquals(
+            $grandChild->getAncestorsAndSelf(),
+            $grandChild->getAncestorsMatchingPath('Foo.Bar.Title.Author.Test')
+        );
+    }
 }

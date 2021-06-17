@@ -5,7 +5,9 @@ namespace Mutoco\Mplus\Model;
 
 
 use Mutoco\Mplus\Extension\DataRecordExtension;
+use Mutoco\Mplus\Parse\Result\TreeNode;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\FieldType\DBDatetime;
 
 /**
  * Model that represents a vocabulary group.
@@ -31,4 +33,20 @@ class VocabularyGroup extends DataObject
         'MplusID',
         'Name'
     ];
+
+    public static function findOrCreateFromNode(TreeNode $node): VocabularyGroup
+    {
+        if (($target = VocabularyGroup::get()->find('MplusID', $node->getId())) && $target instanceof VocabularyGroup) {
+            return $target;
+        }
+
+        $target = VocabularyGroup::create();
+        $target->update([
+            'MplusID' => $node->getId(),
+            'Name' => $node->instanceName,
+            'Imported' => DBDatetime::now()
+        ]);
+        $target->write();
+        return $target;
+    }
 }

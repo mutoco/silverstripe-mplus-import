@@ -76,6 +76,7 @@ ImportNested:
         Works:
           name: ExhRegistrarRef.RegObjectRef
           fields:
+            Type: ExhRegistrarRef.RegRecordTypeVoc
             Sort: ExhRegistrarRef.RegSortLnu
           type: Object
 

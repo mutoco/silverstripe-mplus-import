@@ -111,15 +111,63 @@ class TreeNode implements NodeInterface, \Serializable
         return $segments;
     }
 
-    public function getNestedNode($value): ?TreeNode
+    public function getAncestorsMatchingPath($value): array
     {
-        if (is_string($value)) {
-            $value = explode('.', $value);
+        $value = $this->sanitizePathArgument($value);
+
+        $ancestors = $this->getAncestorsAndSelf();
+
+        $i = 0;
+        $len = count($value);
+        $found = [];
+        foreach ($ancestors as $ancestor) {
+            if ($ancestor->getName() === null) {
+                $found[] = $ancestor;
+                continue;
+            }
+
+            if ($i >= $len || $ancestor->getName() !== $value[$i]) {
+                break;
+            }
+
+            $found[] = $ancestor;
+            $i++;
         }
 
-        if (!is_array($value)) {
-            throw new \InvalidArgumentException('Value parameter needs to be string or array');
+        return $found;
+    }
+
+    public function getSharedParent($value): TreeNode
+    {
+        $value = $this->sanitizePathArgument($value);
+        $root = $this->root();
+
+        if (empty($value)) {
+            return $root;
         }
+
+        $ownAncestors = $this->getAncestorsAndSelf();
+        $otherAncestors = $this->getAncestorsMatchingPath($value);
+        if (empty($ownAncestors) || empty($otherAncestors) || $ownAncestors[0] !== $otherAncestors[0]) {
+            return $root;
+        }
+
+        $len = min(count($ownAncestors), count($otherAncestors));
+        $sharedAncestor = $root;
+        for ($i = 0; $i < $len; $i++) {
+            if ($ownAncestors[$i] === $otherAncestors[$i]) {
+                $sharedAncestor = $ownAncestors[$i];
+            } else {
+                break;
+            }
+        }
+
+        return $sharedAncestor;
+    }
+
+    public function getNestedNode($value): ?TreeNode
+    {
+        $value = $this->sanitizePathArgument($value);
 
         $first = array_shift($value);
 
@@ -143,13 +191,7 @@ class TreeNode implements NodeInterface, \Serializable
 
     public function getNodesMatchingPath($value): array
     {
-        if (is_string($value)) {
-            $value = explode('.', $value);
-        }
-
-        if (!is_array($value)) {
-            throw new \InvalidArgumentException('Value parameter needs to be string or array');
-        }
+        $value = $this->sanitizePathArgument($value);
 
         $candidates = [];
         $name = $value[0];
@@ -186,13 +228,7 @@ class TreeNode implements NodeInterface, \Serializable
 
     public function getNestedValue($path)
     {
-        if (is_string($path)) {
-            $path = explode('.', $path);
-        }
-
-        if (!is_array($path)) {
-            throw new \InvalidArgumentException('Path parameter needs to be string or array');
-        }
+        $path = $this->sanitizePathArgument($path);
 
         if ($node = $this->getNestedNode($path)) {
             return $node->getValue();
@@ -260,5 +296,18 @@ class TreeNode implements NodeInterface, \Serializable
         foreach ($this->children as $child) {
             $child->setParent($this);
         }
+    }
+
+    protected function sanitizePathArgument($value): array
+    {
+        if (is_string($value)) {
+            $value = explode('.', $value);
+        }
+
+        if (!is_array($value)) {
+            throw new \InvalidArgumentException('Value parameter needs to be string or array');
+        }
+
+        return $value;
     }
 }

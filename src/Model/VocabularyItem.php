@@ -7,8 +7,8 @@ namespace Mutoco\Mplus\Model;
 use Mutoco\Mplus\Extension\DataRecordExtension;
 use Mutoco\Mplus\Import\Step\ImportModuleStep;
 use Mutoco\Mplus\Parse\Result\TreeNode;
-use Mutoco\Mplus\Tests\Model\TaxonomyType;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\FieldType\DBDatetime;
 
 /**
  * Model that represents vocabulary items in M+. A vocabulary item is similar to a taxonomy.
@@ -38,32 +38,49 @@ class VocabularyItem extends DataObject
         'Value'
     ];
 
-    public function beforeMplusImport(ImportModuleStep $step)
+    public static function findOrCreateFromNode(TreeNode $node): VocabularyItem
     {
-
-        if ($tree = $step->getTree()) {
-            $this->setField('Name', $tree->name);
-            $this->setField('Language', $tree->language);
-            $this->setField('Value', $tree->getValue());
-
-            if (($parent = $tree->getParent()) && ($parent instanceof TreeNode)) {
-                $this->setField('VocabularyGroup', $this->findOrCreateGroup($parent));
+        if ($node->getTag() === 'vocabularyReference') {
+            foreach ($node->getChildren() as $child) {
+                if ($child->getTag() === 'vocabularyReferenceItem') {
+                    $node = $child;
+                    break;
+                }
             }
         }
-    }
 
-    protected function findOrCreateGroup(TreeNode $node): VocabularyGroup
-    {
-        if (($target = VocabularyGroup::get()->find('MplusID', $node->getId())) && $target instanceof VocabularyGroup) {
+        if (($target = VocabularyItem::get()->find('MplusID', $node->getId())) && $target instanceof VocabularyItem) {
             return $target;
         }
 
-        $target = VocabularyGroup::create();
+        $target = VocabularyItem::create();
         $target->update([
             'MplusID' => $node->getId(),
-            'Name' => $node->instanceName
+            'Imported' => DBDatetime::now()
         ]);
+
+        self::updateFromNode($target, $node);
+
         $target->write();
         return $target;
     }
+
+    protected static function updateFromNode(VocabularyItem $item, TreeNode $node): void
+    {
+        $item->setField('Name', $node->name);
+        $item->setField('Language', $node->language);
+        $item->setField('Value', $node->getValue());
+
+        if (($parent = $node->getParent()) && ($parent instanceof TreeNode) && ($parent->getTag() === 'vocabularyReference')) {
+            $item->setField('VocabularyGroup', VocabularyGroup::findOrCreateFromNode($parent));
+        }
+    }
+
+    public function beforeMplusImport(ImportModuleStep $step)
+    {
+        if ($tree = $step->getTree()) {
+            self::updateFromNode($this, $tree);
+        }
+    }
+
 }
