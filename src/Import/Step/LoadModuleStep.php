@@ -4,6 +4,7 @@
 namespace Mutoco\Mplus\Import\Step;
 
 
+use Mutoco\Mplus\Exception\ImportException;
 use Mutoco\Mplus\Import\ImportEngine;
 use Mutoco\Mplus\Parse\Parser;
 use Mutoco\Mplus\Parse\Result\ReferenceCollector;
@@ -140,6 +141,7 @@ class LoadModuleStep implements StepInterface
             if ($pathNode = Util::findNodeForPath($segments, $this->allowedPaths)) {
                 // If the node has sub-nodes, it needs to resolve first
                 if (!$pathNode->isLeaf()) {
+                    // Check if there are unresolved sub-paths
                     $hasUnresolved = false;
                     foreach ($pathNode->getChildren() as $segment) {
                         if (!$reference->getNestedNode($segment->getValue()) && !$reference->getNestedValue($segment->getValue())) {
@@ -147,27 +149,43 @@ class LoadModuleStep implements StepInterface
                             break;
                         }
                     }
-                    //TODO: Find solution for attributes?
-                    //TODO: Fix issue with pathnode!
-                    if (
-                        $hasUnresolved &&
-                        ($moduleName = $reference->getModuleName()) &&
-                        ($id = $reference->moduleItemId) &&
-                        ($result = $this->loadModule($engine, $moduleName, $id, $pathNode))
-                    ) {
-                        foreach ($pathNode->getChildren() as $segment) {
-                            if ($resultNode = $result->getNestedNode($segment->getValue())) {
-                                $reference->addChild($resultNode);
-                            }
-                        }
+                    $moduleName = $reference->getModuleName();
+                    $id = $reference->moduleItemId;
 
-                        $reference->markResolved();
-                        return true;
+                    if ($hasUnresolved && (!$moduleName || !$id)) {
+                        throw new ImportException(sprintf(
+                            'Missing module and id to resolve relation "%s" on "%s"',
+                            join('.', $segments),
+                            $this->module
+                        ));
+                    }
+
+                    //TODO: Find solution for attributes?
+                    if ($hasUnresolved) {
+                        if ($result = $this->loadModule($engine, $moduleName, $id, $pathNode)) {
+                            foreach ($pathNode->getChildren() as $segment) {
+                                if ($resultNode = $result->getNestedNode($segment->getValue())) {
+                                    $reference->addChild($resultNode);
+                                }
+                            }
+
+                            $reference->markResolved();
+                            return true;
+
+                        } else {
+                            throw new ImportException(sprintf(
+                                'Unable to import %s (#%s) from the API',
+                                $moduleName, $id
+                            ));
+                        }
                     }
                 }
             } else {
-                // Directly mark as resolved, if there's no matching path
-                $reference->markResolved();
+                throw new ImportException(sprintf(
+                    'Reference "%s" in Module "%s" can not be resolved as it doesn\'t match a valid path',
+                    join('.', $segments),
+                    $this->module
+                ));
             }
         }
 
