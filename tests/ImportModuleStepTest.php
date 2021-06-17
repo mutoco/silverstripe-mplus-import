@@ -7,7 +7,7 @@ use Mutoco\Mplus\Import\Step\LoadModuleStep;
 use Mutoco\Mplus\Model\VocabularyGroup;
 use Mutoco\Mplus\Model\VocabularyItem;
 use Mutoco\Mplus\Tests\Api\Client;
-use Mutoco\Mplus\Tests\Extension\TaxonomyExtension;
+use Mutoco\Mplus\Tests\Extension\TestTaxonomyExtension;
 use Mutoco\Mplus\Tests\Model\Exhibition;
 use Mutoco\Mplus\Tests\Model\ExhibitionWork;
 use Mutoco\Mplus\Tests\Model\Person;
@@ -150,6 +150,7 @@ class ImportModuleStepTest extends SapphireTest
             $this->assertEquals(['Stillleben mit Hummer', 'Testdatensatz Portrait'], $exhibition->Works()->column('Title'));
             $this->assertEquals(['TEST', 'Hummer'], $exhibition->Works()->column('Subtitle'));
             $this->assertEquals(['Edvard Munch', 'Edvard Munch'], $exhibition->Works()->column('Artist'));
+            $this->assertTrue($exhibition->Works()->last()->Image()->exists());
 
             $sort = [];
             $type = [];
@@ -188,7 +189,7 @@ class ImportModuleStepTest extends SapphireTest
             $this->assertFalse($taxonomy->Type()->exists());
 
             // Apply an extension that applies title and parent
-            $config->merge(Taxonomy::class, 'extensions', [TaxonomyExtension::class]);
+            $config->merge(Taxonomy::class, 'extensions', [TestTaxonomyExtension::class]);
 
             $engine = new ImportEngine();
             $engine->setApi(new Client());

@@ -84,7 +84,10 @@ class ImportModuleStep implements StepInterface
 
         if (!$isSkipped) {
             if (isset($config['attachment'])) {
-                $engine->addStep(new ImportAttachmentStep($this->module, $this->id));
+                $result = $this->target->invokeWithExtensions('mplusShouldImportAttachment', $config['attachment'], $this->tree);
+                if (empty($result) || min($result) !== false) {
+                    $engine->addStep(new ImportAttachmentStep($this->module, $this->id));
+                }
             }
         }
 

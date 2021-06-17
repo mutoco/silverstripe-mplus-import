@@ -4,8 +4,10 @@ namespace Mutoco\Mplus\Tests;
 
 use Mutoco\Mplus\Import\ImportEngine;
 use Mutoco\Mplus\Import\Step\ImportAttachmentStep;
+use Mutoco\Mplus\Import\Step\ImportModuleStep;
 use Mutoco\Mplus\Import\Step\LoadModuleStep;
 use Mutoco\Mplus\Tests\Api\Client;
+use Mutoco\Mplus\Tests\Extension\TestSkipAttachmentExtension;
 use Mutoco\Mplus\Tests\Model\Exhibition;
 use Mutoco\Mplus\Tests\Model\ExhibitionWork;
 use Mutoco\Mplus\Tests\Model\Person;
@@ -84,6 +86,27 @@ class ImportAttachmentStepTest extends SapphireTest
             $this->assertEquals('2021-05-10 10:00:00', $work->Image()->LastEdited, 'Image should not get updated');
 
             DBDatetime::clear_mock_now();
+        });
+    }
+
+    public function testSkipAttachment()
+    {
+        Config::withConfig(function(MutableConfigCollectionInterface $config) {
+            $config->set(ImportEngine::class, 'modules', $this->loadedConfig['ImportNested']['modules']);
+            $config->merge(Work::class, 'extensions', [
+                TestSkipAttachmentExtension::class
+            ]);
+
+            $engine = new ImportEngine();
+            $engine->setApi(new Client());
+            $engine->addStep(new LoadModuleStep('Exhibition', 2));
+            do {
+                $hasSteps = $engine->next();
+            } while ($hasSteps);
+
+            Work::flush_and_destroy_cache();
+            $work = Work::get()->find('MplusID', 47894);
+            $this->assertFalse($work->Image()->exists());
         });
     }
 }
