@@ -179,12 +179,7 @@ class ImportModuleStep implements StepInterface
 
             if ($lastModified > 0 && $lastModified <= strtotime($target->Imported)) {
                 // Get result from skip call and filter out any `null` value returns
-                $skipCallbackResult = array_filter(
-                    $target->invokeWithExtensions('beforeMplusSkip', $this),
-                    function ($v) {
-                        return !is_null($v);
-                    }
-                );
+                $skipCallbackResult = $target->invokeWithExtensions('beforeMplusSkip', $this);
                 // If any callback returned false, we won't skip
                 if (empty($skipCallbackResult) || min($skipCallbackResult) !== false) {
                     $skipped = true;

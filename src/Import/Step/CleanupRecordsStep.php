@@ -74,9 +74,7 @@ class CleanupRecordsStep implements StepInterface
 
     protected function deleteRecord(DataObject $record): bool
     {
-        $rules = array_filter($record->invokeWithExtensions('beforeMplusDelete', $this), function ($v) {
-            return !is_null($v);
-        });
+        $rules = $record->invokeWithExtensions('beforeMplusDelete', $this);
 
         if (!empty($rules) && min($rules) === false) {
             return false;
