@@ -23,9 +23,9 @@ class LoadSearchStep implements StepInterface
     protected SearchBuilder $search;
     protected int $page;
 
-    public function __construct(SearchBuilder $search)
+    public function __construct(SearchBuilder $search, int $page = 0)
     {
-        $this->page = 0;
+        $this->page = $page;
         $this->search = $search;
     }
 
@@ -74,7 +74,8 @@ class LoadSearchStep implements StepInterface
                 $total = (int)$tree->totalSize;
                 $this->page++;
                 if ($this->page * $pageSize < $total) {
-                    return true;
+                    // Enqueue an additional search step that will run after the first batch has completed
+                    $engine->addStep(new LoadSearchStep($this->search, $this->page));
                 }
             }
         }

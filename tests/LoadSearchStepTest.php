@@ -4,6 +4,8 @@ namespace Mutoco\Mplus\Tests;
 
 use Mutoco\Mplus\Api\SearchBuilder;
 use Mutoco\Mplus\Import\ImportEngine;
+use Mutoco\Mplus\Import\Step\ImportModuleStep;
+use Mutoco\Mplus\Import\Step\LoadModuleStep;
 use Mutoco\Mplus\Import\Step\LoadSearchStep;
 use Mutoco\Mplus\Tests\Api\Client;
 use Mutoco\Mplus\Tests\Model\Exhibition;
@@ -41,6 +43,47 @@ class LoadSearchStepTest extends SapphireTest
         parent::tearDown();
     }
 
+    public function testSteppedLoading()
+    {
+        Config::withConfig(function (MutableConfigCollectionInterface $config) {
+            $config->set(ImportEngine::class, 'modules', $this->loadedConfig['SearchLoader']['modules']);
+            $engine = new ImportEngine();
+            $engine->setApi(new Client());
+            $search = new SearchBuilder('Exhibition', 0, 5);
+            $engine->addStep(new LoadSearchStep($search));
+            $steps = [];
+            $starts = [];
+            do {
+                if (!$engine->getQueue()->isEmpty()) {
+                    $steps[] = get_class($engine->getQueue()->top());
+                    $curr = $engine->getQueue()->top();
+                }
+                $hasSteps = $engine->next();
+                if ($curr instanceof LoadSearchStep) {
+                    $starts[] = $curr->getSearch()->getStart();
+                }
+            } while ($hasSteps);
+
+            $this->assertEquals([0, 5, 10], $starts, 'Load offsets must be in steps of 5');
+
+            $this->assertEquals([
+                LoadSearchStep::class,
+                LoadModuleStep::class,
+                ImportModuleStep::class,
+                LoadModuleStep::class,
+                ImportModuleStep::class,
+                LoadModuleStep::class,
+                ImportModuleStep::class,
+                LoadModuleStep::class,
+                ImportModuleStep::class,
+                LoadModuleStep::class,
+                ImportModuleStep::class,
+                LoadSearchStep::class,
+                LoadModuleStep::class,
+            ], array_slice($steps, 0, 13), 'LoadSearchStep must repeat after 5 imports');
+        });
+    }
+
 
     public function testModelImport()
     {
@@ -50,6 +93,7 @@ class LoadSearchStepTest extends SapphireTest
             $engine->setApi(new Client());
             $search = new SearchBuilder('Exhibition', 0, 5);
             $engine->addStep(new LoadSearchStep($search));
+
             do {
                 $hasSteps = $engine->next();
             } while ($hasSteps);
