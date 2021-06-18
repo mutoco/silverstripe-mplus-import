@@ -4,6 +4,7 @@
 namespace Mutoco\Mplus\Extension;
 
 
+use SilverStripe\Forms\FieldList;
 use SilverStripe\ORM\DataExtension;
 
 class DataRecordExtension extends DataExtension
@@ -25,4 +26,9 @@ class DataRecordExtension extends DataExtension
         'Imported' => '__lastModified',
         'MplusID' => '__id'
     ];
+
+    public function updateCMSFields(FieldList $fields)
+    {
+        $fields->makeFieldReadonly(['Imported', 'MplusID', 'Module']);
+    }
 }

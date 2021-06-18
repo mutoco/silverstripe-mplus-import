@@ -7,7 +7,7 @@ namespace Mutoco\Mplus\Import;
 use Mutoco\Mplus\Parse\Result\TreeNode;
 use Mutoco\Mplus\Serialize\SerializableTrait;
 
-class ImportRegistry implements \Serializable
+class MemoryImportRegistry implements RegistryInterface
 {
     use SerializableTrait;
 
@@ -27,21 +27,23 @@ class ImportRegistry implements \Serializable
         return $this->trees[$key] ?? null;
     }
 
-    public function setImportedTree(string $module, string $id, TreeNode $tree)
+    public function setImportedTree(string $module, string $id, TreeNode $tree): void
     {
         $key = $module . '.' . $id;
         $this->trees[$key] = $tree;
     }
 
-    public function clearImportedTree(string $module, string $id)
+    public function clearImportedTree(string $module, string $id): bool
     {
         $key = $module . '.' . $id;
         if (isset($this->trees[$key])) {
             unset($this->trees[$key]);
+            return true;
         }
+        return false;
     }
 
-    public function reportImportedRelation(string $class, string $id, string $name, array $ids)
+    public function reportImportedRelation(string $class, string $id, string $name, array $ids): void
     {
         $key = join('-', [$class, $id, $name]);
         $this->relations[$key] = $ids;
@@ -61,6 +63,10 @@ class ImportRegistry implements \Serializable
 
     public function reportImportedModule(string $name, string $id): void
     {
+        if ($this->hasImportedModule($name, $id)) {
+            return;
+        }
+
         if (!isset($this->modules[$name])) {
             $this->modules[$name] = [$id];
         } else {
@@ -84,6 +90,13 @@ class ImportRegistry implements \Serializable
     public function getImportedIds(string $module): array
     {
         return $this->modules[$module] ?? [];
+    }
+
+    public function clear(): void
+    {
+        $this->modules = [];
+        $this->relations = [];
+        $this->trees = [];
     }
 
     protected function getSerializableObject(): \stdClass

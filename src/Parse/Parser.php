@@ -81,7 +81,7 @@ class Parser
         $this->parsers->push(new TreeParser());
 
         while (!$stream->eof()) {
-            xml_parse($parser, $stream->read(16384));
+            xml_parse($parser, $stream->read(65536));
         }
 
         xml_parse($parser, '', true); // finalize parsing

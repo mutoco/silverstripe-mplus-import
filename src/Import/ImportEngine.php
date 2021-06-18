@@ -25,14 +25,14 @@ class ImportEngine implements \Serializable
     protected \SplPriorityQueue $queue;
     protected ?StepInterface $lastStep = null;
     protected int $steps;
-    protected ImportRegistry $registry;
+    protected RegistryInterface $registry;
     protected ?ImportConfig $config;
     protected bool $deleteObsoleteRecords = false;
 
     public function __construct()
     {
         $this->steps = 0;
-        $this->registry = new ImportRegistry();
+        $this->registry = new MemoryImportRegistry();
         $this->config = null;
         $this->lastStep = null;
         $this->queue = new \SplPriorityQueue();
@@ -67,9 +67,15 @@ class ImportEngine implements \Serializable
         return $this;
     }
 
-    public function getRegistry(): ImportRegistry
+    public function getRegistry(): RegistryInterface
     {
         return $this->registry;
+    }
+
+    public function setRegistry(RegistryInterface $value): self
+    {
+        $this->registry = $value;
+        return $this;
     }
 
     public function getSteps(): int
