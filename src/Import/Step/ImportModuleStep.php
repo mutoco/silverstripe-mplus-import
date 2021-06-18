@@ -132,7 +132,11 @@ class ImportModuleStep implements StepInterface
                                     $node = $this->tree->getNestedNode($path);
                                 }
                                 $results = $this->target->invokeWithExtensions('updateMplusRelationField', $field, $node);
-                                $data[$field] = empty($results) ? $node->getValue() : $results[0];
+                                if (!empty($results)) {
+                                    $data[$field] = $results[0];
+                                } else if ($node) {
+                                    $data[$field] = $node->getValue();
+                                }
                             }
                         }
                         $ids[$child->getId()] = $data;
