@@ -40,29 +40,43 @@ class VocabularyItem extends DataObject
 
     public static function findOrCreateFromNode(TreeNode $node): VocabularyItem
     {
-        if ($node->getTag() === 'vocabularyReference') {
-            foreach ($node->getChildren() as $child) {
-                if ($child->getTag() === 'vocabularyReferenceItem') {
-                    $node = $child;
-                    break;
-                }
-            }
+        $vocabNode = self::findVocabularyItemNode($node);
+
+        if (!$vocabNode) {
+            throw new \Exception('Node does not contain a vocabularyReferenceItem');
         }
 
-        if (($target = VocabularyItem::get()->find('MplusID', $node->getId())) && $target instanceof VocabularyItem) {
+        if (($target = VocabularyItem::get()->find('MplusID', $vocabNode->getId())) && $target instanceof VocabularyItem) {
             return $target;
         }
 
         $target = VocabularyItem::create();
         $target->update([
-            'MplusID' => $node->getId(),
+            'MplusID' => $vocabNode->getId(),
             'Imported' => DBDatetime::now()
         ]);
 
-        self::updateFromNode($target, $node);
+        self::updateFromNode($target, $vocabNode);
 
         $target->write();
         return $target;
+    }
+
+    public static function findVocabularyItemNode(TreeNode $node): ?TreeNode
+    {
+        if ($node->getTag() === 'vocabularyReferenceItem') {
+            return $node;
+        }
+
+        if ($node->getTag() === 'vocabularyReference') {
+            foreach ($node->getChildren() as $child) {
+                if ($child instanceof TreeNode && $child->getTag() === 'vocabularyReferenceItem') {
+                    return $child;
+                }
+            }
+        }
+
+        return null;
     }
 
     protected static function updateFromNode(VocabularyItem $item, TreeNode $node): void

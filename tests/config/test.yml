@@ -8,6 +8,7 @@ ImportEngine:
     Exhibition:
       modelClass: Mutoco\Mplus\Tests\Model\Exhibition
       fields:
+        Status: ExhInternetVoc
         Title: ExhTitleTxt
         DateTo: ExhDateToDat
         DateFrom: ExhDateFromDat

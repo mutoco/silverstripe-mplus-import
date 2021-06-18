@@ -13,6 +13,7 @@ use SilverStripe\ORM\DataObject;
 class Exhibition extends DataObject implements TestOnly
 {
 	private static $db = [
+        'Status' => "Enum('complete,wip,none','none')",
 		'Title' => 'Varchar(255)',
 		'DateTo' => 'Date',
 		'DateFrom' => 'Date'
@@ -44,6 +45,18 @@ class Exhibition extends DataObject implements TestOnly
 	];
 
 	private static $table_name = 'Mutoco_Test_Exhibition';
+
+    public function transformMplusFieldValue(string $field, ?TreeNode $node)
+    {
+        if ($field === 'Status' && ($node = VocabularyItem::findVocabularyItemNode($node))) {
+            switch ($node->name) {
+                case 'DigiLab_onlinedone':
+                    return 'complete';
+                case 'DigiLab_onlineinprogress':
+                    return 'wip';
+            }
+        }
+    }
 
 	public function transformMplusRelationField($field, ?TreeNode $node)
     {

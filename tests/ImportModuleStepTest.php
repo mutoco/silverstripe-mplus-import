@@ -72,6 +72,7 @@ class ImportModuleStepTest extends SapphireTest
 
             Exhibition::flush_and_destroy_cache();
             $exhibition = Exhibition::get()->find('MplusID', 2);
+            $this->assertEquals('complete', $exhibition->Status);
             $this->assertEquals('Dies ist nur ein Test', $exhibition->Title);
             $this->assertEquals('2018-06-14', $exhibition->DateTo);
             $this->assertEquals(['1982'], $exhibition->Persons()->column('MplusID'));
