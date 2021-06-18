@@ -12,6 +12,8 @@ class Client implements ClientInterface
     private string $baseUrl;
     private string $username;
     private string $password;
+    private int $maxRetries;
+    private int $retries;
     private ?string $sessionKey;
 
     private \GuzzleHttp\Client $client;
@@ -22,6 +24,26 @@ class Client implements ClientInterface
         $this->setUsername($username);
         $this->setPassword($password);
         $this->sessionKey = null;
+        $this->maxRetries = 3;
+        $this->retries = 0;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxRetries(): int
+    {
+        return $this->maxRetries;
+    }
+
+    /**
+     * @param int $maxRetries
+     * @return Client
+     */
+    public function setMaxRetries(int $maxRetries): self
+    {
+        $this->maxRetries = $maxRetries;
+        return $this;
     }
 
 
@@ -132,6 +154,7 @@ class Client implements ClientInterface
 
     public function search(string $module, string $xml): ?StreamInterface
     {
+        $this->retries = 0;
         return $this->sendApiRequest(sprintf('ria-ws/application/module/%s/search/', $module), [
             'body' => $xml
         ],  'POST');
@@ -139,12 +162,14 @@ class Client implements ClientInterface
 
     public function queryModelItem(string $module, string $id): ?StreamInterface
     {
+        $this->retries = 0;
         return $this->sendApiRequest(sprintf('ria-ws/application/module/%s/%s', $module, $id));
     }
 
 
     public function loadAttachment(string $module, string $id, ?callable $onHeaders = null): ?StreamInterface
     {
+        $this->retries = 0;
         try {
             return $this->sendApiRequest(
                 sprintf('ria-ws/application/module/%s/%s/attachment', $module, $id),
@@ -172,8 +197,9 @@ class Client implements ClientInterface
         if ($response->getStatusCode() === 403) {
             // Automatically call init and retry the request if access was forbidden
             $this->init();
-            if ($this->hasSession()) {
-                return $this->sendApiRequest($url, $options);
+            $this->retries++;
+            if ($this->maxRetries > 0 && $this->retries < $this->maxRetries && $this->hasSession()) {
+                return $this->sendApiRequest($url, $options, $method);
             }
         }
 
