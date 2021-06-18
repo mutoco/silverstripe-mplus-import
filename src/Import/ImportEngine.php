@@ -142,12 +142,19 @@ class ImportEngine implements \Serializable
 
         $queue = [];
         $this->queue->rewind();
+        $flags = $this->queue->getExtractFlags();
         $this->queue->setExtractFlags(\SplPriorityQueue::EXTR_BOTH);
 
-        while($this->queue->valid()){
-            $queue[] = $this->queue->current();
-            $this->queue->next();
+        while(!$this->queue->isEmpty()){
+            $queue[] = $this->queue->extract();
         }
+
+        // Previous process was destructive, need to rebuild the queue
+        foreach ($queue as $item) {
+            $this->queue->insert($item['data'], $item['priority']);
+        }
+
+        $this->queue->setExtractFlags($flags);
 
         $obj->queue = $queue;
         $obj->steps = $this->steps;

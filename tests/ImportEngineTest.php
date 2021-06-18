@@ -98,6 +98,7 @@ class ImportEngineTest extends FunctionalTest
 
         /** @var ImportEngine $copy */
         $copy = unserialize(serialize($engine));
+        $this->assertFalse($engine->isComplete());
         $this->assertFalse($copy->isComplete());
         $this->assertInstanceOf(TestStep::class, $copy->getQueue()->top());
     }
