@@ -209,7 +209,6 @@ class LoadModuleStep implements StepInterface
         $obj->module = $this->module;
         $obj->id = $this->id;
         $obj->resultTree = $this->resultTree;
-        $obj->allowedPaths = $this->allowedPaths ? Util::treeToPaths($this->allowedPaths) : null;
         return $obj;
     }
 
@@ -218,8 +217,5 @@ class LoadModuleStep implements StepInterface
         $this->module = $obj->module;
         $this->id = $obj->id;
         $this->resultTree = $obj->resultTree;
-        if (isset($obj->allowedPaths)) {
-            $this->allowedPaths = Util::pathsToTree($obj->allowedPaths);
-        }
     }
 }

@@ -55,16 +55,9 @@ class ImportModuleStep implements StepInterface
      */
     public function activate(ImportEngine $engine): void
     {
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function run(ImportEngine $engine): bool
-    {
         // If the exact same module was already imported it's safe to skip
         if ($engine->getRegistry()->hasImportedModule($this->module, $this->id)) {
-            return false;
+            return;
         }
 
         if (empty($engine->getRegistry()->getImportedIds($this->module))) {
@@ -77,6 +70,17 @@ class ImportModuleStep implements StepInterface
 
         if (!$this->tree) {
             throw new ImportException(sprintf('Cannot import module (%s #%s) without an imported tree', $this->module, $this->id));
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function run(ImportEngine $engine): bool
+    {
+        // If the exact same module was already imported it's safe to skip
+        if ($engine->getRegistry()->hasImportedModule($this->module, $this->id)) {
+            return false;
         }
 
         $config = $engine->getConfig()->getModuleConfig($this->module);
@@ -150,7 +154,6 @@ class ImportModuleStep implements StepInterface
         }
 
         $engine->getRegistry()->reportImportedModule($this->module, $this->id);
-        $engine->getRegistry()->clearImportedTree($this->module, $this->id);
     }
 
     protected function createOrUpdate(array $config, TreeNode $tree, &$skipped = false): DataObject

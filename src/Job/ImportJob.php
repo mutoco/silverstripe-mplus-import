@@ -95,6 +95,7 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
 
         if ($this->importer->isComplete()) {
             $this->isComplete = true;
+            $this->importer->getRegistry()->clear();
         }
     }
 
