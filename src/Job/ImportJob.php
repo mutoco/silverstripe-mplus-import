@@ -8,6 +8,7 @@ namespace Mutoco\Mplus\Job;
 
 use Mutoco\Mplus\Api\SearchBuilder;
 use Mutoco\Mplus\Import\ImportEngine;
+use Mutoco\Mplus\Import\SqliteImportRegistry;
 use Mutoco\Mplus\Import\Step\LoadSearchStep;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Injector\Injector;
@@ -69,6 +70,9 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
         $this->importer = new ImportEngine();
         $this->importer->setDeleteObsoleteRecords(true);
         $this->importer->setApi($client);
+        if (class_exists('SQLite3')) {
+            $this->importer->setRegistry(new SqliteImportRegistry());
+        }
         $this->importer->addStep(new LoadSearchStep($search));
 
         $this->totalSteps = $this->importer->getTotalSteps();
