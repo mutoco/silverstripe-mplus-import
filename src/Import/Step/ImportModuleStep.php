@@ -131,7 +131,7 @@ class ImportModuleStep implements StepInterface
                                 } else {
                                     $node = $this->tree->getNestedNode($path);
                                 }
-                                $results = $this->target->invokeWithExtensions('updateMplusRelationField', $field, $node);
+                                $results = $this->target->invokeWithExtensions('transformMplusRelationField', $field, $node);
                                 if (!empty($results)) {
                                     $data[$field] = $results[0];
                                 } else if ($node) {
@@ -201,8 +201,9 @@ class ImportModuleStep implements StepInterface
                 continue;
             }
 
-            if ($target->hasDatabaseField($fieldName) && ($fieldResult = $tree->getNestedNode($mplusName))) {
-                $target->setField($fieldName, $fieldResult->getValue());
+            if ($target->hasDatabaseField($fieldName) && ($fieldNode = $tree->getNestedNode($mplusName))) {
+                $results = $target->invokeWithExtensions('transformMplusFieldValue', $fieldName, $fieldNode);
+                $target->setField($fieldName, empty($results) ? $fieldNode->getValue() : $results[0]);
             }
         }
 

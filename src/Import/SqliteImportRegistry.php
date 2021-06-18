@@ -199,10 +199,6 @@ SQL;
 
             $this->filename = tempnam(sys_get_temp_dir(), 'sq3import');
             $this->db = new \SQLite3($this->filename);
-            $this->db->exec(self::$create_modules);
-            $this->db->exec(self::$create_tree);
-            $this->db->exec(self::$create_relations);
-
             $this->prepareStatements();
 
             return $this->db;
@@ -211,6 +207,10 @@ SQL;
         protected function prepareStatements(): void
         {
             $db = $this->getDb();
+            $this->db->exec(self::$create_modules);
+            $this->db->exec(self::$create_tree);
+            $this->db->exec(self::$create_relations);
+
             $this->treeDelete = $db->prepare('DELETE FROM trees WHERE id=:id AND module=:module');
             $this->treeInsert = $db->prepare('REPLACE INTO trees (id, module, value) VALUES (:id, :module, :value)');
             $this->treeSelect = $db->prepare('SELECT value FROM trees WHERE id=:id AND module=:module');

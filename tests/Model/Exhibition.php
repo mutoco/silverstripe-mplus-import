@@ -45,7 +45,7 @@ class Exhibition extends DataObject implements TestOnly
 
 	private static $table_name = 'Mutoco_Test_Exhibition';
 
-	public function updateMplusRelationField($field, ?TreeNode $node)
+	public function transformMplusRelationField($field, ?TreeNode $node)
     {
         if ($field === 'Type' && $node) {
             if ($item = VocabularyItem::findOrCreateFromNode($node)) {
