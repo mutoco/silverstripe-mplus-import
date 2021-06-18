@@ -15,12 +15,15 @@ class ImportEngine implements \Serializable
     use Configurable;
     use SerializableTrait;
 
-    const QUEUE_IMPORT = 'IMPORT';
-    const QUEUE_LINK = 'LINK';
-    const QUEUE_CLEANUP = 'CLEANUP';
+    const PRIORITY_IMPORT = 1000;
+    const PRIORITY_LOAD = 500;
+    const PRIORITY_LINK = 100;
+    const PRIORITY_FETCH_MORE = 10;
+    const PRIORITY_CLEANUP = 0;
 
     protected ?ClientInterface $api = null;
-    protected array $queues;
+    protected \SplPriorityQueue $queue;
+    protected ?StepInterface $lastStep = null;
     protected int $steps;
     protected ImportRegistry $registry;
     protected ?ImportConfig $config;
@@ -31,12 +34,8 @@ class ImportEngine implements \Serializable
         $this->steps = 0;
         $this->registry = new ImportRegistry();
         $this->config = null;
-
-        $this->queues = [
-            self::QUEUE_IMPORT => new \SplQueue(),
-            self::QUEUE_LINK => new \SplQueue(),
-            self::QUEUE_CLEANUP => new \SplQueue(),
-        ];
+        $this->lastStep = null;
+        $this->queue = new \SplPriorityQueue();
     }
 
     /**
@@ -87,71 +86,48 @@ class ImportEngine implements \Serializable
         return $this->config;
     }
 
-    public function addStep(StepInterface $step, ?string $queue = null)
+    public function addStep(StepInterface $step, ?int $priority = null)
     {
-        $queueName = $queue ?? $step->getDefaultQueue();
-
-        if (!isset($this->queues[$queueName])) {
-            throw new \InvalidArgumentException('Not a valid queue name');
-        }
-
-        $this->queues[$queueName]->enqueue($step);
-        $step->activate($this);
+        $this->queue->insert($step, $priority ?? $step->getDefaultPriority());
     }
 
-    public function getQueue(string $name): ?\SplQueue
+    public function getQueue(): \SplPriorityQueue
     {
-        return $this->queues[$name] ?? null;
-    }
-
-    public function getCurrentQueue(): ?\SplQueue
-    {
-        foreach ($this->queues as $queue) {
-            if (!$queue->isEmpty()) {
-                return $queue;
-            }
-        }
-
-        return null;
+        return $this->queue;
     }
 
     public function getTotalSteps(): int
     {
-        $remaining = 0;
-
-        foreach ($this->queues as $queue) {
-            if ($queue && !$queue->isEmpty()) {
-                $remaining += $queue->count();
-            }
-        }
-
+        $remaining = $this->queue->count();
         return $remaining + $this->getSteps();
     }
 
     public function isComplete(): bool
     {
-        return $this->getCurrentQueue() === null;
+        return $this->queue->isEmpty();
     }
 
     public function next(): bool
     {
         $this->steps++;
-        $currentQueue = $this->getCurrentQueue();
 
-        if ($currentQueue) {
-            $step = $currentQueue->bottom();
+        if (!$this->queue->isEmpty()) {
+            $this->queue->setExtractFlags(\SplPriorityQueue::EXTR_BOTH);
+            $data = $this->queue->extract();
+            $step = $data['data'];
+            $prio = $data['priority'];
+            $this->queue->setExtractFlags(\SplPriorityQueue::EXTR_DATA);
+
+            if ($step !== $this->lastStep) {
+                $step->activate($this);
+            }
+            $this->lastStep = $step;
             $isComplete = !$step->run($this);
 
             if ($isComplete) {
-                $valid = false;
-                try {
-                    $valid = ($step === $currentQueue->dequeue());
-                    $step->deactivate($this);
-                } catch (\Exception $ex) {}
-
-                if (!$valid) {
-                    throw new \LogicException('A queue cannot change the current item during one run step');
-                }
+                $step->deactivate($this);
+            } else {
+                $this->queue->insert($step, $prio);
             }
 
             return true;
@@ -163,7 +139,17 @@ class ImportEngine implements \Serializable
     protected function getSerializableObject(): \stdClass
     {
         $obj = new \stdClass();
-        $obj->queues = $this->queues;
+
+        $queue = [];
+        $this->queue->rewind();
+        $this->queue->setExtractFlags(\SplPriorityQueue::EXTR_BOTH);
+
+        while($this->queue->valid()){
+            $queue[] = $this->queue->current();
+            $this->queue->next();
+        }
+
+        $obj->queue = $queue;
         $obj->steps = $this->steps;
         $obj->registry = $this->registry;
         $obj->apiClass = $this->api ? get_class($this->api) : null;
@@ -173,7 +159,12 @@ class ImportEngine implements \Serializable
     protected function unserializeFromObject(\stdClass $obj): void
     {
         $this->steps = $obj->steps;
-        $this->queues = $obj->queues;
+        $this->queue = new \SplPriorityQueue();
+
+        foreach ($obj->queue as $item) {
+            $this->queue->insert($item['data'], $item['priority']);
+        }
+
         $this->registry = $obj->registry;
         $this->config = null;
         if ($obj->apiClass) {

@@ -14,9 +14,9 @@ use SilverStripe\ORM\ManyManyThroughList;
 
 class LinkRelationStep extends AbstractRelationStep
 {
-    public function getDefaultQueue(): string
+    public function getDefaultPriority(): int
     {
-        return ImportEngine::QUEUE_LINK;
+        return ImportEngine::PRIORITY_LINK;
     }
 
     public function run(ImportEngine $engine): bool

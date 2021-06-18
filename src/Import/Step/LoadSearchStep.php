@@ -37,9 +37,9 @@ class LoadSearchStep implements StepInterface
     /**
      * @inheritDoc
      */
-    public function getDefaultQueue(): string
+    public function getDefaultPriority(): int
     {
-        return ImportEngine::QUEUE_IMPORT;
+        return ImportEngine::PRIORITY_FETCH_MORE;
     }
 
     /**

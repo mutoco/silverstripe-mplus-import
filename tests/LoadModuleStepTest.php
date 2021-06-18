@@ -17,6 +17,10 @@ use Symfony\Component\Yaml\Yaml;
 
 class LoadModuleStepTest extends FunctionalTest
 {
+    protected static $extra_dataobjects = [
+        Exhibition::class
+    ];
+
     protected array $loadedConfig;
 
     protected function setUp()
@@ -44,19 +48,19 @@ class LoadModuleStepTest extends FunctionalTest
         $engine = new ImportEngine();
         $engine->setApi(new Client());
         $engine->addStep(new LoadModuleStep('Exhibition', 2));
-        $this->assertCount(1, $engine->getQueue(ImportEngine::QUEUE_IMPORT));
+        $this->assertCount(1, $engine->getQueue());
         $engine->next();
         $engine->next(); // Must run multiple times to resolve tree
-        $this->assertCount(2, $engine->getQueue(ImportEngine::QUEUE_IMPORT));
-        $current = $engine->getQueue(ImportEngine::QUEUE_IMPORT)->bottom();
-        $this->assertInstanceOf(LoadModuleStep::class,$current);
-        $this->assertEquals(1982, $current->getId());
-        $this->assertEquals('Person', $current->getModule());
-        $engine->next();
-        $engine->next();
-        $current = $engine->getQueue(ImportEngine::QUEUE_IMPORT)->bottom();
-        $this->assertInstanceOf(ImportModuleStep::class, $current);
+        $this->assertCount(2, $engine->getQueue());
+        $current = $engine->getQueue()->top();
+        $this->assertInstanceOf(ImportModuleStep::class, $current, 'Immediately import a resolved module');
         $this->assertEquals(2, $current->getId());
+        $this->assertEquals('Exhibition', $current->getModule());
+        $engine->next();
+        $current = $engine->getQueue()->top();
+        $this->assertInstanceOf(ImportModuleStep::class, $current, 'Import direct relations');
+        $this->assertEquals(356559, $current->getId());
+        $this->assertEquals('ExhTextGrp', $current->getModule());
     }
 
     public function testTreeResolve()
@@ -67,6 +71,7 @@ class LoadModuleStepTest extends FunctionalTest
             $engine->setApi(new Client());
             $engine->addStep($step = new LoadModuleStep('Exhibition', 2));
 
+            $step->activate($engine);
             $this->assertTrue($step->run($engine), 'First step is to load the module from API');
             $this->assertFalse($step->run($engine), 'Second step marks completion as tree is resolved');
             $this->assertNull($engine->getRegistry()->getImportedTree('Person', 1892), 'No person has been imported');
@@ -77,17 +82,17 @@ class LoadModuleStepTest extends FunctionalTest
             $engine = new ImportEngine();
             $engine->setApi(new Client());
             $engine->addStep($step = new LoadModuleStep('Exhibition', 2));
-
+            $step->activate($engine);
             do {
                 $hasRemaining = $step->run($engine);
             } while ($hasRemaining);
             $tree = $step->getResultTree();
             $step->deactivate($engine);
-            $engine->getCurrentQueue()->dequeue();
+            $engine->getQueue()->extract();
 
             $this->assertEquals('Künstler/in', $tree->getNestedValue('ExhPersonRef.TypeVoc.artist'), 'Has resolved internal field');
             $this->assertEquals('Edvard', $tree->getNestedValue('ExhPersonRef.PerFirstNameTxt'), 'Has resolved external field');
-            $step = $engine->getCurrentQueue()->bottom();
+            $step = $engine->getQueue()->top();
             $this->assertInstanceOf(LoadModuleStep::class, $step);
             $this->assertEquals(47894, $step->getId());
             $this->assertEquals('Object', $step->getModule(), 'Should load related Object next');

@@ -24,8 +24,7 @@ class LoadModuleStep implements StepInterface
     protected string $module;
     protected string $id;
     protected ?TreeNode $resultTree;
-    protected ?Node $allowedPaths;
-    protected \SplQueue $pendingNodes;
+    protected ?Node $allowedPaths = null;
 
     /**
      * LoadModuleStep constructor.
@@ -42,7 +41,6 @@ class LoadModuleStep implements StepInterface
             $this->resultTree->setParent(null);
         }
         $this->allowedPaths = null;
-        $this->pendingNodes = new \SplQueue();
     }
 
     public function getId(): string
@@ -60,9 +58,9 @@ class LoadModuleStep implements StepInterface
         return $this->resultTree;
     }
 
-    public function getDefaultQueue(): string
+    public function getDefaultPriority(): int
     {
-        return ImportEngine::QUEUE_IMPORT;
+        return ImportEngine::PRIORITY_LOAD;
     }
 
     /**
@@ -70,7 +68,6 @@ class LoadModuleStep implements StepInterface
      */
     public function activate(ImportEngine $engine): void
     {
-        $this->pendingNodes = new \SplQueue();
         $this->allowedPaths = Util::pathsToTree($engine->getConfig()->getImportPaths($this->module));
     }
 
@@ -104,6 +101,11 @@ class LoadModuleStep implements StepInterface
             // Store the full tree result in the registry
             $engine->getRegistry()->setImportedTree($this->module, $this->id, $this->resultTree);
 
+            $cfg = $engine->getConfig()->getModuleConfig($this->module);
+            if (isset($cfg['modelClass'])) {
+                $engine->addStep(new ImportModuleStep($this->module, $this->id));
+            }
+
             // Collect all references again. Everything that is left now should be an external module
             $visitor = new ReferenceCollector();
             $references = $this->resultTree->accept($visitor);
@@ -112,11 +114,6 @@ class LoadModuleStep implements StepInterface
                 if (!$reference->isResolved() && ($moduleName = $reference->getModuleName()) && ($id = $reference->moduleItemId)) {
                     $engine->addStep(new LoadModuleStep($moduleName, $id));
                 }
-            }
-
-            $cfg = $engine->getConfig()->getModuleConfig($this->module);
-            if (isset($cfg['modelClass'])) {
-                $engine->addStep(new ImportModuleStep($this->module, $this->id));
             }
         }
 
@@ -212,8 +209,7 @@ class LoadModuleStep implements StepInterface
         $obj->module = $this->module;
         $obj->id = $this->id;
         $obj->resultTree = $this->resultTree;
-        $obj->pendingNodes = $this->pendingNodes;
-        $obj->allowedPaths = Util::treeToPaths($this->allowedPaths);
+        $obj->allowedPaths = $this->allowedPaths ? Util::treeToPaths($this->allowedPaths) : null;
         return $obj;
     }
 
@@ -222,7 +218,8 @@ class LoadModuleStep implements StepInterface
         $this->module = $obj->module;
         $this->id = $obj->id;
         $this->resultTree = $obj->resultTree;
-        $this->pendingNodes = $obj->pendingNodes;
-        $this->allowedPaths = Util::pathsToTree($obj->allowedPaths);
+        if (isset($obj->allowedPaths)) {
+            $this->allowedPaths = Util::pathsToTree($obj->allowedPaths);
+        }
     }
 }

@@ -15,7 +15,6 @@ class ImportEngineTest extends FunctionalTest
         $engine = new ImportEngine();
         $this->assertFalse($engine->next(), 'Empty engine is already finished');
         $this->assertTrue($engine->isComplete());
-        $this->assertNull($engine->getCurrentQueue());
     }
 
     public function testCallOrder()
@@ -43,9 +42,9 @@ class ImportEngineTest extends FunctionalTest
         } while ($continue);
         $this->assertEquals([
             'A:activate',
-            'B:activate',
             'A:run',
             'A:deactivate',
+            'B:activate',
             'B:run',
             'B:deactivate',
         ], TestStep::$stack);
@@ -71,22 +70,23 @@ class ImportEngineTest extends FunctionalTest
         $engine = new ImportEngine();
         $step = new TestStep(2, true);
         $engine->addStep($step);
-        $engine->addStep(new TestStep(1, false, 'C'));
+        $engine->addStep(new TestStep(1, false, 'C'), ImportEngine::PRIORITY_LOAD - 1);
         do {
             $continue = $engine->next();
         } while ($continue);
         $this->assertTrue($engine->isComplete());
         $this->assertEquals([
             'A:activate',
-            'C:activate',
             'A:run',
             'B:activate',
-            'A:run',
-            'A:deactivate',
-            'C:run',
-            'C:deactivate',
             'B:run',
             'B:deactivate',
+            'A:activate',
+            'A:run',
+            'A:deactivate',
+            'C:activate',
+            'C:run',
+            'C:deactivate',
         ], TestStep::$stack);
         $this->assertEquals(4, $engine->getSteps());
     }
@@ -99,7 +99,7 @@ class ImportEngineTest extends FunctionalTest
         /** @var ImportEngine $copy */
         $copy = unserialize(serialize($engine));
         $this->assertFalse($copy->isComplete());
-        $this->assertInstanceOf(TestStep::class, $copy->getCurrentQueue()->top());
+        $this->assertInstanceOf(TestStep::class, $copy->getQueue()->top());
     }
 
     public function testRegistry()

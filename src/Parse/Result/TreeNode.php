@@ -281,6 +281,7 @@ class TreeNode implements NodeInterface, \Serializable
         $obj->value = $this->value;
         $obj->children = $this->children;
         $obj->subTree = $this->subTree;
+        $obj->resolved = $this->resolved;
 
         return $obj;
     }
@@ -292,6 +293,7 @@ class TreeNode implements NodeInterface, \Serializable
         $this->value = $obj->value;
         $this->children = $obj->children;
         $this->subTree = $obj->subTree;
+        $this->resolved = $obj->resolved;
 
         foreach ($this->children as $child) {
             $child->setParent($this);

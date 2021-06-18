@@ -54,7 +54,7 @@ class LoadSearchStepTest extends SapphireTest
                 $hasSteps = $engine->next();
             } while ($hasSteps);
 
-            $this->assertEquals([
+            $titles = [
                 'Lorem',
                 'Ipsum',
                 'Dolor',
@@ -67,7 +67,10 @@ class LoadSearchStepTest extends SapphireTest
                 'Venenatis',
                 'Ullamcorper',
                 'Risus'
-            ], Exhibition::get()->column('Title'));
+            ];
+            sort($titles);
+
+            $this->assertEquals($titles, Exhibition::get()->sort('Title')->column('Title'));
 
             $this->assertEquals([
                 '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'

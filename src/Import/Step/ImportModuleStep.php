@@ -40,9 +40,9 @@ class ImportModuleStep implements StepInterface
         return $this->module;
     }
 
-    public function getDefaultQueue(): string
+    public function getDefaultPriority(): int
     {
-        return ImportEngine::QUEUE_IMPORT;
+        return ImportEngine::PRIORITY_IMPORT;
     }
 
     public function getTree(): ?TreeNode
@@ -115,7 +115,10 @@ class ImportModuleStep implements StepInterface
             foreach ($nodes as $collection) {
                 foreach ($collection->getChildren() as $child) {
                     if ($child instanceof TreeNode) {
-                        $engine->addStep(new ImportModuleStep($relationCfg['type'], $child->getId(), $child));
+                        if (!$child->isReferenceNode()) {
+                            // Import related models that are part of the current tree
+                            $engine->addStep(new ImportModuleStep($relationCfg['type'], $child->getId(), $child));
+                        }
                         $data = [];
                         if (isset($relationCfg['fields'])) {
                             foreach ($relationCfg['fields'] as $field => $path) {

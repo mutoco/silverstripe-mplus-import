@@ -26,9 +26,9 @@ class TestStep implements StepInterface
         $this->name = $name;
     }
 
-    public function getDefaultQueue(): string
+    public function getDefaultPriority(): int
     {
-        return ImportEngine::QUEUE_IMPORT;
+        return ImportEngine::PRIORITY_LOAD;
     }
 
     /**
@@ -48,7 +48,7 @@ class TestStep implements StepInterface
         $this->step++;
 
         if ($this->enqueue) {
-            $engine->addStep(new TestStep(1, false, 'B'), ImportEngine::QUEUE_IMPORT);
+            $engine->addStep(new TestStep(1, false, 'B'), ImportEngine::PRIORITY_IMPORT);
             $this->enqueue = false;
         }
 

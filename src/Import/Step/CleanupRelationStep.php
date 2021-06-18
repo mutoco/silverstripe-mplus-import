@@ -13,9 +13,9 @@ class CleanupRelationStep extends AbstractRelationStep
     /**
      * @inheritDoc
      */
-    public function getDefaultQueue(): string
+    public function getDefaultPriority(): int
     {
-        return ImportEngine::QUEUE_CLEANUP;
+        return ImportEngine::PRIORITY_CLEANUP;
     }
 
     protected function handleMany(DataList $relation, ImportEngine $engine): void

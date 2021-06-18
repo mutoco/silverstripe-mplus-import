@@ -20,7 +20,6 @@ use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\FieldType\DBDatetime;
-use SilverStripe\ORM\Queries\SQLSelect;
 use Symfony\Component\Yaml\Yaml;
 
 class ImportModuleStepTest extends SapphireTest

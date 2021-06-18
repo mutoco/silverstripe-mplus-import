@@ -26,9 +26,9 @@ class CleanupRecordsStep implements StepInterface
     /**
      * @inheritDoc
      */
-    public function getDefaultQueue(): string
+    public function getDefaultPriority(): int
     {
-        return ImportEngine::QUEUE_CLEANUP;
+        return ImportEngine::PRIORITY_CLEANUP;
     }
 
     /**
