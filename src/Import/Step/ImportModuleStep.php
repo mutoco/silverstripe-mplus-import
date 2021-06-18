@@ -119,6 +119,11 @@ class ImportModuleStep implements StepInterface
             foreach ($nodes as $collection) {
                 foreach ($collection->getChildren() as $child) {
                     if ($child instanceof TreeNode) {
+                        $results = $this->target->invokeWithExtensions('shouldImportMplusRelation', $relationName, $child);
+                        if (!empty($results) && min($results) === false) {
+                            continue;
+                        }
+
                         if (!$child->isReferenceNode()) {
                             // Import related models that are part of the current tree
                             $engine->addStep(new ImportModuleStep($relationCfg['type'], $child->getId(), $child));
