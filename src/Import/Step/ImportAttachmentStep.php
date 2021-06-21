@@ -140,6 +140,7 @@ class ImportAttachmentStep implements StepInterface
             AssetAdmin::create()->generateThumbnails($image);
             $image->flushCache();
             $image->write();
+            $image->publishRecursive();
             return $image;
         } catch (\Exception $err) {
 
