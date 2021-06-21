@@ -62,7 +62,7 @@ class VocabularyItem extends DataObject
         return $target;
     }
 
-    public static function findVocabularyItemNode(TreeNode $node): ?TreeNode
+    public static function findVocabularyItemNode(?TreeNode $node): ?TreeNode
     {
         if ($node && $node->getTag() === 'vocabularyReferenceItem') {
             return $node;
