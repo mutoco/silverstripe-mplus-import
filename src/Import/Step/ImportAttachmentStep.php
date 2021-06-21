@@ -37,6 +37,16 @@ class ImportAttachmentStep implements StepInterface
         $this->id = $id;
     }
 
+    public function getModule(): string
+    {
+        return $this->module;
+    }
+
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
     /**
      * @inheritDoc
      */
@@ -73,7 +83,7 @@ class ImportAttachmentStep implements StepInterface
         if ($stream = $engine->getApi()->loadAttachment(
             $this->module,
             $this->id,
-            function (ResponseInterface $response) use ($existingFile, &$fileName) {
+            function (ResponseInterface $response) use ($existingFile, $target, $engine, &$fileName) {
                 if ($header = $response->getHeaderLine('Content-Disposition')) {
                     $parts = Header::parse($header);
                     foreach ($parts as $part) {
@@ -83,7 +93,19 @@ class ImportAttachmentStep implements StepInterface
                             break;
                         }
                     }
-                    if ($existingFile && $existingFile->exists() && $existingFile->Name === $fileName) {
+
+                    $result = $target->invokeWithExtensions(
+                        'shouldImportMplusAttachment',
+                        $fileName,
+                        $this,
+                        $engine
+                    );
+
+                    if (!empty($result)) {
+                        if (min($result) === false) {
+                            throw new Exception('File import cancelled');
+                        }
+                    } else if ($existingFile && $existingFile->exists() && $existingFile->Name === $fileName) {
                         throw new Exception('File already exists');
                     }
                 }
