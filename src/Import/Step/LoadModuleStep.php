@@ -11,6 +11,7 @@ use Mutoco\Mplus\Parse\Result\ReferenceCollector;
 use Mutoco\Mplus\Parse\Result\TreeNode;
 use Mutoco\Mplus\Serialize\SerializableTrait;
 use Mutoco\Mplus\Util;
+use SilverStripe\Core\Injector\Injector;
 use Tree\Node\Node;
 
 /**
@@ -103,7 +104,11 @@ class LoadModuleStep implements StepInterface
 
             $cfg = $engine->getConfig()->getModuleConfig($this->module);
             if (isset($cfg['modelClass'])) {
-                $engine->addStep(new ImportModuleStep($this->module, $this->id));
+                $instance = Injector::inst()->create($cfg['modelClass']);
+                $result = $instance->invokeWithExtensions('shouldImportMplusModule', $this->resultTree);
+                if (empty($result) || min($result) !== false) {
+                    $engine->addStep(new ImportModuleStep($this->module, $this->id));
+                }
             }
 
             // Collect all references again. Everything that is left now should be an external module
