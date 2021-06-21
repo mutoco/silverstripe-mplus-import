@@ -84,11 +84,11 @@ class ImportModuleStep implements StepInterface
         }
 
         $config = $engine->getConfig()->getModuleConfig($this->module);
-        $this->target = $this->createOrUpdate($config, $this->tree, $isSkipped);
+        $this->target = $this->createOrUpdate($config, $this->tree, $engine, $isSkipped);
 
         if (!$isSkipped) {
             if (isset($config['attachment'])) {
-                $result = $this->target->invokeWithExtensions('mplusShouldImportAttachment', $config['attachment'], $this->tree);
+                $result = $this->target->invokeWithExtensions('mplusShouldImportAttachment', $config['attachment'], $this->tree, $engine);
                 if (empty($result) || min($result) !== false) {
                     $engine->addStep(new ImportAttachmentStep($this->module, $this->id));
                 }
@@ -119,7 +119,7 @@ class ImportModuleStep implements StepInterface
             foreach ($nodes as $collection) {
                 foreach ($collection->getChildren() as $child) {
                     if ($child instanceof TreeNode) {
-                        $results = $this->target->invokeWithExtensions('shouldImportMplusRelation', $relationName, $child);
+                        $results = $this->target->invokeWithExtensions('shouldImportMplusRelation', $relationName, $child, $engine);
                         if (!empty($results) && min($results) === false) {
                             continue;
                         }
@@ -140,7 +140,7 @@ class ImportModuleStep implements StepInterface
                                 } else {
                                     $node = $this->tree->getNestedNode($path);
                                 }
-                                $results = $this->target->invokeWithExtensions('transformMplusRelationField', $field, $node);
+                                $results = $this->target->invokeWithExtensions('transformMplusRelationField', $field, $node, $engine);
                                 if (!empty($results)) {
                                     $data[$field] = $results[0];
                                 } else if ($node) {
@@ -161,7 +161,7 @@ class ImportModuleStep implements StepInterface
         $engine->getRegistry()->reportImportedModule($this->module, $this->id);
     }
 
-    protected function createOrUpdate(array $config, TreeNode $tree, &$skipped = false): DataObject
+    protected function createOrUpdate(array $config, TreeNode $tree, ImportEngine $engine, &$skipped = false): DataObject
     {
         $modelClass = $config['modelClass'] ?? null;
         $id = $this->getId();
@@ -187,7 +187,7 @@ class ImportModuleStep implements StepInterface
 
             if ($lastModified > 0 && $lastModified <= strtotime($target->Imported)) {
                 // Get result from skip call and filter out any `null` value returns
-                $skipCallbackResult = $target->invokeWithExtensions('beforeMplusSkip', $this);
+                $skipCallbackResult = $target->invokeWithExtensions('beforeMplusSkip', $this, $engine);
                 // If any callback returned false, we won't skip
                 if (empty($skipCallbackResult) || min($skipCallbackResult) !== false) {
                     $skipped = true;
@@ -196,7 +196,7 @@ class ImportModuleStep implements StepInterface
             }
         }
 
-        $target->invokeWithExtensions('beforeMplusImport', $this);
+        $target->invokeWithExtensions('beforeMplusImport', $this, $engine);
 
         foreach ($config['fields'] as $fieldName => $mplusName) {
             // Skip ID
@@ -205,7 +205,7 @@ class ImportModuleStep implements StepInterface
             }
 
             if ($target->hasDatabaseField($fieldName) && ($fieldNode = $tree->getNestedNode($mplusName))) {
-                $results = $target->invokeWithExtensions('transformMplusFieldValue', $fieldName, $fieldNode);
+                $results = $target->invokeWithExtensions('transformMplusFieldValue', $fieldName, $fieldNode, $engine);
                 $target->setField($fieldName, empty($results) ? $fieldNode->getValue() : $results[0]);
             }
         }
@@ -215,7 +215,7 @@ class ImportModuleStep implements StepInterface
         $target->setField('Imported', DBDatetime::now());
 
         $target->write();
-        $target->invokeWithExtensions('afterMplusImport', $this);
+        $target->invokeWithExtensions('afterMplusImport', $this, $engine);
         return $target;
     }
 

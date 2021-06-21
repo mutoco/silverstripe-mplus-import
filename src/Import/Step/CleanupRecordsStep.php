@@ -59,7 +59,7 @@ class CleanupRecordsStep implements StepInterface
         $obsolete = DataObject::get($modelClass)->exclude(['MplusID' => $ids]);
         /** @var DataObject $record */
         foreach ($obsolete as $record) {
-            $this->deleteRecord($record);
+            $this->deleteRecord($record, $engine);
         }
 
         return false;
@@ -72,9 +72,9 @@ class CleanupRecordsStep implements StepInterface
     {
     }
 
-    protected function deleteRecord(DataObject $record): bool
+    protected function deleteRecord(DataObject $record, ImportEngine $engine): bool
     {
-        $rules = $record->invokeWithExtensions('beforeMplusDelete', $this);
+        $rules = $record->invokeWithExtensions('beforeMplusDelete', $this, $engine);
 
         if (!empty($rules) && min($rules) === false) {
             return false;

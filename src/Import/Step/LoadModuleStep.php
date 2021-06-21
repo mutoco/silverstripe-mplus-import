@@ -105,7 +105,7 @@ class LoadModuleStep implements StepInterface
             $cfg = $engine->getConfig()->getModuleConfig($this->module);
             if (isset($cfg['modelClass'])) {
                 $instance = Injector::inst()->create($cfg['modelClass']);
-                $result = $instance->invokeWithExtensions('shouldImportMplusModule', $this->resultTree);
+                $result = $instance->invokeWithExtensions('shouldImportMplusModule', $this->resultTree, $engine);
                 if (empty($result) || min($result) !== false) {
                     $engine->addStep(new ImportModuleStep($this->module, $this->id));
                 }
