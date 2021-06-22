@@ -15,6 +15,8 @@ class Client implements ClientInterface
     private int $maxRetries;
     private int $retries;
     private ?string $sessionKey;
+    private int $timeout = 90;
+    private int $connectTimeout = 15;
 
     private \GuzzleHttp\Client $client;
 
@@ -27,6 +29,44 @@ class Client implements ClientInterface
         $this->maxRetries = 3;
         $this->retries = 0;
     }
+
+    /**
+     * @return int
+     */
+    public function getTimeout(): int
+    {
+        return $this->timeout;
+    }
+
+    /**
+     * @param int $timeout
+     * @return Client
+     */
+    public function setTimeout(int $timeout): self
+    {
+        $this->timeout = $timeout;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getConnectTimeout(): int
+    {
+        return $this->connectTimeout;
+    }
+
+    /**
+     * @param int $connectTimeout
+     * @return Client
+     */
+    public function setConnectTimeout(int $connectTimeout): self
+    {
+        $this->connectTimeout = $connectTimeout;
+        return $this;
+    }
+
+
 
     /**
      * @return int
@@ -188,10 +228,12 @@ class Client implements ClientInterface
 
     protected function sendApiRequest(string $url, array $options = [], string $method = 'GET'): ?StreamInterface
     {
+        // Set the time limit to AT LEAST the added timeouts
+        set_time_limit(max($this->connectTimeout + $this->timeout, ini_get('max_execution_time')));
+
         $response = $this->client->request($method, $url, array_merge($options, [
-            // TODO: Make these configurable
-            'connect_timeout' => 15,
-            'timeout' => 90
+            'connect_timeout' => $this->connectTimeout,
+            'timeout' => $this->timeout
         ]));
 
         if ($response->getStatusCode() === 200) {
