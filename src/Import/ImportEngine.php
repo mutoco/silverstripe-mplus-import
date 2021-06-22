@@ -24,14 +24,14 @@ class ImportEngine implements \Serializable
     protected ?ClientInterface $api = null;
     protected ?StepInterface $lastStep = null;
     protected int $steps;
-    protected RegistryInterface $registry;
+    protected BackendInterface $registry;
     protected ?ImportConfig $config;
     protected bool $deleteObsoleteRecords = false;
 
     public function __construct()
     {
         $this->steps = 0;
-        $this->registry = new MemoryImportRegistry();
+        $this->registry = new MemoryImportBackend();
         $this->config = null;
         $this->lastStep = null;
     }
@@ -65,12 +65,12 @@ class ImportEngine implements \Serializable
         return $this;
     }
 
-    public function getRegistry(): RegistryInterface
+    public function getRegistry(): BackendInterface
     {
         return $this->registry;
     }
 
-    public function setRegistry(RegistryInterface $value): self
+    public function setRegistry(BackendInterface $value): self
     {
         $this->registry = $value;
         return $this;

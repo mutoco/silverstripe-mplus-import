@@ -4,46 +4,46 @@
 namespace Mutoco\Mplus\Tests;
 
 
-use Mutoco\Mplus\Import\MemoryImportRegistry;
-use Mutoco\Mplus\Import\RegistryInterface;
-use Mutoco\Mplus\Import\SqliteImportRegistry;
+use Mutoco\Mplus\Import\MemoryImportBackend;
+use Mutoco\Mplus\Import\BackendInterface;
+use Mutoco\Mplus\Import\SqliteImportBackend;
 use Mutoco\Mplus\Import\Step\LoadModuleStep;
 use Mutoco\Mplus\Parse\Result\TreeNode;
 use SilverStripe\Dev\FunctionalTest;
 
-class ImportRegistryTest extends FunctionalTest
+class ImportBackendTest extends FunctionalTest
 {
     public function testTree()
     {
-        $this->runTreeTests(new MemoryImportRegistry());
-        $this->runTreeTests(new SqliteImportRegistry());
+        $this->runTreeTests(new MemoryImportBackend());
+        $this->runTreeTests(new SqliteImportBackend());
     }
 
     public function testRelation()
     {
-        $this->runRelationTests(new MemoryImportRegistry());
-        $this->runRelationTests(new SqliteImportRegistry());
+        $this->runRelationTests(new MemoryImportBackend());
+        $this->runRelationTests(new SqliteImportBackend());
     }
 
     public function testModules()
     {
-        $this->runModuleTests(new MemoryImportRegistry());
-        $this->runModuleTests(new SqliteImportRegistry());
+        $this->runModuleTests(new MemoryImportBackend());
+        $this->runModuleTests(new SqliteImportBackend());
     }
 
     public function testClear()
     {
-        $this->runClearTests(new MemoryImportRegistry());
-        $this->runClearTests(new SqliteImportRegistry());
+        $this->runClearTests(new MemoryImportBackend());
+        $this->runClearTests(new SqliteImportBackend());
     }
 
     public function testQueue()
     {
-        $this->runQueueTests(new MemoryImportRegistry());
-        $this->runQueueTests(new SqliteImportRegistry());
+        $this->runQueueTests(new MemoryImportBackend());
+        $this->runQueueTests(new SqliteImportBackend());
     }
 
-    protected function runQueueTests(RegistryInterface $registry)
+    protected function runQueueTests(BackendInterface $registry)
     {
         $this->assertEquals(0, $registry->getRemainingSteps());
         $this->assertNull($registry->getNextStep($prio));
@@ -89,7 +89,7 @@ class ImportRegistryTest extends FunctionalTest
         $this->assertEquals('1', $step->getId());
     }
 
-    protected function runTreeTests(RegistryInterface $registry)
+    protected function runTreeTests(BackendInterface $registry)
     {
         $tree = new TreeNode('tag', ['name' => 'Foo']);
         $this->assertNull($registry->getImportedTree('Foo', '1'));
@@ -110,7 +110,7 @@ class ImportRegistryTest extends FunctionalTest
         $this->assertInstanceOf(TreeNode::class, $copy->getImportedTree('Bar', '2'));
     }
 
-    protected function runRelationTests(RegistryInterface $registry)
+    protected function runRelationTests(BackendInterface $registry)
     {
         $this->assertFalse($registry->hasImportedRelation('ClassName', '2', 'Relation'));
         $registry->reportImportedRelation('ClassName', '2', 'Relation', [1, 2, 3]);
@@ -125,7 +125,7 @@ class ImportRegistryTest extends FunctionalTest
         $this->assertTrue($registry->hasImportedRelation('ClassName', '2', 'Relation'));
     }
 
-    protected function runModuleTests(RegistryInterface $registry)
+    protected function runModuleTests(BackendInterface $registry)
     {
         $this->assertFalse($registry->hasImportedModule('Foo'));
         $this->assertEmpty($registry->getImportedIds('Foo'));
@@ -143,7 +143,7 @@ class ImportRegistryTest extends FunctionalTest
         $this->assertEquals(['2','3'], $copy->getImportedIds('Foo'));
     }
 
-    public function runClearTests(RegistryInterface $registry)
+    public function runClearTests(BackendInterface $registry)
     {
         $tree = new TreeNode('tag', ['name' => 'Foo']);
         $registry->reportImportedModule('Foo', '2');

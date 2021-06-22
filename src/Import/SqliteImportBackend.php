@@ -8,7 +8,7 @@ use Mutoco\Mplus\Parse\Result\TreeNode;
 use Mutoco\Mplus\Serialize\SerializableTrait;
 
 if (class_exists('SQLite3')) {
-    class SqliteImportRegistry implements RegistryInterface
+    class SqliteImportBackend implements BackendInterface
     {
         use SerializableTrait;
 

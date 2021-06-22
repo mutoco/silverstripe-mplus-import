@@ -7,7 +7,7 @@ namespace Mutoco\Mplus\Import;
 use Mutoco\Mplus\Import\Step\StepInterface;
 use Mutoco\Mplus\Parse\Result\TreeNode;
 
-interface RegistryInterface extends \Serializable
+interface BackendInterface extends \Serializable
 {
     public function addStep(StepInterface $step, int $priority): void;
 

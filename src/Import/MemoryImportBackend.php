@@ -8,7 +8,7 @@ use Mutoco\Mplus\Import\Step\StepInterface;
 use Mutoco\Mplus\Parse\Result\TreeNode;
 use Mutoco\Mplus\Serialize\SerializableTrait;
 
-class MemoryImportRegistry implements RegistryInterface
+class MemoryImportBackend implements BackendInterface
 {
     use SerializableTrait;
 
