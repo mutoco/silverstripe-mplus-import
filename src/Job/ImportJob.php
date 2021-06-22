@@ -121,4 +121,11 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
             $this->cfg = $jobData->cfg ?? null;
         }
     }
+
+    public function addMessage($message, $severity = 'INFO')
+    {
+        if ($severity !== 'INFO' && !empty(trim($message))) {
+            parent::addMessage($message, $severity);
+        }
+    }
 }
