@@ -87,13 +87,13 @@ class ImportModuleStepTest extends SapphireTest
                 '... und auf wenig Interesse gestossen ist.'
             ], $exhibition->Texts()->column('Text'));
 
-            $this->assertEquals([2], $engine->getRegistry()->getImportedIds('Exhibition'));
-            $this->assertEquals([1982], $engine->getRegistry()->getImportedIds('Person'));
+            $this->assertEquals([2], $engine->getBackend()->getImportedIds('Exhibition'));
+            $this->assertEquals([1982], $engine->getBackend()->getImportedIds('Person'));
             Person::flush_and_destroy_cache();
             $person = Person::get()->find('MplusID', 1982);
             $this->assertEquals('1863-12-12', $person->DateOfBirth);
             $this->assertEquals('Edvard', $person->Firstname);
-            $this->assertEquals([356559, 356558, 367558, 367559, 367560], $engine->getRegistry()->getImportedIds('ExhTextGrp'));
+            $this->assertEquals([356559, 356558, 367558, 367559, 367560], $engine->getBackend()->getImportedIds('ExhTextGrp'));
         });
     }
 

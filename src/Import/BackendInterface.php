@@ -97,7 +97,7 @@ interface BackendInterface extends \Serializable
     public function getImportedIds(string $module): array;
 
     /**
-     * Destroy all data in this registry
+     * Destroy all data in this backend
      */
     public function clear(): void;
 }

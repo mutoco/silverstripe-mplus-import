@@ -71,7 +71,7 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
         $this->importer->setDeleteObsoleteRecords(true);
         $this->importer->setApi($client);
         if (class_exists('SQLite3')) {
-            $this->importer->setRegistry(new SqliteImportBackend());
+            $this->importer->setBackend(new SqliteImportBackend());
         }
         $this->importer->addStep(new LoadSearchStep($search));
 
@@ -95,7 +95,7 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
 
         if ($this->importer->isComplete()) {
             $this->isComplete = true;
-            $this->importer->getRegistry()->clear();
+            $this->importer->getBackend()->clear();
         }
     }
 

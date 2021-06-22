@@ -24,14 +24,14 @@ class ImportEngine implements \Serializable
     protected ?ClientInterface $api = null;
     protected ?StepInterface $lastStep = null;
     protected int $steps;
-    protected BackendInterface $registry;
+    protected BackendInterface $backend;
     protected ?ImportConfig $config;
     protected bool $deleteObsoleteRecords = false;
 
     public function __construct()
     {
         $this->steps = 0;
-        $this->registry = new MemoryImportBackend();
+        $this->backend = new MemoryImportBackend();
         $this->config = null;
         $this->lastStep = null;
     }
@@ -65,14 +65,14 @@ class ImportEngine implements \Serializable
         return $this;
     }
 
-    public function getRegistry(): BackendInterface
+    public function getBackend(): BackendInterface
     {
-        return $this->registry;
+        return $this->backend;
     }
 
-    public function setRegistry(BackendInterface $value): self
+    public function setBackend(BackendInterface $value): self
     {
-        $this->registry = $value;
+        $this->backend = $value;
         return $this;
     }
 
@@ -97,26 +97,26 @@ class ImportEngine implements \Serializable
 
     public function addStep(StepInterface $step, ?int $priority = null)
     {
-        $this->registry->addStep($step, $priority ?? $step->getDefaultPriority());
+        $this->backend->addStep($step, $priority ?? $step->getDefaultPriority());
     }
 
     public function getTotalSteps(): int
     {
-        $remaining = $this->registry->getRemainingSteps();
+        $remaining = $this->backend->getRemainingSteps();
         return $remaining + $this->getSteps();
     }
 
     public function isComplete(): bool
     {
-        return $this->registry->getRemainingSteps() === 0;
+        return $this->backend->getRemainingSteps() === 0;
     }
 
     public function next(): bool
     {
         $this->steps++;
 
-        if ($this->registry->getRemainingSteps() > 0) {
-            $step = $this->getRegistry()->getNextStep($prio);
+        if ($this->backend->getRemainingSteps() > 0) {
+            $step = $this->getBackend()->getNextStep($prio);
 
             if ($step !== $this->lastStep) {
                 $step->activate($this);
@@ -140,7 +140,7 @@ class ImportEngine implements \Serializable
     {
         $obj = new \stdClass();
         $obj->steps = $this->steps;
-        $obj->registry = $this->registry;
+        $obj->backend = $this->backend;
         $obj->apiClass = $this->api ? get_class($this->api) : null;
         return $obj;
     }
@@ -148,7 +148,7 @@ class ImportEngine implements \Serializable
     protected function unserializeFromObject(\stdClass $obj): void
     {
         $this->steps = $obj->steps;
-        $this->registry = $obj->registry;
+        $this->backend = $obj->backend;
         $this->config = null;
         if ($obj->apiClass) {
             $this->setApi(Injector::inst()->create($obj->apiClass));

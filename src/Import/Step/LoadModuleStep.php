@@ -77,7 +77,7 @@ class LoadModuleStep implements StepInterface
      */
     public function run(ImportEngine $engine): bool
     {
-        if ($engine->getRegistry()->hasImportedTree($this->module, $this->id)) {
+        if ($engine->getBackend()->hasImportedTree($this->module, $this->id)) {
             return false;
         }
 
@@ -99,8 +99,8 @@ class LoadModuleStep implements StepInterface
     public function deactivate(ImportEngine $engine): void
     {
         if ($this->resultTree) {
-            // Store the full tree result in the registry
-            $engine->getRegistry()->setImportedTree($this->module, $this->id, $this->resultTree);
+            // Store the full tree result in the backend
+            $engine->getBackend()->setImportedTree($this->module, $this->id, $this->resultTree);
 
             $cfg = $engine->getConfig()->getModuleConfig($this->module);
             if (isset($cfg['modelClass'])) {

@@ -52,13 +52,13 @@ class LoadModuleStepTest extends FunctionalTest
         $engine->next();
         $engine->next(); // Must run multiple times to resolve tree
         $this->assertEquals(3, $engine->getTotalSteps());
-        $current = $engine->getRegistry()->getNextStep($prio);
+        $current = $engine->getBackend()->getNextStep($prio);
         $engine->addStep($current, $prio);
         $engine->next();
         $this->assertInstanceOf(ImportModuleStep::class, $current, 'Immediately import a resolved module');
         $this->assertEquals(2, $current->getId());
         $this->assertEquals('Exhibition', $current->getModule());
-        $current = $engine->getRegistry()->getNextStep($prio);
+        $current = $engine->getBackend()->getNextStep($prio);
         $this->assertInstanceOf(ImportModuleStep::class, $current, 'Import direct relations');
         $this->assertEquals(356559, $current->getId());
         $this->assertEquals('ExhTextGrp', $current->getModule());
@@ -75,7 +75,7 @@ class LoadModuleStepTest extends FunctionalTest
             $step->activate($engine);
             $this->assertTrue($step->run($engine), 'First step is to load the module from API');
             $this->assertFalse($step->run($engine), 'Second step marks completion as tree is resolved');
-            $this->assertNull($engine->getRegistry()->getImportedTree('Person', 1892), 'No person has been imported');
+            $this->assertNull($engine->getBackend()->getImportedTree('Person', 1892), 'No person has been imported');
         });
 
         Config::withConfig(function(MutableConfigCollectionInterface $config) {
@@ -90,9 +90,9 @@ class LoadModuleStepTest extends FunctionalTest
             $tree = $step->getResultTree();
             $step->deactivate($engine);
             // Deque current
-            $engine->getRegistry()->getNextStep($prio);
+            $engine->getBackend()->getNextStep($prio);
             // Deque next
-            $step = $engine->getRegistry()->getNextStep($prio);
+            $step = $engine->getBackend()->getNextStep($prio);
 
             $this->assertEquals('Künstler/in', $tree->getNestedValue('ExhPersonRef.TypeVoc.artist'), 'Has resolved internal field');
             $this->assertEquals('Edvard', $tree->getNestedValue('ExhPersonRef.PerFirstNameTxt'), 'Has resolved external field');

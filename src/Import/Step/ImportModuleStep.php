@@ -56,16 +56,16 @@ class ImportModuleStep implements StepInterface
     public function activate(ImportEngine $engine): void
     {
         // If the exact same module was already imported it's safe to skip
-        if ($engine->getRegistry()->hasImportedModule($this->module, $this->id)) {
+        if ($engine->getBackend()->hasImportedModule($this->module, $this->id)) {
             return;
         }
 
-        if (empty($engine->getRegistry()->getImportedIds($this->module))) {
+        if (empty($engine->getBackend()->getImportedIds($this->module))) {
             $engine->addStep(new CleanupRecordsStep($this->module));
         }
 
         if (!$this->tree) {
-            $this->tree = $engine->getRegistry()->getImportedTree($this->module, $this->id);
+            $this->tree = $engine->getBackend()->getImportedTree($this->module, $this->id);
         }
 
         if (!$this->tree) {
@@ -79,7 +79,7 @@ class ImportModuleStep implements StepInterface
     public function run(ImportEngine $engine): bool
     {
         // If the exact same module was already imported it's safe to skip
-        if ($engine->getRegistry()->hasImportedModule($this->module, $this->id)) {
+        if ($engine->getBackend()->hasImportedModule($this->module, $this->id)) {
             return false;
         }
 
@@ -103,7 +103,7 @@ class ImportModuleStep implements StepInterface
      */
     public function deactivate(ImportEngine $engine): void
     {
-        if ($engine->getRegistry()->hasImportedModule($this->module, $this->id)) {
+        if ($engine->getBackend()->hasImportedModule($this->module, $this->id)) {
             return;
         }
 
@@ -158,7 +158,7 @@ class ImportModuleStep implements StepInterface
             }
         }
 
-        $engine->getRegistry()->reportImportedModule($this->module, $this->id);
+        $engine->getBackend()->reportImportedModule($this->module, $this->id);
     }
 
     protected function createOrUpdate(array $config, TreeNode $tree, ImportEngine $engine, &$skipped = false): DataObject

@@ -48,7 +48,7 @@ class CleanupRecordsStep implements StepInterface
             return false;
         }
 
-        $ids = $engine->getRegistry()->getImportedIds($this->module);
+        $ids = $engine->getBackend()->getImportedIds($this->module);
         $cfg = $engine->getConfig()->getModuleConfig($this->module);
         $modelClass = $cfg['modelClass'] ?? null;
 
