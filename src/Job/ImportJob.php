@@ -14,10 +14,8 @@ use Mutoco\Mplus\Import\Step\LoadModuleStep;
 use Mutoco\Mplus\Import\Step\LoadSearchStep;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Injector\Injector;
-use SilverStripe\ORM\FieldType\DBDatetime;
 use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
 use Symbiote\QueuedJobs\Services\QueuedJob;
-use Symbiote\QueuedJobs\Services\QueuedJobService;
 
 class ImportJob extends AbstractQueuedJob implements QueuedJob
 {
