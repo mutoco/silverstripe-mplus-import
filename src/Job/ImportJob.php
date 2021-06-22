@@ -7,8 +7,10 @@ namespace Mutoco\Mplus\Job;
 
 
 use Mutoco\Mplus\Api\SearchBuilder;
+use Mutoco\Mplus\Exception\ImportException;
 use Mutoco\Mplus\Import\ImportEngine;
 use Mutoco\Mplus\Import\SqliteImportBackend;
+use Mutoco\Mplus\Import\Step\LoadModuleStep;
 use Mutoco\Mplus\Import\Step\LoadSearchStep;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Injector\Injector;
@@ -22,8 +24,8 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
     use Configurable;
 
     protected ?ImportEngine $importer = null;
-    protected ?array $cfg = null;
     protected ?string $module = null;
+    protected ?string $id = null;
 
     public function __construct($params = [])
     {
@@ -41,16 +43,22 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
         return _t(__CLASS__ . '.Title', 'MuseumPlus import');
     }
 
-    public function hydrate(string $module)
+    public function getId(): ?string
     {
-        $mapping = self::config()->get('imports');
-        if (!isset($mapping[$module])) {
-            throw new \InvalidArgumentException(sprintf('No import definition for module "%s"', $module));
-        }
+        return $this->id;
+    }
 
-        $this->cfg = $mapping[$module];
+    public function setId(string $value): self
+    {
+        $this->id = $value;
+        return $this;
+    }
+
+    public function hydrate(string $module, ?string $id = null)
+    {
         $this->module = $module;
         $this->totalSteps = 1;
+        $this->id = $id;
     }
 
     public function getJobType()
@@ -62,18 +70,28 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
     {
         parent::setup();
 
-        $search = new SearchBuilder($this->module);
-        $search->setExpert($this->cfg['search']);
-
         $client = Injector::inst()->create('Mutoco\Mplus\Api\Client');
         $client->init();
         $this->importer = new ImportEngine();
-        $this->importer->setDeleteObsoleteRecords(true);
         $this->importer->setApi($client);
+        $this->importer->setDeleteObsoleteRecords($this->id === null);
         if (class_exists('SQLite3')) {
             $this->importer->setBackend(new SqliteImportBackend());
         }
-        $this->importer->addStep(new LoadSearchStep($search));
+
+        if (!$this->id) {
+            $mapping = self::config()->get('imports');
+            if (!isset($mapping[$this->module])) {
+                throw new ImportException(sprintf('No import definition for module "%s"', $this->module));
+            }
+
+            $cfg = $mapping[$this->module];
+            $search = new SearchBuilder($this->module);
+            $search->setExpert($cfg['search']);
+            $this->importer->addStep(new LoadSearchStep($search));
+        } else {
+            $this->importer->addStep(new LoadModuleStep($this->module, $this->id));
+        }
 
         $this->totalSteps = $this->importer->getTotalSteps();
         $this->currentStep = $this->importer->getSteps();
@@ -106,7 +124,7 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
         $jobData = $this->jobData ?? new \stdClass();
         $jobData->importer = $this->importer;
         $jobData->module = $this->module;
-        $jobData->cfg = $this->cfg;
+        $jobData->id = $this->id;
         $data->jobData = $jobData;
 
         return $data;
@@ -118,7 +136,7 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
         if ($jobData) {
             $this->importer = $jobData->importer ?? null;
             $this->module = $jobData->module ?? null;
-            $this->cfg = $jobData->cfg ?? null;
+            $this->id = $jobData->id ?? null;
         }
     }
 
