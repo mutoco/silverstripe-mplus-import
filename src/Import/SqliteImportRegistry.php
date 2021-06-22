@@ -3,6 +3,7 @@
 
 namespace Mutoco\Mplus\Import;
 
+use Mutoco\Mplus\Import\Step\StepInterface;
 use Mutoco\Mplus\Parse\Result\TreeNode;
 use Mutoco\Mplus\Serialize\SerializableTrait;
 
@@ -23,6 +24,48 @@ if (class_exists('SQLite3')) {
         protected \SQLite3Stmt $moduleInsert;
         protected \SQLite3Stmt $moduleSelect;
         protected \SQLite3Stmt $moduleSelectAll;
+
+        protected \SQLite3Stmt $queueInsert;
+        protected \SQLite3Stmt $queueDelete;
+        protected bool $isQueueDirty = true;
+        protected int $queueCount = 0;
+
+        public function addStep(StepInterface $step, int $priority): void
+        {
+            $this->isQueueDirty = true;
+            $this->getDb();
+            $this->queueInsert->reset();
+            $this->queueInsert->bindValue(':priority', $priority, SQLITE3_INTEGER);
+            $this->queueInsert->bindValue(':value', serialize($step), SQLITE3_BLOB);
+            if ($result = $this->queueInsert->execute()) {
+                $result->finalize();
+                return;
+            }
+
+            throw new \Exception('Unable to insert tree into SQlite DB');
+        }
+
+        public function getNextStep(?int &$priority): ?StepInterface
+        {
+            $db = $this->getDb();
+            $row = $db->querySingle('SELECT * FROM queue ORDER BY priority DESC, id ASC LIMIT 1',true);
+            if ($row && isset($row['id'])) {
+                $priority = $row['priority'] ?? 0;
+                $this->deleteFromQueue($row['id']);
+                return unserialize($row['value']);
+            }
+            return null;
+        }
+
+        public function getRemainingSteps(): int
+        {
+            if ($this->isQueueDirty) {
+                $this->queueCount = $this->getDb()->querySingle('SELECT COUNT(*) FROM queue');
+                $this->isQueueDirty = false;
+            }
+
+            return $this->queueCount;
+        }
 
         public function hasImportedTree(string $module, string $id): bool
         {
@@ -161,6 +204,8 @@ if (class_exists('SQLite3')) {
             $db->exec('DELETE FROM modules');
             $db->close();
             $this->db = null;
+            $this->isQueueDirty = true;
+            $this->queueCount = 0;
             unlink($this->filename);
             $this->filename = null;
         }
@@ -190,6 +235,13 @@ CREATE TABLE IF NOT EXISTS 'modules' (
     PRIMARY KEY (id, module)
 )
 SQL;
+        protected static string $create_queue = <<<SQL
+CREATE TABLE IF NOT EXISTS 'queue' (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    priority INTEGER NOT NULL,
+    value BLOB NOT NULL
+)
+SQL;
 
         protected function getDb(): \SQLite3
         {
@@ -210,6 +262,7 @@ SQL;
             $this->db->exec(self::$create_modules);
             $this->db->exec(self::$create_tree);
             $this->db->exec(self::$create_relations);
+            $this->db->exec(self::$create_queue);
 
             $this->treeDelete = $db->prepare('DELETE FROM trees WHERE id=:id AND module=:module');
             $this->treeInsert = $db->prepare('REPLACE INTO trees (id, module, value) VALUES (:id, :module, :value)');
@@ -221,6 +274,22 @@ SQL;
             $this->moduleInsert = $db->prepare('REPLACE INTO modules (id, module) VALUES (:id, :module)');
             $this->moduleSelect = $db->prepare('SELECT id FROM modules WHERE module=:module AND id=:id');
             $this->moduleSelectAll = $db->prepare('SELECT id FROM modules WHERE module=:module');
+
+            $this->queueInsert = $db->prepare('INSERT INTO queue (priority, value) VALUES (:priority, :value)');
+            $this->queueDelete = $db->prepare('DELETE FROM queue WHERE id=:id');
+        }
+
+        protected function deleteFromQueue(int $id): bool
+        {
+            $this->isQueueDirty = true;
+            $db = $this->getDb();
+            $this->queueDelete->reset();
+            $this->queueDelete->bindValue(':id', $id, SQLITE3_INTEGER);
+            if ($result = $this->queueDelete->execute()) {
+                $result->finalize();
+                return $db->changes() > 0;
+            }
+            return false;
         }
 
         protected function getSerializableObject(): \stdClass

@@ -4,11 +4,17 @@
 namespace Mutoco\Mplus\Import;
 
 
+use Mutoco\Mplus\Import\Step\StepInterface;
 use Mutoco\Mplus\Parse\Result\TreeNode;
-use Mutoco\Mplus\Serialize\SerializableTrait;
 
 interface RegistryInterface extends \Serializable
 {
+    public function addStep(StepInterface $step, int $priority): void;
+
+    public function getNextStep(?int &$priority): ?StepInterface;
+
+    public function getRemainingSteps(): int;
+
     /**
      * Check if a tree has been imported for the given module and id
      * @param string $module

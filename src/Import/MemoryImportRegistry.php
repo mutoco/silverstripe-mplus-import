@@ -4,6 +4,7 @@
 namespace Mutoco\Mplus\Import;
 
 
+use Mutoco\Mplus\Import\Step\StepInterface;
 use Mutoco\Mplus\Parse\Result\TreeNode;
 use Mutoco\Mplus\Serialize\SerializableTrait;
 
@@ -14,6 +15,37 @@ class MemoryImportRegistry implements RegistryInterface
     protected array $modules = [];
     protected array $relations = [];
     protected array $trees = [];
+    protected \SplPriorityQueue $queue;
+
+    public function addStep(StepInterface $step, int $priority): void
+    {
+        $this->queue->insert($step, $priority);
+    }
+
+    public function getNextStep(?int &$priority): ?StepInterface
+    {
+        if ($this->queue->isEmpty()) {
+            $priority = 0;
+            return null;
+        }
+
+        $flags = $this->queue->getExtractFlags();
+        $this->queue->setExtractFlags(\SplPriorityQueue::EXTR_BOTH);
+        $data = $this->queue->extract();
+        $priority = $data['priority'];
+        $this->queue->setExtractFlags($flags);
+        return $data['data'];
+    }
+
+    public function getRemainingSteps(): int
+    {
+        return $this->queue->count();
+    }
+
+    public function __construct()
+    {
+        $this->queue = new \SplPriorityQueue();
+    }
 
     public function hasImportedTree(string $module, string $id): bool
     {
@@ -97,6 +129,7 @@ class MemoryImportRegistry implements RegistryInterface
         $this->modules = [];
         $this->relations = [];
         $this->trees = [];
+        $this->queue = new \SplPriorityQueue();
     }
 
     protected function getSerializableObject(): \stdClass
@@ -105,6 +138,24 @@ class MemoryImportRegistry implements RegistryInterface
         $obj->modules = $this->modules;
         $obj->relations = $this->relations;
         $obj->trees = $this->trees;
+
+        $queue = [];
+        $this->queue->rewind();
+        $flags = $this->queue->getExtractFlags();
+        $this->queue->setExtractFlags(\SplPriorityQueue::EXTR_BOTH);
+
+        while(!$this->queue->isEmpty()){
+            $queue[] = $this->queue->extract();
+        }
+
+        // Previous process was destructive, need to rebuild the queue
+        foreach ($queue as $item) {
+            $this->queue->insert($item['data'], $item['priority']);
+        }
+
+        $this->queue->setExtractFlags($flags);
+
+        $obj->queue = $queue;
         return $obj;
     }
 
@@ -113,5 +164,10 @@ class MemoryImportRegistry implements RegistryInterface
         $this->modules = $obj->modules;
         $this->relations = $obj->relations;
         $this->trees = $obj->trees;
+        $this->queue = new \SplPriorityQueue();
+
+        foreach ($obj->queue as $item) {
+            $this->queue->insert($item['data'], $item['priority']);
+        }
     }
 }

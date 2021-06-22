@@ -22,7 +22,6 @@ class ImportEngine implements \Serializable
     const PRIORITY_CLEANUP = 0;
 
     protected ?ClientInterface $api = null;
-    protected \SplPriorityQueue $queue;
     protected ?StepInterface $lastStep = null;
     protected int $steps;
     protected RegistryInterface $registry;
@@ -35,7 +34,6 @@ class ImportEngine implements \Serializable
         $this->registry = new MemoryImportRegistry();
         $this->config = null;
         $this->lastStep = null;
-        $this->queue = new \SplPriorityQueue();
     }
 
     /**
@@ -92,37 +90,33 @@ class ImportEngine implements \Serializable
         return $this->config;
     }
 
-    public function addStep(StepInterface $step, ?int $priority = null)
+    public function getLastStep(): ?StepInterface
     {
-        $this->queue->insert($step, $priority ?? $step->getDefaultPriority());
+        return $this->lastStep;
     }
 
-    public function getQueue(): \SplPriorityQueue
+    public function addStep(StepInterface $step, ?int $priority = null)
     {
-        return $this->queue;
+        $this->registry->addStep($step, $priority ?? $step->getDefaultPriority());
     }
 
     public function getTotalSteps(): int
     {
-        $remaining = $this->queue->count();
+        $remaining = $this->registry->getRemainingSteps();
         return $remaining + $this->getSteps();
     }
 
     public function isComplete(): bool
     {
-        return $this->queue->isEmpty();
+        return $this->registry->getRemainingSteps() === 0;
     }
 
     public function next(): bool
     {
         $this->steps++;
 
-        if (!$this->queue->isEmpty()) {
-            $this->queue->setExtractFlags(\SplPriorityQueue::EXTR_BOTH);
-            $data = $this->queue->extract();
-            $step = $data['data'];
-            $prio = $data['priority'];
-            $this->queue->setExtractFlags(\SplPriorityQueue::EXTR_DATA);
+        if ($this->registry->getRemainingSteps() > 0) {
+            $step = $this->getRegistry()->getNextStep($prio);
 
             if ($step !== $this->lastStep) {
                 $step->activate($this);
@@ -133,7 +127,7 @@ class ImportEngine implements \Serializable
             if ($isComplete) {
                 $step->deactivate($this);
             } else {
-                $this->queue->insert($step, $prio);
+                $this->addStep($step, $prio);
             }
 
             return true;
@@ -145,24 +139,6 @@ class ImportEngine implements \Serializable
     protected function getSerializableObject(): \stdClass
     {
         $obj = new \stdClass();
-
-        $queue = [];
-        $this->queue->rewind();
-        $flags = $this->queue->getExtractFlags();
-        $this->queue->setExtractFlags(\SplPriorityQueue::EXTR_BOTH);
-
-        while(!$this->queue->isEmpty()){
-            $queue[] = $this->queue->extract();
-        }
-
-        // Previous process was destructive, need to rebuild the queue
-        foreach ($queue as $item) {
-            $this->queue->insert($item['data'], $item['priority']);
-        }
-
-        $this->queue->setExtractFlags($flags);
-
-        $obj->queue = $queue;
         $obj->steps = $this->steps;
         $obj->registry = $this->registry;
         $obj->apiClass = $this->api ? get_class($this->api) : null;
@@ -172,12 +148,6 @@ class ImportEngine implements \Serializable
     protected function unserializeFromObject(\stdClass $obj): void
     {
         $this->steps = $obj->steps;
-        $this->queue = new \SplPriorityQueue();
-
-        foreach ($obj->queue as $item) {
-            $this->queue->insert($item['data'], $item['priority']);
-        }
-
         $this->registry = $obj->registry;
         $this->config = null;
         if ($obj->apiClass) {

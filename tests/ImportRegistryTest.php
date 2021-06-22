@@ -7,6 +7,7 @@ namespace Mutoco\Mplus\Tests;
 use Mutoco\Mplus\Import\MemoryImportRegistry;
 use Mutoco\Mplus\Import\RegistryInterface;
 use Mutoco\Mplus\Import\SqliteImportRegistry;
+use Mutoco\Mplus\Import\Step\LoadModuleStep;
 use Mutoco\Mplus\Parse\Result\TreeNode;
 use SilverStripe\Dev\FunctionalTest;
 
@@ -34,6 +35,58 @@ class ImportRegistryTest extends FunctionalTest
     {
         $this->runClearTests(new MemoryImportRegistry());
         $this->runClearTests(new SqliteImportRegistry());
+    }
+
+    public function testQueue()
+    {
+        $this->runQueueTests(new MemoryImportRegistry());
+        $this->runQueueTests(new SqliteImportRegistry());
+    }
+
+    protected function runQueueTests(RegistryInterface $registry)
+    {
+        $this->assertEquals(0, $registry->getRemainingSteps());
+        $this->assertNull($registry->getNextStep($prio));
+        $this->assertEquals(0, $prio);
+
+        $registry->addStep(new LoadModuleStep('A', '3'), 50);
+        $registry->addStep(new LoadModuleStep('B', '2'), 100);
+        $registry->addStep(new LoadModuleStep('C', '1'), 10);
+
+        $this->assertEquals(3, $registry->getRemainingSteps());
+
+        $step = $registry->getNextStep($priority);
+        $this->assertEquals(100, $priority);
+        $this->assertInstanceOf(LoadModuleStep::class, $step);
+        $this->assertEquals('B', $step->getModule());
+        $this->assertEquals('2', $step->getId());
+
+        $this->assertEquals(2, $registry->getRemainingSteps());
+
+        $step = $registry->getNextStep($priority);
+        $this->assertEquals(50, $priority);
+        $this->assertInstanceOf(LoadModuleStep::class, $step);
+        $this->assertEquals('A', $step->getModule());
+        $this->assertEquals('3', $step->getId());
+
+        $this->assertEquals(1, $registry->getRemainingSteps());
+        $registry->addStep(new LoadModuleStep('D', '4'), 20);
+
+        $step = $registry->getNextStep($priority);
+        $this->assertEquals(20, $priority);
+        $this->assertInstanceOf(LoadModuleStep::class, $step);
+        $this->assertEquals('D', $step->getModule());
+        $this->assertEquals('4', $step->getId());
+
+        $this->assertEquals(1, $registry->getRemainingSteps());
+
+        $copy = unserialize(serialize($registry));
+
+        $step = $copy->getNextStep($priority);
+        $this->assertEquals(10, $priority);
+        $this->assertInstanceOf(LoadModuleStep::class, $step);
+        $this->assertEquals('C', $step->getModule());
+        $this->assertEquals('1', $step->getId());
     }
 
     protected function runTreeTests(RegistryInterface $registry)
@@ -96,10 +149,12 @@ class ImportRegistryTest extends FunctionalTest
         $registry->reportImportedModule('Foo', '2');
         $registry->reportImportedRelation('ClassName', '2', 'Relation', [1, 2, 3]);
         $registry->setImportedTree('Foo', '1', $tree);
+        $registry->addStep(new LoadModuleStep('Test', '2'), 10);
 
         $registry->clear();
         $this->assertEmpty($registry->getImportedIds('Foo'));
         $this->assertEmpty($registry->getRelationIds('ClassName', '2', 'Relation'));
         $this->assertNull($registry->getImportedTree('Foo', '1'));
+        $this->assertNull($registry->getNextStep($prio));
     }
 }

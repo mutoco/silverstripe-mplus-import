@@ -48,16 +48,17 @@ class LoadModuleStepTest extends FunctionalTest
         $engine = new ImportEngine();
         $engine->setApi(new Client());
         $engine->addStep(new LoadModuleStep('Exhibition', 2));
-        $this->assertCount(1, $engine->getQueue());
+        $this->assertEquals(1, $engine->getTotalSteps());
         $engine->next();
         $engine->next(); // Must run multiple times to resolve tree
-        $this->assertCount(2, $engine->getQueue());
-        $current = $engine->getQueue()->top();
+        $this->assertEquals(3, $engine->getTotalSteps());
+        $current = $engine->getRegistry()->getNextStep($prio);
+        $engine->addStep($current, $prio);
+        $engine->next();
         $this->assertInstanceOf(ImportModuleStep::class, $current, 'Immediately import a resolved module');
         $this->assertEquals(2, $current->getId());
         $this->assertEquals('Exhibition', $current->getModule());
-        $engine->next();
-        $current = $engine->getQueue()->top();
+        $current = $engine->getRegistry()->getNextStep($prio);
         $this->assertInstanceOf(ImportModuleStep::class, $current, 'Import direct relations');
         $this->assertEquals(356559, $current->getId());
         $this->assertEquals('ExhTextGrp', $current->getModule());
@@ -88,11 +89,13 @@ class LoadModuleStepTest extends FunctionalTest
             } while ($hasRemaining);
             $tree = $step->getResultTree();
             $step->deactivate($engine);
-            $engine->getQueue()->extract();
+            // Deque current
+            $engine->getRegistry()->getNextStep($prio);
+            // Deque next
+            $step = $engine->getRegistry()->getNextStep($prio);
 
             $this->assertEquals('Künstler/in', $tree->getNestedValue('ExhPersonRef.TypeVoc.artist'), 'Has resolved internal field');
             $this->assertEquals('Edvard', $tree->getNestedValue('ExhPersonRef.PerFirstNameTxt'), 'Has resolved external field');
-            $step = $engine->getQueue()->top();
             $this->assertInstanceOf(LoadModuleStep::class, $step);
             $this->assertEquals(47894, $step->getId());
             $this->assertEquals('Object', $step->getModule(), 'Should load related Object next');

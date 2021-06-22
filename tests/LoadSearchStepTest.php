@@ -54,13 +54,10 @@ class LoadSearchStepTest extends SapphireTest
             $steps = [];
             $starts = [];
             do {
-                if (!$engine->getQueue()->isEmpty()) {
-                    $steps[] = get_class($engine->getQueue()->top());
-                    $curr = $engine->getQueue()->top();
-                }
                 $hasSteps = $engine->next();
-                if ($curr instanceof LoadSearchStep) {
-                    $starts[] = $curr->getSearch()->getStart();
+                $steps[] = get_class($engine->getLastStep());
+                if ($engine->getLastStep() instanceof LoadSearchStep) {
+                    $starts[] = $engine->getLastStep()->getSearch()->getStart();
                 }
             } while ($hasSteps);
 
