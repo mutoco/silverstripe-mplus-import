@@ -99,12 +99,18 @@ class LoadModuleStep implements StepInterface
     public function deactivate(ImportEngine $engine): void
     {
         if ($this->resultTree) {
-            // Store the full tree result in the backend
+            $cfg = $engine->getConfig()->getModuleConfig($this->module);
+            $instance = isset($cfg['modelClass']) ? Injector::inst()->create($cfg['modelClass']) : null;
+
+            if ($instance) {
+                // Allow extensions to transform the result tree (eg. remove nodes or similar)
+                $instance->invokeWithExtensions('transformMplusResultTree', $this->resultTree, $engine);
+            }
+
+            // Store the fully resolved tree result in the backend
             $engine->getBackend()->setImportedTree($this->module, $this->id, $this->resultTree);
 
-            $cfg = $engine->getConfig()->getModuleConfig($this->module);
-            if (isset($cfg['modelClass'])) {
-                $instance = Injector::inst()->create($cfg['modelClass']);
+            if ($instance) {
                 $result = $instance->invokeWithExtensions('shouldImportMplusModule', $this->resultTree, $engine);
                 if (empty($result) || min($result) !== false) {
                     $engine->addStep(new ImportModuleStep($this->module, $this->id));
