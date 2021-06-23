@@ -7,6 +7,7 @@ namespace Mutoco\Mplus\Import\Step;
 use Mutoco\Mplus\Exception\ImportException;
 use Mutoco\Mplus\Extension\DataRecordExtension;
 use Mutoco\Mplus\Import\ImportEngine;
+use Mutoco\Mplus\Model\VocabularyItem;
 use Mutoco\Mplus\Parse\Result\TreeNode;
 use Mutoco\Mplus\Serialize\SerializableTrait;
 use SilverStripe\Core\Injector\Injector;
@@ -144,7 +145,16 @@ class ImportModuleStep implements StepInterface
                                 if (!empty($results)) {
                                     $data[$field] = $results[0];
                                 } else if ($node) {
-                                    $data[$field] = $node->getValue();
+                                    // Special treatment for Vocabulary items
+                                    if (
+                                        $node->getTag() === 'vocabularyReference' &&
+                                        ($item = VocabularyItem::findOrCreateFromNode($node))
+                                    ) {
+                                        $engine->getBackend()->reportImportedModule('VocabularyItem', $item->MplusID);
+                                        $data[$field] = $item->ID;
+                                    } else {
+                                        $data[$field] = $node->getValue();
+                                    }
                                 }
                             }
                         }

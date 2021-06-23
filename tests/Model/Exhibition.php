@@ -57,13 +57,4 @@ class Exhibition extends DataObject implements TestOnly
             }
         }
     }
-
-	public function transformMplusRelationField($field, ?TreeNode $node)
-    {
-        if ($field === 'Type' && $node) {
-            if ($item = VocabularyItem::findOrCreateFromNode($node)) {
-                return $item->ID;
-            }
-        }
-    }
 }
