@@ -164,7 +164,11 @@ class ImportModuleStep implements StepInterface
             }
 
             if (!empty($ids)) {
+                // If there are IDs, link the relation
                 $engine->addStep(new LinkRelationStep($this->target->getClassName(), $this->target->MplusID, $relationName, $ids));
+            } else {
+                // If there are no IDs, clean the relation
+                $engine->addStep(new CleanupRelationStep($this->target->getClassName(), $this->target->MplusID, $relationName, []));
             }
         }
 

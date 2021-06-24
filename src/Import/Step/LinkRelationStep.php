@@ -34,33 +34,37 @@ class LinkRelationStep extends AbstractRelationStep
 
     protected function handleHasOne(DataObject $target, string $field, ImportEngine $engine): void
     {
-        $class = $target->getRelationClass($this->relationName);
-        $id = Util::isAssoc($this->relationIds) ? array_key_first($this->relationIds) : $this->relationIds[0];
-        $item = DataObject::get($class)->find('MplusID', $id);
-        $target->setField($field, $item->ID);
-        $target->write();
+        if (!empty($this->relationIds)) {
+            $class = $target->getRelationClass($this->relationName);
+            $id = Util::isAssoc($this->relationIds) ? array_key_first($this->relationIds) : $this->relationIds[0];
+            $item = DataObject::get($class)->find('MplusID', $id);
+            $target->setField($field, $item->ID);
+            $target->write();
+        }
     }
 
     protected function handleMany(DataList $relation, ImportEngine $engine): void
     {
         $added = [];
-        if (!Util::isAssoc($this->relationIds)) {
-            $list = DataObject::get($relation->dataClass())->filter(['MplusID' => $this->relationIds]);
-            $relation->addMany($list->getIDList());
-            $added = $list->column('MplusID');
-        } else {
-            foreach ($this->relationIds as $id => $data) {
-                if ($target = DataObject::get($relation->dataClass())->find('MplusID', $id)) {
-                    $added[] = $id;
-                    if ($relation instanceof HasManyList) {
-                        $target->update($data);
-                        $relation->add($target->write());
-                    } else if ($relation instanceof ManyManyList || $relation instanceof ManyManyThroughList) {
-                        $relation->add($target, $data);
+        if (!empty($this->relationIds)) {
+            if (!Util::isAssoc($this->relationIds)) {
+                $list = DataObject::get($relation->dataClass())->filter(['MplusID' => $this->relationIds]);
+                $relation->addMany($list->getIDList());
+                $added = $list->column('MplusID');
+            } else {
+                foreach ($this->relationIds as $id => $data) {
+                    if ($id && ($target = DataObject::get($relation->dataClass())->find('MplusID', $id))) {
+                        $added[] = $id;
+                        if ($relation instanceof HasManyList) {
+                            $target->update($data);
+                            $relation->add($target->write());
+                        } else if ($relation instanceof ManyManyList || $relation instanceof ManyManyThroughList) {
+                            $relation->add($target, $data);
+                        }
                     }
                 }
             }
+            $engine->addStep(new CleanupRelationStep($this->targetClass, $this->targetId, $this->relationName, $added));
         }
-        $engine->addStep(new CleanupRelationStep($this->targetClass, $this->targetId, $this->relationName, $added));
     }
 }

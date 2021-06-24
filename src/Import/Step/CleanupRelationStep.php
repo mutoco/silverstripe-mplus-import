@@ -20,8 +20,12 @@ class CleanupRelationStep extends AbstractRelationStep
 
     protected function handleMany(DataList $relation, ImportEngine $engine): void
     {
-        // Remove all items from the relation that have not been imported
-        $obsolete = $relation->exclude(['MplusID' => $this->relationIds])->getIDList();
-        $relation->removeMany($obsolete);
+        if (empty($this->relationIds)) {
+            $relation->removeAll();
+        } else {
+            // Remove all items from the relation that have not been imported
+            $obsolete = $relation->exclude(['MplusID' => $this->relationIds])->getIDList();
+            $relation->removeMany($obsolete);
+        }
     }
 }
