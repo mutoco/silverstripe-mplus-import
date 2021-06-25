@@ -169,7 +169,7 @@ class ImportAttachmentStep implements StepInterface
         $resultImage = null;
         if ($exitCode === 0) {
             $image = Image::create();
-            $image->setFromLocalFile($outfile, $fileName);
+            $image->setFromString(file_get_contents($outfile), $fileName);
             $resultImage = $this->storeImage($image);
         }
 
