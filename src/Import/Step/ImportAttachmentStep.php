@@ -12,10 +12,12 @@ use Mutoco\Mplus\Import\ImportEngine;
 use Mutoco\Mplus\Serialize\SerializableTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
+use Psr\Log\LoggerInterface;
 use SilverStripe\AssetAdmin\Controller\AssetAdmin;
 use SilverStripe\Assets\Folder;
 use SilverStripe\Assets\Image;
 use SilverStripe\Core\Config\Configurable;
+use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\DataObject;
 
 class ImportAttachmentStep implements StepInterface
@@ -137,7 +139,7 @@ class ImportAttachmentStep implements StepInterface
                 return $this->createImageWithIntervention($stream, $fileName);
             }
         } catch (\Exception $err) {
-
+            Injector::inst()->get(LoggerInterface::class)->error(sprintf('Unable to create image from file, %s', $fileName));
         }
 
         return null;
