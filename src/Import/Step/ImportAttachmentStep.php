@@ -131,44 +131,92 @@ class ImportAttachmentStep implements StepInterface
     protected function createImage(StreamInterface $stream, string $fileName): ?Image
     {
         try {
-            $manager = new ImageManager([
-                'driver' => class_exists('Imagick') ? 'imagick' : 'gd'
-            ]);
-            $img = $manager->make($stream);
-
-            $width = $this->config()->get('max_width');
-            $height = $this->config()->get('max_height');
-            $quality = $this->config()->get('quality');
-            $folderName = $this->config()->get('folder');
-
-            // Resize image to fit into given width/height if larger than max dimensions
-            $img->resize($width, $height, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            });
-
-            $image = Image::create();
-            $image->setFromString(
-                $img->encode('jpg', $quality)->getEncoded(),
-                $fileName
-            );
-            $folder = Folder::find_or_make($folderName);
-            if (!$folder->exists() || !$folder->isInDB()) {
-                $folder->write();
+            if (`which convert`) {
+                return $this->createImageWithConvert($stream, $fileName);
+            } else {
+                return $this->createImageWithIntervention($stream, $fileName);
             }
-            $image->ParentID = $folder->ID;
-            $image->write();
-
-            AssetAdmin::create()->generateThumbnails($image);
-            $image->flushCache();
-            $image->write();
-            $image->publishRecursive();
-            return $image;
         } catch (\Exception $err) {
 
         }
 
         return null;
+    }
+
+    protected function createImageWithConvert(StreamInterface $stream, string $fileName): ?Image
+    {
+        $stream->rewind();
+        $tmpFile = tmpfile();
+        $path = stream_get_meta_data($tmpFile)['uri'];
+        while (!$stream->eof()) {
+            fwrite($tmpFile, $stream->read(262144));
+        }
+        $stream->close();
+        $width = $this->config()->get('max_width');
+        $height = $this->config()->get('max_height');
+        $outfile = tempnam(sys_get_temp_dir(), 'attachment');
+
+        exec(sprintf(
+            'convert -quiet %s -resize \'%dx%d>\' -colorspace RGB -strip %s',
+            $path, $width, $height, $outfile
+        ), $result, $exitCode);
+
+        fclose($tmpFile);
+
+        if ($exitCode === 0) {
+            $image = Image::create();
+            $image->setFromLocalFile($outfile, $fileName);
+            unlink($outfile);
+            return $this->storeImage($image);
+        }
+
+        unlink($outfile);
+        return null;
+    }
+
+    protected function createImageWithIntervention(StreamInterface $stream, string $fileName): Image
+    {
+        $manager = new ImageManager([
+            'driver' => class_exists('Imagick') ? 'imagick' : 'gd'
+        ]);
+        $img = $manager->make($stream);
+
+        $width = $this->config()->get('max_width');
+        $height = $this->config()->get('max_height');
+        $quality = $this->config()->get('quality');
+
+
+        // Resize image to fit into given width/height if larger than max dimensions
+        $img->resize($width, $height, function ($constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        });
+
+        $image = Image::create();
+        $image->setFromString(
+            $img->encode('jpg', $quality)->getEncoded(),
+            $fileName
+        );
+
+        return $this->storeImage($image);
+    }
+
+    protected function storeImage(Image $image): Image
+    {
+        $folderName = $this->config()->get('folder');
+
+        $folder = Folder::find_or_make($folderName);
+        if (!$folder->exists() || !$folder->isInDB()) {
+            $folder->write();
+        }
+        $image->ParentID = $folder->ID;
+        $image->write();
+
+        AssetAdmin::create()->generateThumbnails($image);
+        $image->flushCache();
+        $image->write();
+        $image->publishRecursive();
+        return $image;
     }
 
     protected function sanitizeFilename(string $name): string

@@ -7,5 +7,6 @@
 - [x] Implement caching to disk instead of storing everything in memory
 - [ ] Write tests for extension hooks
 - [ ] Exception handling/logging
-- [ ] Data transforms
-- [ ] Relation filtering
+- [x] Data transforms
+- [x] Relation filtering
+- [ ] Test changed content on the API

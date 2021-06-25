@@ -71,6 +71,7 @@ class ImportAttachmentStepTest extends SapphireTest
             $this->assertTrue($work->Image()->exists());
             $this->assertEquals(766, $work->Image()->getWidth());
             $this->assertEquals(1000, $work->Image()->getHeight());
+            $this->assertEquals('file-Object-1.jpg', $work->Image()->Name);
             $this->assertEquals('2021-05-10 10:00:00', $work->Image()->LastEdited);
 
             DBDatetime::set_mock_now('2021-05-10 12:08:00');
