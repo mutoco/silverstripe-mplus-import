@@ -151,6 +151,9 @@ class ImportModuleStep implements StepInterface
                                         ($item = VocabularyItem::findOrCreateFromNode($node))
                                     ) {
                                         $engine->getBackend()->reportImportedModule('VocabularyItem', $item->MplusID);
+                                        if (($group = $item->VocabularyGroup()) && $group->exists()) {
+                                            $engine->getBackend()->reportImportedModule('VocabularyGroup', $group->MplusID);
+                                        }
                                         $data[$field] = $item->ID;
                                     } else {
                                         $data[$field] = $node->getValue();
