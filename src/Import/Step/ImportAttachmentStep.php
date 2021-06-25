@@ -156,7 +156,7 @@ class ImportAttachmentStep implements StepInterface
         $stream->close();
         $width = $this->config()->get('max_width');
         $height = $this->config()->get('max_height');
-        $outfile = tempnam(sys_get_temp_dir(), 'attachment');
+        $outfile = tempnam(sys_get_temp_dir(), 'attachment') . '.jpg';
 
         exec(sprintf(
             'convert -quiet %s -resize \'%dx%d>\' -colorspace RGB -strip %s',
