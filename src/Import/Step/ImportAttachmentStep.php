@@ -224,7 +224,7 @@ class ImportAttachmentStep implements StepInterface
 
     protected function sanitizeFilename(string $name): string
     {
-        return preg_replace('{\.(je?pg|tiff|gif|png|bmp|psd|webp)$}i','.jpg', $name);
+        return preg_replace('{\.(jpe?g|tiff?|gif|png|bmp|psd|webp)$}i','.jpg', $name);
     }
 
     protected function getSerializableObject(): \stdClass
