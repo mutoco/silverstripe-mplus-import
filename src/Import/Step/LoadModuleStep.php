@@ -114,6 +114,10 @@ class LoadModuleStep implements StepInterface
                 $result = $instance->invokeWithExtensions('shouldImportMplusModule', $this->resultTree, $engine);
                 if (empty($result) || min($result) !== false) {
                     $engine->addStep(new ImportModuleStep($this->module, $this->id));
+                } else {
+                    // Exit if import was explicitly prevented
+                    $this->resultTree = null;
+                    return;
                 }
             }
 
