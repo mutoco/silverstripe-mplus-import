@@ -27,6 +27,7 @@ class ImportEngine implements \Serializable
     protected BackendInterface $backend;
     protected ?ImportConfig $config;
     protected bool $deleteObsoleteRecords = false;
+    protected bool $useSearchToResolve = false;
 
     public function __construct()
     {
@@ -51,6 +52,24 @@ class ImportEngine implements \Serializable
     public function setDeleteObsoleteRecords(bool $deleteObsoleteRecords): self
     {
         $this->deleteObsoleteRecords = $deleteObsoleteRecords;
+        return $this;
+    }
+
+    /**
+     * @return bool - whether or not the loading of modules should happen via search API
+     */
+    public function getUseSearchToResolve(): bool
+    {
+        return $this->useSearchToResolve;
+    }
+
+    /**
+     * @param bool $useSearchToResolve
+     * @return ImportEngine
+     */
+    public function setUseSearchToResolve(bool $useSearchToResolve): self
+    {
+        $this->useSearchToResolve = $useSearchToResolve;
         return $this;
     }
 
@@ -141,6 +160,8 @@ class ImportEngine implements \Serializable
         $obj = new \stdClass();
         $obj->steps = $this->steps;
         $obj->backend = $this->backend;
+        $obj->deleteObsoleteRecords = $this->deleteObsoleteRecords;
+        $obj->useSearchToResolve = $this->useSearchToResolve;
         $obj->apiClass = $this->api ? get_class($this->api) : null;
         return $obj;
     }
@@ -150,6 +171,8 @@ class ImportEngine implements \Serializable
         $this->steps = $obj->steps;
         $this->backend = $obj->backend;
         $this->config = null;
+        $this->deleteObsoleteRecords = $obj->deleteObsoleteRecords;
+        $this->useSearchToResolve = $obj->useSearchToResolve;
         if ($obj->apiClass) {
             $this->setApi(Injector::inst()->create($obj->apiClass));
         }

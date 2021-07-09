@@ -22,6 +22,7 @@ class LoadSearchStep implements StepInterface
 
     protected SearchBuilder $search;
     protected int $page;
+    protected int $priority = ImportEngine::PRIORITY_FETCH_MORE;
 
     public function __construct(SearchBuilder $search, int $page = 0)
     {
@@ -39,7 +40,13 @@ class LoadSearchStep implements StepInterface
      */
     public function getDefaultPriority(): int
     {
-        return ImportEngine::PRIORITY_FETCH_MORE;
+        return $this->priority;
+    }
+
+    public function setDefaultPriority(int $value): self
+    {
+        $this->priority = $value;
+        return $this;
     }
 
     /**
@@ -74,8 +81,10 @@ class LoadSearchStep implements StepInterface
                 $total = (int)$tree->totalSize;
                 $this->page++;
                 if ($this->page * $pageSize < $total) {
-                    // Enqueue an additional search step that will run after the first batch has completed
-                    $engine->addStep(new LoadSearchStep($this->search, $this->page));
+                    // Enqueue an additional search step (with same priority) that will run after the first batch has completed
+                    $step = new LoadSearchStep($this->search, $this->page);
+                    $step->setDefaultPriority($this->priority);
+                    $engine->addStep($step);
                 }
             }
         }
@@ -95,6 +104,7 @@ class LoadSearchStep implements StepInterface
         $obj = new \stdClass();
         $obj->search = $this->search;
         $obj->page = $this->page;
+        $obj->priority = $this->priority;
         return $obj;
     }
 
@@ -102,5 +112,6 @@ class LoadSearchStep implements StepInterface
     {
         $this->page = $obj->page;
         $this->search = $obj->search;
+        $this->priority = $obj->priority;
     }
 }

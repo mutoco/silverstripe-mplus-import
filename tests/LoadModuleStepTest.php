@@ -7,8 +7,10 @@ namespace Mutoco\Mplus\Tests;
 use Mutoco\Mplus\Import\ImportEngine;
 use Mutoco\Mplus\Import\Step\ImportModuleStep;
 use Mutoco\Mplus\Import\Step\LoadModuleStep;
+use Mutoco\Mplus\Import\Step\LoadSearchStep;
 use Mutoco\Mplus\Tests\Api\Client;
 use Mutoco\Mplus\Tests\Model\Exhibition;
+use Mutoco\Mplus\Tests\Model\Work;
 use SilverStripe\Config\Collections\MutableConfigCollectionInterface;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
@@ -18,7 +20,8 @@ use Symfony\Component\Yaml\Yaml;
 class LoadModuleStepTest extends FunctionalTest
 {
     protected static $extra_dataobjects = [
-        Exhibition::class
+        Exhibition::class,
+        Work::class
     ];
 
     protected array $loadedConfig;
@@ -78,10 +81,29 @@ class LoadModuleStepTest extends FunctionalTest
             $this->assertNull($engine->getBackend()->getImportedTree('Person', 1892), 'No person has been imported');
         });
 
-        Config::withConfig(function(MutableConfigCollectionInterface $config) {
+        $step = $this->runAndGetStep(false);
+        $this->assertInstanceOf(LoadModuleStep::class, $step);
+        $this->assertEquals(47894, $step->getId());
+        $this->assertEquals('Object', $step->getModule(), 'Should load related Object next');
+
+        /** @var LoadSearchStep $step */
+        $step = $this->runAndGetStep(true);
+        $this->assertInstanceOf(LoadSearchStep::class, $step);
+        $this->assertEquals([[
+            'type' => 'equalsField',
+            'fieldPath' => '__id',
+            'operand' => 47894
+        ]], $step->getSearch()->getExpert());
+        $this->assertEquals('Object', $step->getSearch()->getModule(), 'Should load related Object next');
+    }
+
+    protected function runAndGetStep(bool $useSearch)
+    {
+        return Config::withConfig(function(MutableConfigCollectionInterface $config) use ($useSearch) {
             $config->set(ImportEngine::class, 'modules', $this->loadedConfig['TestResolveTree']['modules']);
             $engine = new ImportEngine();
             $engine->setApi(new Client());
+            $engine->setUseSearchToResolve($useSearch);
             $engine->addStep($step = new LoadModuleStep('Exhibition', 2));
             $step->activate($engine);
             do {
@@ -96,9 +118,7 @@ class LoadModuleStepTest extends FunctionalTest
 
             $this->assertEquals('Künstler/in', $tree->getNestedValue('ExhPersonRef.TypeVoc.artist'), 'Has resolved internal field');
             $this->assertEquals('Edvard', $tree->getNestedValue('ExhPersonRef.PerFirstNameTxt'), 'Has resolved external field');
-            $this->assertInstanceOf(LoadModuleStep::class, $step);
-            $this->assertEquals(47894, $step->getId());
-            $this->assertEquals('Object', $step->getModule(), 'Should load related Object next');
+            return $step;
         });
     }
 }

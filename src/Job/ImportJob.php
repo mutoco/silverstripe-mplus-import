@@ -12,6 +12,7 @@ use Mutoco\Mplus\Import\ImportEngine;
 use Mutoco\Mplus\Import\SqliteImportBackend;
 use Mutoco\Mplus\Import\Step\LoadModuleStep;
 use Mutoco\Mplus\Import\Step\LoadSearchStep;
+use Mutoco\Mplus\Util;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Injector\Injector;
 use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
@@ -73,9 +74,15 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
         $this->importer = new ImportEngine();
         $this->importer->setApi($client);
         $this->importer->setDeleteObsoleteRecords($this->id === null);
+        $this->importer->setUseSearchToResolve(true);
+        
         if (class_exists('SQLite3')) {
             $this->importer->setBackend(new SqliteImportBackend());
         }
+
+        $search = new SearchBuilder($this->module);
+        $paths = Util::pathsToTree($this->importer->getConfig()->getImportPaths($this->module));
+        $search->setSelect(Util::getSearchPaths($paths));
 
         if (!$this->id) {
             $mapping = self::config()->get('imports');
@@ -84,12 +91,18 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
             }
 
             $cfg = $mapping[$this->module];
-            $search = new SearchBuilder($this->module);
             $search->setExpert($cfg['search']);
-            $this->importer->addStep(new LoadSearchStep($search));
         } else {
-            $this->importer->addStep(new LoadModuleStep($this->module, $this->id));
+            $search->setExpert([
+                [
+                    'type' => 'equalsField',
+                    'fieldPath' => '__id',
+                    'operand' => $this->id
+                ]
+            ]);
+            //$this->importer->addStep(new LoadModuleStep($this->module, $this->id));
         }
+        $this->importer->addStep(new LoadSearchStep($search));
 
         $this->totalSteps = $this->importer->getTotalSteps();
         $this->currentStep = $this->importer->getSteps();

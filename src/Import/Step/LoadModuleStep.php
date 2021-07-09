@@ -4,6 +4,7 @@
 namespace Mutoco\Mplus\Import\Step;
 
 
+use Mutoco\Mplus\Api\SearchBuilder;
 use Mutoco\Mplus\Exception\ImportException;
 use Mutoco\Mplus\Import\ImportEngine;
 use Mutoco\Mplus\Parse\Parser;
@@ -12,6 +13,7 @@ use Mutoco\Mplus\Parse\Result\TreeNode;
 use Mutoco\Mplus\Serialize\SerializableTrait;
 use Mutoco\Mplus\Util;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\ORM\DataObject;
 use Tree\Node\Node;
 
 /**
@@ -124,15 +126,63 @@ class LoadModuleStep implements StepInterface
             // Collect all references again. Everything that is left now should be an external module
             $visitor = new ReferenceCollector();
             $references = $this->resultTree->accept($visitor);
+
+            $useSearch = $engine->getUseSearchToResolve();
+            $moduleMap = [];
+
             /** @var TreeNode $reference */
             foreach ($references as $reference) {
                 if (!$reference->isResolved() && ($moduleName = $reference->getModuleName()) && ($id = $reference->moduleItemId)) {
-                    $engine->addStep(new LoadModuleStep($moduleName, $id));
+                    if ($useSearch) {
+                        $moduleMap[$moduleName][] = $id;
+                    } else {
+                        $engine->addStep(new LoadModuleStep($moduleName, $id));
+                    }
                 }
+            }
+
+            foreach ($moduleMap as $module => $ids) {
+                $step = new LoadSearchStep($this->buildSearch($module, $ids, $engine));
+                $step->setDefaultPriority(ImportEngine::PRIORITY_LOAD);
+                $engine->addStep($step);
             }
         }
 
         $this->resultTree = null;
+    }
+
+    protected function buildSearch(string $module, array $ids, ImportEngine $engine): SearchBuilder
+    {
+        $search = new SearchBuilder($module);
+        $pathTree = Util::pathsToTree($engine->getConfig()->getImportPaths($module));
+        $search->setSelect(Util::getSearchPaths($pathTree));
+
+        $expert = array_map(function ($id) {
+            return [
+                'type' => 'equalsField',
+                'fieldPath' => '__id',
+                'operand' => $id
+            ];
+        }, $ids);
+
+        if (count($expert) > 1) {
+            $expert = ['or' => $expert];
+        }
+
+        $cfg = $engine->getConfig()->getModuleConfig($module);
+        if (isset($cfg['modelClass']) && ($oldestImport = DataObject::get($cfg['modelClass'])->min('Imported'))) {
+            $search->setExpert([
+                'and' => array_merge([[
+                    'type' => 'greater',
+                    'fieldPath' => '__lastModified',
+                    'operand' => $oldestImport
+                ]], $expert)
+            ]);
+        } else {
+            $search->setExpert($expert);
+        }
+
+        return $search;
     }
 
     protected function resolveTree(ImportEngine $engine): bool

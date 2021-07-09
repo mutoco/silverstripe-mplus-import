@@ -94,12 +94,16 @@ class ImportEngineTest extends FunctionalTest
     public function testSerialize()
     {
         $engine = new ImportEngine();
+        $engine->setDeleteObsoleteRecords(true);
+        $engine->setUseSearchToResolve(true);
         $engine->addStep(new TestStep());
 
         /** @var ImportEngine $copy */
         $copy = unserialize(serialize($engine));
         $this->assertFalse($engine->isComplete());
         $this->assertFalse($copy->isComplete());
+        $this->assertTrue($copy->getDeleteObsoleteRecords());
+        $this->assertTrue($copy->getUseSearchToResolve());
     }
 
     public function testRegistry()
