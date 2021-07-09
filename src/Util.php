@@ -5,6 +5,7 @@ namespace Mutoco\Mplus;
 
 
 use Tree\Node\Node;
+use Tree\Visitor\PreOrderVisitor;
 use Tree\Visitor\YieldVisitor;
 
 class Util
@@ -38,6 +39,26 @@ class Util
         }
 
         return $tree;
+    }
+
+    public static function getSearchPaths(Node $tree): array
+    {
+        $copy = self::cloneTree($tree);
+
+        $visitor = new PreOrderVisitor();
+        $nodes = $copy->accept($visitor);
+        /** @var Node $node */
+        foreach ($nodes as $node) {
+            if ($name = $node->getValue()) {
+                if (str_ends_with($name, 'Ref')) {
+                    $node->addChild(new Node('moduleReferenceItem'));
+                } else if (str_ends_with($name, 'Grp')) {
+                    $node->addChild(new Node('repeatableGroupItem'));
+                }
+            }
+        }
+
+        return self::treeToPaths($copy);
     }
 
     public static function findNodeForPath($value, Node $tree): ?Node

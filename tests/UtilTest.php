@@ -149,4 +149,22 @@ class UtilTest extends FunctionalTest
             'Baz.Ipsum.Dolor',
         ], Util::treeToPaths($copy));
     }
+
+    public function testSearchPaths()
+    {
+        $tree = Util::pathsToTree([
+            'ExhPerOrganiserRef',
+            'ExhTextGrp.TextClb',
+            'ExhRoomTxt'
+        ]);
+
+        $fields = Util::getSearchPaths($tree);
+
+        $this->assertEquals([
+            'ExhPerOrganiserRef.moduleReferenceItem',
+            'ExhTextGrp.TextClb',
+            'ExhTextGrp.repeatableGroupItem',
+            'ExhRoomTxt'
+        ], $fields);
+    }
 }
