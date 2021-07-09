@@ -170,18 +170,24 @@ class LoadModuleStep implements StepInterface
         }
 
         $cfg = $engine->getConfig()->getModuleConfig($module);
-        if (isset($cfg['modelClass']) && ($oldestImport = DataObject::get($cfg['modelClass'])->min('Imported'))) {
-            $search->setExpert([
-                'and' => array_merge([[
-                    'type' => 'greater',
-                    'fieldPath' => '__lastModified',
-                    'operand' => $oldestImport
-                ]], $expert)
-            ]);
-        } else {
-            $search->setExpert($expert);
+        
+        if (isset($cfg['modelClass'])) {
+            $list = DataObject::get($cfg['modelClass']);
+            if ($imported = $engine->getBackend()->getImportedIds($module)) {
+                $list = $list->exclude('MplusID', $imported);
+            }
+            if ($oldestImport = $list->min('Imported')) {
+                $expert = [
+                    'and' => array_merge([[
+                        'type' => 'greater',
+                        'fieldPath' => '__lastModified',
+                        'operand' => substr($oldestImport, 0, 10)
+                    ]], $expert)
+                ];
+            }
         }
 
+        $search->setExpert($expert);
         return $search;
     }
 
