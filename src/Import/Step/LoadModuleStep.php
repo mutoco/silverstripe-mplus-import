@@ -170,8 +170,8 @@ class LoadModuleStep implements StepInterface
         }
 
         $cfg = $engine->getConfig()->getModuleConfig($module);
-        
-        if (isset($cfg['modelClass'])) {
+
+        if ($engine->getImportOnlyNewer() && isset($cfg['modelClass'])) {
             $list = DataObject::get($cfg['modelClass']);
             if ($imported = $engine->getBackend()->getImportedIds($module)) {
                 $list = $list->exclude('MplusID', $imported);

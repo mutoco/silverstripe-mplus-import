@@ -99,6 +99,7 @@ class ImportAttachmentStep implements StepInterface
                     $result = $target->invokeWithExtensions(
                         'shouldImportMplusAttachment',
                         $fileName,
+                        $field,
                         $this,
                         $engine
                     );

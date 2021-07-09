@@ -28,6 +28,7 @@ class ImportEngine implements \Serializable
     protected ?ImportConfig $config;
     protected bool $deleteObsoleteRecords = false;
     protected bool $useSearchToResolve = false;
+    protected bool $importOnlyNewer = false;
 
     public function __construct()
     {
@@ -73,6 +74,24 @@ class ImportEngine implements \Serializable
         return $this;
     }
 
+    /**
+     * @return bool
+     */
+    public function getImportOnlyNewer(): bool
+    {
+        return $this->importOnlyNewer;
+    }
+
+    /**
+     * @param bool $importOnlyNewer
+     * @return ImportEngine
+     */
+    public function setImportOnlyNewer(bool $importOnlyNewer): self
+    {
+        $this->importOnlyNewer = $importOnlyNewer;
+        return $this;
+    }
+    
     public function getApi(): ?ClientInterface
     {
         return $this->api;
@@ -162,6 +181,7 @@ class ImportEngine implements \Serializable
         $obj->backend = $this->backend;
         $obj->deleteObsoleteRecords = $this->deleteObsoleteRecords;
         $obj->useSearchToResolve = $this->useSearchToResolve;
+        $obj->importOnlyNewer = $this->importOnlyNewer;
         $obj->apiClass = $this->api ? get_class($this->api) : null;
         return $obj;
     }
@@ -173,6 +193,7 @@ class ImportEngine implements \Serializable
         $this->config = null;
         $this->deleteObsoleteRecords = $obj->deleteObsoleteRecords;
         $this->useSearchToResolve = $obj->useSearchToResolve;
+        $this->importOnlyNewer = $obj->importOnlyNewer;
         if ($obj->apiClass) {
             $this->setApi(Injector::inst()->create($obj->apiClass));
         }
