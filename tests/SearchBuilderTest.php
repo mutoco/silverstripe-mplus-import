@@ -51,6 +51,38 @@ class SearchBuilderTest extends FunctionalTest
         $this->assertEquals($xml, (string)$builder);
     }
 
+    public function testNestedExpert()
+    {
+        $builder = new SearchBuilder('Test');
+        $builder->setPrettyPrint(true);
+        $builder->setExpert([
+            'and' => [
+                [
+                    'type' => 'greater',
+                    'fieldPath' => '__lastModified',
+                    'operand' => '2021-07-09'
+                ],
+                'or' => [
+                    [
+                        'type' => 'betweenIncl',
+                        'fieldPath' => 'Date',
+                        'operand1' => '1900-01-01',
+                        'operand2' => '1920-01-01'
+                    ],
+                    [
+                        'type' => 'equalsField',
+                        'fieldPath' => '__id',
+                        'operand' => '123'
+                    ]
+                ]
+
+            ]
+        ]);
+
+        $xml = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'search' . DIRECTORY_SEPARATOR . 'withNestedExpert.xml');
+        $this->assertEquals($xml, (string)$builder);
+    }
+
     public function testValid()
     {
         $builder = new SearchBuilder('Test');

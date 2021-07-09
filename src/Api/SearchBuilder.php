@@ -240,7 +240,7 @@ class SearchBuilder implements \Serializable
             if (!is_array($value)) {
                 continue;
             }
-            if (Util::isAssoc($value)) {
+            if (Util::isAssoc($value) && isset($value['type'])) {
                 $child = $doc->createElementNS(XmlNS::SEARCH, $value['type']);
                 foreach ($value as $k => $v) {
                     if ($k === 'type') {
