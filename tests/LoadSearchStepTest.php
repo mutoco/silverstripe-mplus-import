@@ -134,4 +134,21 @@ class LoadSearchStepTest extends SapphireTest
         $copy = unserialize(serialize($step));
         $this->assertEquals($copy->getSearch()->__toString(), $search->__toString());
     }
+
+    public function testEmptyResult()
+    {
+        Config::withConfig(function (MutableConfigCollectionInterface $config) {
+            $config->set(ImportEngine::class, 'modules', $this->loadedConfig['SearchLoader']['modules']);
+            $engine = new ImportEngine();
+            $engine->setApi(new Client());
+            $search = new SearchBuilder('Object', 0, 5);
+            $engine->addStep(new LoadSearchStep($search));
+            $loops = 0;
+            while ($engine->next()) {
+                $loops++;
+            }
+
+            $this->assertEquals(1, $loops);
+        });
+    }
 }

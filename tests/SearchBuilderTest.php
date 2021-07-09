@@ -51,6 +51,21 @@ class SearchBuilderTest extends FunctionalTest
         $this->assertEquals($xml, (string)$builder);
     }
 
+    public function testSingleExpert()
+    {
+        $builder = new SearchBuilder('Test');
+        $builder->setPrettyPrint(true);
+        $builder->setExpert([
+            [
+                'type' => 'equalsField',
+                'fieldPath' => '__id',
+                'operand' => '123'
+            ]
+        ]);
+        $xml = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'search' . DIRECTORY_SEPARATOR . 'withSingleExpert.xml');
+        $this->assertEquals($xml, (string)$builder);
+    }
+
     public function testNestedExpert()
     {
         $builder = new SearchBuilder('Test');
