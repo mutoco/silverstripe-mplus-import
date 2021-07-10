@@ -4,6 +4,7 @@
 namespace Mutoco\Mplus\Import;
 
 
+use GuzzleHttp\Exception\GuzzleException;
 use Mutoco\Mplus\Api\ClientInterface;
 use Mutoco\Mplus\Import\Step\StepInterface;
 use Mutoco\Mplus\Serialize\SerializableTrait;
@@ -29,6 +30,7 @@ class ImportEngine implements \Serializable
     protected bool $deleteObsoleteRecords = false;
     protected bool $useSearchToResolve = false;
     protected bool $importOnlyNewer = false;
+    protected int $networkFailCount = 0;
 
     public function __construct()
     {
@@ -156,15 +158,29 @@ class ImportEngine implements \Serializable
         if ($this->backend->getRemainingSteps() > 0) {
             $step = $this->getBackend()->getNextStep($prio);
 
-            if ($step !== $this->lastStep) {
-                $step->activate($this);
-            }
-            $this->lastStep = $step;
-            $isComplete = !$step->run($this);
+            try {
+                if ($step !== $this->lastStep) {
+                    $step->activate($this);
+                    // If step changed, reset network fail count
+                    $this->networkFailCount = 0;
+                }
+                $this->lastStep = $step;
+                $isComplete = !$step->run($this);
 
-            if ($isComplete) {
-                $step->deactivate($this);
-            } else {
+                if ($isComplete) {
+                    $step->deactivate($this);
+                } else {
+                    $this->addStep($step, $prio);
+                }
+            } catch (GuzzleException $ex) {
+                $this->networkFailCount++;
+                // After 10 retries throw the exception…
+                if ($this->networkFailCount >= 10) {
+                    throw $ex;
+                }
+                // Re-initialize the API
+                $this->getApi()->init();
+                // Re-add the step
                 $this->addStep($step, $prio);
             }
 
@@ -182,6 +198,7 @@ class ImportEngine implements \Serializable
         $obj->deleteObsoleteRecords = $this->deleteObsoleteRecords;
         $obj->useSearchToResolve = $this->useSearchToResolve;
         $obj->importOnlyNewer = $this->importOnlyNewer;
+        $obj->networkFailCount = $this->networkFailCount;
         $obj->apiClass = $this->api ? get_class($this->api) : null;
         return $obj;
     }
@@ -194,6 +211,7 @@ class ImportEngine implements \Serializable
         $this->deleteObsoleteRecords = $obj->deleteObsoleteRecords;
         $this->useSearchToResolve = $obj->useSearchToResolve;
         $this->importOnlyNewer = $obj->importOnlyNewer;
+        $this->networkFailCount = $obj->networkFailCount;
         if ($obj->apiClass) {
             $this->setApi(Injector::inst()->create($obj->apiClass));
         }

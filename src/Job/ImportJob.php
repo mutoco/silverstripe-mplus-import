@@ -6,7 +6,6 @@
 namespace Mutoco\Mplus\Job;
 
 
-use GuzzleHttp\Exception\GuzzleException;
 use Mutoco\Mplus\Api\SearchBuilder;
 use Mutoco\Mplus\Exception\ImportException;
 use Mutoco\Mplus\Import\ImportEngine;
@@ -106,7 +105,6 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
 
         $this->totalSteps = $this->importer->getTotalSteps();
         $this->currentStep = $this->importer->getSteps();
-        $this->networkFailCount = 0;
     }
 
     public function prepareForRestart()
@@ -119,20 +117,9 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
 
     public function process()
     {
-        try {
-            $this->importer->next();
-            $this->totalSteps = $this->importer->getTotalSteps();
-            $this->currentStep = $this->importer->getSteps();
-        } catch (GuzzleException $ex) {
-            $this->networkFailCount++;
-            // After 10 retries throw the exception…
-            if ($this->networkFailCount > 10) {
-                throw $ex;
-            }
-            // Re-initialize the API
-            $this->importer->getApi()->init();
-            return;
-        }
+        $this->importer->next();
+        $this->totalSteps = $this->importer->getTotalSteps();
+        $this->currentStep = $this->importer->getSteps();
 
         if ($this->importer->isComplete()) {
             $this->isComplete = true;
