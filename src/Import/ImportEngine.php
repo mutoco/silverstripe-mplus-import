@@ -91,7 +91,7 @@ class ImportEngine implements \Serializable
         $this->importOnlyNewer = $importOnlyNewer;
         return $this;
     }
-    
+
     public function getApi(): ?ClientInterface
     {
         return $this->api;

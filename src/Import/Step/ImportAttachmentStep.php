@@ -85,7 +85,7 @@ class ImportAttachmentStep implements StepInterface
         if ($stream = $engine->getApi()->loadAttachment(
             $this->module,
             $this->id,
-            function (ResponseInterface $response) use ($existingFile, $target, $engine, &$fileName) {
+            function (ResponseInterface $response) use ($existingFile, $target, $engine, $field, &$fileName) {
                 if ($header = $response->getHeaderLine('Content-Disposition')) {
                     $parts = Header::parse($header);
                     foreach ($parts as $part) {
