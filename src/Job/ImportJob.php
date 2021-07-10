@@ -6,11 +6,11 @@
 namespace Mutoco\Mplus\Job;
 
 
+use GuzzleHttp\Exception\GuzzleException;
 use Mutoco\Mplus\Api\SearchBuilder;
 use Mutoco\Mplus\Exception\ImportException;
 use Mutoco\Mplus\Import\ImportEngine;
 use Mutoco\Mplus\Import\SqliteImportBackend;
-use Mutoco\Mplus\Import\Step\LoadModuleStep;
 use Mutoco\Mplus\Import\Step\LoadSearchStep;
 use Mutoco\Mplus\Util;
 use SilverStripe\Core\Config\Configurable;
@@ -75,7 +75,7 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
         $this->importer->setApi($client);
         $this->importer->setDeleteObsoleteRecords($this->id === null);
         $this->importer->setUseSearchToResolve(true);
-        
+
         if (class_exists('SQLite3')) {
             $this->importer->setBackend(new SqliteImportBackend());
         }
@@ -106,6 +106,7 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
 
         $this->totalSteps = $this->importer->getTotalSteps();
         $this->currentStep = $this->importer->getSteps();
+        $this->networkFailCount = 0;
     }
 
     public function prepareForRestart()
@@ -118,9 +119,20 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
 
     public function process()
     {
-        $this->importer->next();
-        $this->totalSteps = $this->importer->getTotalSteps();
-        $this->currentStep = $this->importer->getSteps();
+        try {
+            $this->importer->next();
+            $this->totalSteps = $this->importer->getTotalSteps();
+            $this->currentStep = $this->importer->getSteps();
+        } catch (GuzzleException $ex) {
+            $this->networkFailCount++;
+            // After 10 retries throw the exception…
+            if ($this->networkFailCount > 10) {
+                throw $ex;
+            }
+            // Re-initialize the API
+            $this->importer->getApi()->init();
+            return;
+        }
 
         if ($this->importer->isComplete()) {
             $this->isComplete = true;

@@ -229,6 +229,7 @@ class LoadModuleStep implements StepInterface
                     }
 
                     //TODO: Find solution for attributes?
+                    //TODO: Batch the missing references with the search API
                     if ($hasUnresolved) {
                         if ($result = $this->loadModule($engine, $moduleName, $id, $pathNode)) {
                             foreach ($pathNode->getChildren() as $segment) {
