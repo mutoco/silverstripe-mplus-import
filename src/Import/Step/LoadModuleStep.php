@@ -142,9 +142,17 @@ class LoadModuleStep implements StepInterface
             }
 
             foreach ($moduleMap as $module => $ids) {
-                $step = new LoadSearchStep($this->buildSearch($module, $ids, $engine));
-                $step->setDefaultPriority(ImportEngine::PRIORITY_LOAD);
-                $engine->addStep($step);
+                // Reduce the set of IDs to only the ones that have not been imported yet
+                $cleanedIds = array_diff($ids, $engine->getBackend()->getImportedIds($module));
+                if (!empty($cleanedIds)) {
+                    $search = $this->buildSearch($module, $cleanedIds, $engine);
+                    if ($instance) {
+                        $instance->invokeWithExtensions('beforeMplusSearchRelated', $search, $module, $cleanedIds);
+                    }
+                    $step = new LoadSearchStep($search);
+                    $step->setDefaultPriority(ImportEngine::PRIORITY_LOAD);
+                    $engine->addStep($step);
+                }
             }
         }
 
