@@ -167,4 +167,16 @@ class TreeNodeTest extends FunctionalTest
             $grandChild->getAncestorsMatchingPath('Foo.Bar.Title.Author.Test')
         );
     }
+
+    public function testCopy()
+    {
+        $barNode = $this->tree->getNestedNode('Foo.Bar');
+        $copy = $barNode->getCopy();
+        $this->assertEquals($barNode->getTag(), $copy->getTag());
+        $this->assertEquals($barNode->getValue(), $copy->getValue());
+        $this->assertEquals($barNode->getAttributes(), $copy->getAttributes());
+        $this->assertEquals($barNode->isReferenceNode(), $copy->isReferenceNode());
+        $this->assertNotEquals($barNode->getChildren(), $copy->getChildren());
+        $this->assertEmpty($copy->getChildren());
+    }
 }

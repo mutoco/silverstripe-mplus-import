@@ -3,6 +3,7 @@
 namespace Mutoco\Mplus\Tests;
 
 use Mutoco\Mplus\Import\ImportEngine;
+use Mutoco\Mplus\Import\SqliteImportBackend;
 use Mutoco\Mplus\Import\Step\LoadModuleStep;
 use Mutoco\Mplus\Model\VocabularyGroup;
 use Mutoco\Mplus\Model\VocabularyItem;
@@ -215,9 +216,12 @@ class ImportModuleStepTest extends SapphireTest
     public function testVocabularyItems()
     {
         Config::withConfig(function(MutableConfigCollectionInterface $config) {
+            DBDatetime::set_mock_now('2021-05-10 10:00:00');
+
             $config->set(ImportEngine::class, 'modules', $this->loadedConfig['TestVocabularyModels']['modules']);
             $engine = new ImportEngine();
             $engine->setApi(new Client());
+            $engine->setBackend(new SqliteImportBackend());
             $engine->addStep(new LoadModuleStep('Exhibition', 2));
             do {
                 $hasSteps = $engine->next();
@@ -234,6 +238,8 @@ class ImportModuleStepTest extends SapphireTest
             $this->assertEquals('internal', $vocabulary->Title);
             $this->assertEquals('Intern', $vocabulary->Value);
             $this->assertEquals('de', $vocabulary->Language);
+            $this->assertEquals('2021-05-10 10:00:00', $vocabulary->Imported);
+            $this->assertEquals('VocabularyItem', $vocabulary->Module);
 
             $group = $vocabulary->VocabularyGroup();
             $this->assertNotNull($group);

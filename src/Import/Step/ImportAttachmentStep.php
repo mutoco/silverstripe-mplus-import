@@ -62,7 +62,6 @@ class ImportAttachmentStep implements StepInterface
      */
     public function activate(ImportEngine $engine): void
     {
-        // TODO: Implement activate() method.
     }
 
     /**
@@ -128,7 +127,6 @@ class ImportAttachmentStep implements StepInterface
      */
     public function deactivate(ImportEngine $engine): void
     {
-        // TODO: Implement deactivate() method.
     }
 
     protected function createImage(StreamInterface $stream, string $fileName): ?Image

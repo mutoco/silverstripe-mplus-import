@@ -7,6 +7,8 @@ use Mutoco\Mplus\Import\ImportEngine;
 use Mutoco\Mplus\Import\Step\ImportModuleStep;
 use Mutoco\Mplus\Import\Step\LoadModuleStep;
 use Mutoco\Mplus\Import\Step\LoadSearchStep;
+use Mutoco\Mplus\Model\VocabularyGroup;
+use Mutoco\Mplus\Model\VocabularyItem;
 use Mutoco\Mplus\Tests\Api\Client;
 use Mutoco\Mplus\Tests\Model\Exhibition;
 use Mutoco\Mplus\Tests\Model\ExhibitionWork;
@@ -23,7 +25,8 @@ class LoadSearchStepTest extends SapphireTest
     protected static $extra_dataobjects = [
         Exhibition::class,
         Work::class,
-        ExhibitionWork::class
+        ExhibitionWork::class,
+        VocabularyItem::class
     ];
 
     protected array $loadedConfig;
@@ -46,7 +49,7 @@ class LoadSearchStepTest extends SapphireTest
     public function testSteppedLoading()
     {
         Config::withConfig(function (MutableConfigCollectionInterface $config) {
-            $config->set(ImportEngine::class, 'modules', $this->loadedConfig['SearchLoader']['modules']);
+            $config->set(ImportEngine::class, 'modules', $this->loadedConfig['SearchLoaderSimple']['modules']);
             $engine = new ImportEngine();
             $engine->setApi(new Client());
             $search = new SearchBuilder('Exhibition', 0, 5);
@@ -117,6 +120,13 @@ class LoadSearchStepTest extends SapphireTest
                 '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'
             ], Exhibition::get()->column('MplusID'));
 
+            $ex1 = Exhibition::get()->find('MplusID', 1);
+            $this->assertCount(3, $ex1->ArtMovements());
+            $this->assertEmpty($ex1->ArtMovements()->filter(['VocabularyGroupID' => 0]));
+            $ex4 = Exhibition::get()->find('MplusID', 4);
+            $this->assertCount(2, $ex4->ArtMovements());
+            $this->assertEmpty($ex4->ArtMovements()->filter(['VocabularyGroupID' => 0]));
+            $this->assertCount(1, VocabularyGroup::get());
             $ex6 = Exhibition::get()->find('MplusID', 6);
             $ex7 = Exhibition::get()->find('MplusID', 7);
             $this->assertCount(1, $ex6->Works());

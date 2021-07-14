@@ -109,11 +109,15 @@ class LoadModuleStepTest extends FunctionalTest
             do {
                 $hasRemaining = $step->run($engine);
             } while ($hasRemaining);
-            $tree = $step->getResultTree();
-            $step->deactivate($engine);
             // Deque current
             $engine->getBackend()->getNextStep($prio);
-            // Deque next
+
+            $tree = $step->getResultTree();
+            $step->deactivate($engine);
+            // Deque import
+            $step = $engine->getBackend()->getNextStep($prio);
+
+            // Deque next load
             $step = $engine->getBackend()->getNextStep($prio);
 
             $this->assertEquals('Künstler/in', $tree->getNestedValue('ExhPersonRef.TypeVoc.artist'), 'Has resolved internal field');

@@ -44,6 +44,7 @@ class VocabularyGroup extends DataObject
         $target->update([
             'MplusID' => $node->getId(),
             'Name' => $node->instanceName,
+            'Module' => 'VocabularyGroup',
             'Imported' => DBDatetime::now()
         ]);
         $target->write();

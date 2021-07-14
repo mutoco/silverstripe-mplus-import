@@ -29,8 +29,17 @@ ImportEngine:
         PlaceOfBirth: PerPlaceBirthTxt
         PlaceOfDeath: PerPlaceDeathTxt
 
+SearchLoaderSimple:
+  modules:
+    Exhibition:
+      modelClass: Mutoco\Mplus\Tests\Model\Exhibition
+      fields:
+        Title: ExhTitleTxt
+
 SearchLoader:
   modules:
+    VocabularyItem:
+      modelClass: Mutoco\Mplus\Model\VocabularyItem
     Exhibition:
       modelClass: Mutoco\Mplus\Tests\Model\Exhibition
       fields:
@@ -39,6 +48,9 @@ SearchLoader:
         Works:
           name: ExhPersonRef.PerObjectAcquisitionRef
           type: Object
+        ArtMovements:
+          name: ExhArtisticCurrentGrp.ArtisticCurrentVoc
+          type: VocabularyItem
     Object:
       modelClass: Mutoco\Mplus\Tests\Model\Work
       fields:
@@ -115,11 +127,24 @@ TestVocabRelations:
 
 TestVocabularyModels:
   modules:
+    ExhTextGrp:
+      modelClass: Mutoco\Mplus\Tests\Model\TextBlock
+      fields:
+        Text: TextClb
+        Author: AuthorTxt
     VocabularyItem:
       modelClass: Mutoco\Mplus\Model\VocabularyItem
     Exhibition:
       modelClass: Mutoco\Mplus\Tests\Model\Exhibition
       relations:
+        ArtMovements:
+          name: ExhArtisticCurrentGrp.ArtisticCurrentVoc
+          type: VocabularyItem
         InternalType:
           name: ExhExternalInternalVoc
           type: VocabularyItem
+        Texts:
+          name: ExhTextGrp
+          type: ExhTextGrp
+          fields:
+            Type: TypeVoc

@@ -240,7 +240,17 @@ class ImportModuleStep implements StepInterface
     protected function getSerializableObject(): \stdClass
     {
         $obj = new \stdClass();
-        $obj->tree = $this->tree;
+
+        // When possible, we also serialize the direct parent, as it sometimes contains important attributes
+        if ($this->tree && ($parent = $this->tree->getParent())) {
+            $copy = $parent->getCopy();
+            $copy->addChild($this->tree);
+            $obj->tree = $copy;
+            $obj->withParent = true;
+        } else {
+            $obj->withParent = false;
+            $obj->tree = $this->tree;
+        }
         $obj->module = $this->module;
         $obj->id = $this->id;
         if ($this->target) {
@@ -253,6 +263,11 @@ class ImportModuleStep implements StepInterface
     protected function unserializeFromObject(\stdClass $obj): void
     {
         $this->tree = $obj->tree;
+
+        if ($obj->withParent) {
+            $this->tree = $this->tree->getChildren()[0];
+        }
+
         $this->module = $obj->module;
         $this->id = $obj->id;
         if (isset($obj->targetClass)) {

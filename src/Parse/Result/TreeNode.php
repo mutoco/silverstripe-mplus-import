@@ -269,7 +269,15 @@ class TreeNode implements NodeInterface, \Serializable
 
     public function __clone()
     {
+        return unserialize(serialize($this));
+    }
 
+    public function getCopy(): TreeNode
+    {
+        $copy = new TreeNode($this->tag, $this->attributes);
+        $copy->value = $this->value;
+        $copy->resolved = $this->resolved;
+        return $copy;
     }
 
     protected function getSerializableObject(): \stdClass
@@ -280,7 +288,6 @@ class TreeNode implements NodeInterface, \Serializable
         $obj->tag = $this->tag;
         $obj->value = $this->value;
         $obj->children = $this->children;
-        $obj->subTree = $this->subTree;
         $obj->resolved = $this->resolved;
 
         return $obj;
@@ -291,12 +298,10 @@ class TreeNode implements NodeInterface, \Serializable
         $this->attributes = $obj->attributes;
         $this->tag = $obj->tag;
         $this->value = $obj->value;
-        $this->children = $obj->children;
-        $this->subTree = $obj->subTree;
         $this->resolved = $obj->resolved;
 
-        foreach ($this->children as $child) {
-            $child->setParent($this);
+        foreach ($obj->children as $child) {
+            $this->addChild($child);
         }
     }
 

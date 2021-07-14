@@ -5,6 +5,7 @@ namespace Mutoco\Mplus\Tests;
 
 
 use Mutoco\Mplus\Import\ImportEngine;
+use Mutoco\Mplus\Import\MemoryImportBackend;
 use Mutoco\Mplus\Tests\Step\TestStep;
 use SilverStripe\Dev\FunctionalTest;
 
@@ -21,6 +22,7 @@ class ImportEngineTest extends FunctionalTest
     {
         TestStep::$stack = [];
         $engine = new ImportEngine();
+        $engine->setBackend(new MemoryImportBackend());
         $step = new TestStep(2);
         $engine->addStep($step);
         do {

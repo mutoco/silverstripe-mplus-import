@@ -53,7 +53,8 @@ class VocabularyItem extends DataObject
         $target = VocabularyItem::create();
         $target->update([
             'MplusID' => $vocabNode->getId(),
-            'Imported' => DBDatetime::now()
+            'Imported' => DBDatetime::now(),
+            'Module' => 'VocabularyItem'
         ]);
 
         self::updateFromNode($target, $vocabNode);
@@ -92,9 +93,8 @@ class VocabularyItem extends DataObject
 
     public function beforeMplusImport(ImportModuleStep $step)
     {
-        if ($tree = $step->getTree()) {
-            self::updateFromNode($this, $tree);
+        if ($node = self::findVocabularyItemNode($step->getTree())) {
+            self::updateFromNode($this, $node);
         }
     }
-
 }
