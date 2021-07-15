@@ -25,14 +25,11 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
     protected ?string $module = null;
     protected ?string $id = null;
 
-    public function __construct($params = [])
+    public function __construct(?string $module, ?string $id = null)
     {
-        parent::__construct($params);
-
-        if (is_array($params) && count($params)) {
-            $this->hydrate($params[0]);
-        } else if (is_string($params)) {
-            $this->hydrate($params);
+        parent::__construct([$module, $id]);
+        if ($module && is_string($module)) {
+            $this->hydrate($module, $id);
         }
     }
 
