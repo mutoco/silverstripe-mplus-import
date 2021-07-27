@@ -1,0 +1,139 @@
+<?xml version='1.0' encoding='utf-8'?>
+<application xmlns="http://www.zetcom.com/ria/ws/module">
+  <modules>
+    <module name="Object" totalSize="1">
+      <moduleItem hasAttachments="true" id="123"
+      uuid="2624c885-af51-4da6-a91c-b0233a8ffef9">
+        <systemField dataType="Long" name="__id">
+          <value>123</value>
+        </systemField>
+        <dataField dataType="Varchar" name="ObjAcquisitionYearTxt">
+          <value>1916</value>
+        </dataField>
+        <vocabularyReference name="ObjCategoryVoc" id="100000035"
+        instanceName="ObjCategoryVgr">
+          <vocabularyReferenceItem id="100105341" name="print">
+            <formattedValue language="de">
+            Druckgrafik</formattedValue>
+          </vocabularyReferenceItem>
+        </vocabularyReference>
+        <virtualField name="ObjTitleVrt">
+          <value>Testdatensatz Portrait . Hummer</value>
+        </virtualField>
+        <repeatableGroup name="ObjBriefDescriptionGrp" size="2">
+          <repeatableGroupItem id="392881">
+            <dataField dataType="Clob" name="DescriptionClb">
+              <value>
+              TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTest</value>
+            </dataField>
+            <dataField dataType="Date" name="DateDat">
+              <value>2017-02-02Z</value>
+              <formattedValue language="de">
+              02.02.2017</formattedValue>
+            </dataField>
+            <vocabularyReference name="TypeVoc" id="100000052"
+            instanceName="ObjBriefDescriptionTypeVgr">
+              <vocabularyReferenceItem id="100121690"
+              name="TextExtern">
+                <formattedValue language="de">Text
+                Extern</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+            <moduleReference name="ObjBriefDescriptionUserRef"
+            targetModule="User" multiplicity="N:1" size="1">
+              <moduleReferenceItem moduleItemId="100012119"
+              uuid="a8cea2ad-f017-4fc8-9a43-0bb4c6ce5ddb">
+                <formattedValue language="de">null</formattedValue>
+              </moduleReferenceItem>
+            </moduleReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="395454">
+            <dataField dataType="Clob" name="DescriptionClb">
+              <value>TEst slgkat 2007</value>
+            </dataField>
+            <dataField dataType="Date" name="DateDat">
+              <value>2017-02-10Z</value>
+              <formattedValue language="de">
+              10.02.2017</formattedValue>
+            </dataField>
+            <vocabularyReference name="TypeVoc" id="100000052"
+            instanceName="ObjBriefDescriptionTypeVgr">
+              <vocabularyReferenceItem id="100309689"
+              name="Text_SlgOnline_de">
+                <formattedValue language="de">Text SlgOnline
+                (DE)</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+            <moduleReference name="ObjBriefDescriptionUserRef"
+            targetModule="User" multiplicity="N:1" size="1">
+              <moduleReferenceItem moduleItemId="100012119"
+              uuid="a8cea2ad-f017-4fc8-9a43-0bb4c6ce5ddb">
+                <formattedValue language="de">null</formattedValue>
+              </moduleReferenceItem>
+            </moduleReference>
+          </repeatableGroupItem>
+        </repeatableGroup>
+        <moduleReference name="ObjMultimediaRef"
+        targetModule="Multimedia" multiplicity="M:N" size="7">
+          <moduleReferenceItem moduleItemId="115234"
+          uuid="dcb70ecb-b3ab-4476-b38a-3615124930c9" seqNo="0">
+            <dataField dataType="Boolean" name="ThumbnailBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <vocabularyReference name="TypeVoc" id="1006" instanceName="ExhThumbnailTypeVgr">
+              <vocabularyReferenceItem id="1008" name="artist">
+                <formattedValue language="de">Testing</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </moduleReferenceItem>
+          <moduleReferenceItem moduleItemId="307193"
+          uuid="699c9773-5dac-4490-8b0b-49b5f8632ef1" seqNo="1">
+            <formattedValue language="de">
+            Vergleichsabbildung</formattedValue>
+            <dataField dataType="Boolean" name="ThumbnailBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+          </moduleReferenceItem>
+          <moduleReferenceItem moduleItemId="904212"
+          uuid="45607cdb-73b0-405c-be57-ec9176616170" seqNo="2">
+            <dataField dataType="Boolean" name="ThumbnailBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+          </moduleReferenceItem>
+          <moduleReferenceItem moduleItemId="904213"
+          uuid="272ed96c-38b7-43a8-887e-6eed2f77bf8f" seqNo="3">
+            <dataField dataType="Boolean" name="ThumbnailBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+          </moduleReferenceItem>
+          <moduleReferenceItem moduleItemId="904214"
+          uuid="02470c4d-11ca-479b-aefc-43f01bd8b181" seqNo="4">
+            <dataField dataType="Boolean" name="ThumbnailBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+          </moduleReferenceItem>
+          <moduleReferenceItem moduleItemId="904215"
+          uuid="71060da9-7e77-4e16-9bf0-2990169cb697" seqNo="5">
+            <dataField dataType="Boolean" name="ThumbnailBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+          </moduleReferenceItem>
+          <moduleReferenceItem moduleItemId="907206"
+          uuid="ea44aa0b-1b09-4d92-a491-9fedacee4293" seqNo="6">
+            <formattedValue language="de">Image</formattedValue>
+            <dataField dataType="Boolean" name="ThumbnailBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+          </moduleReferenceItem>
+        </moduleReference>
+      </moduleItem>
+    </module>
+  </modules>
+</application>

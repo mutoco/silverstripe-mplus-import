@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='utf-8'?>
+<application xmlns="http://www.zetcom.com/ria/ws/module">
+  <modules>
+    <module name="Person" totalSize="1">
+      <moduleItem hasAttachments="false" id="1982"
+      uuid="45246701-1a3d-4c6c-e864-905a99b2ed9e">
+        <systemField dataType="Long" name="__id">
+          <value>1982</value>
+        </systemField>
+        <systemField dataType="Varchar" name="__lastModifiedUser">
+          <value>admin</value>
+        </systemField>
+        <systemField dataType="Timestamp" name="__lastModified">
+          <value>2021-04-14 12:32:09.152</value>
+          <formattedValue language="de">14.04.2021
+          12:32</formattedValue>
+        </systemField>
+        <systemField dataType="Timestamp" name="__created">
+          <value>2016-09-09 12:53:51.521</value>
+          <formattedValue language="de">09.09.2016
+          12:53</formattedValue>
+        </systemField>
+        <dataField dataType="Date" name="PerDateFromBeginDat">
+          <value>1863-12-12Z</value>
+          <formattedValue language="de">12.12.1863</formattedValue>
+        </dataField>
+        <dataField dataType="Date" name="PerDateFromEndDat">
+          <value>1863-12-12Z</value>
+          <formattedValue language="de">12.12.1863</formattedValue>
+        </dataField>
+        <dataField dataType="Date" name="PerDateToBeginDat">
+          <value>1944-01-23Z</value>
+          <formattedValue language="de">23.01.1944</formattedValue>
+        </dataField>
+        <dataField dataType="Date" name="PerDateToEndDat">
+          <value>1944-01-23Z</value>
+          <formattedValue language="de">23.01.1944</formattedValue>
+        </dataField>
+        <dataField dataType="Varchar" name="PerPlaceBirthTxt">
+          <value>Løiten (Hedmark)</value>
+        </dataField>
+        <dataField dataType="Varchar" name="PerPlaceDeathTxt">
+          <value>Ekely (Oslo)</value>
+        </dataField>
+        <dataField dataType="Varchar"
+        name="PerDataValidationUserTxt">
+          <value>nold</value>
+        </dataField>
+        <dataField dataType="Date" name="PerDataValidationDateDat">
+          <value>2017-06-28Z</value>
+          <formattedValue language="de">28.06.2017</formattedValue>
+        </dataField>
+        <dataField dataType="Varchar" name="PerDateToTxt">
+          <value>23.01.1944</value>
+        </dataField>
+        <dataField dataType="Varchar" name="PerDatingTxt">
+          <value>*12.12.1863 Løiten (Hedmark), +23.1.1944 Ekely
+          (Oslo)</value>
+        </dataField>
+        <dataField dataType="Varchar" name="PerDateFromTxt">
+          <value>12.12.1863</value>
+        </dataField>
+        <dataField dataType="Varchar" name="PerLastNameTxt">
+          <value>Munch</value>
+        </dataField>
+        <dataField dataType="Varchar" name="PerFunctionTxt">
+          <value>Künstler/-in</value>
+        </dataField>
+        <dataField dataType="Varchar" name="PerFirstNameTxt">
+          <value>Edvard</value>
+        </dataField>
+        <moduleReference name="PerObjectAcquisitionRef"
+                         targetModule="Object" multiplicity="1:N" size="1">
+          <moduleReferenceItem moduleItemId="47894"
+                               uuid="2624c885-af51-4da6-a91c-b0233a8ffef9" seqNo="0">
+            <formattedValue language="de">E 1916.16</formattedValue>
+          </moduleReferenceItem>
+        </moduleReference>
+        <vocabularyReference name="PerDataValidationVoc"
+        id="100043385" instanceName="PerDataValidationVgr">
+          <vocabularyReferenceItem id="100090890" name="valid">
+            <formattedValue language="de">
+            validiert</formattedValue>
+          </vocabularyReferenceItem>
+        </vocabularyReference>
+        <vocabularyReference name="PerTypeVoc" id="100000027"
+        instanceName="PerTypeVgr">
+          <vocabularyReferenceItem id="100102464" name="person">
+            <formattedValue language="de">Person</formattedValue>
+          </vocabularyReferenceItem>
+        </vocabularyReference>
+        <vocabularyReference name="PerCountryDeathVoc"
+        id="100000125" instanceName="GenPlaceVgr">
+          <vocabularyReferenceItem id="100004044">
+            <formattedValue language="de">Norwegen</formattedValue>
+          </vocabularyReferenceItem>
+        </vocabularyReference>
+        <vocabularyReference name="PerCountryBirthVoc"
+        id="100000125" instanceName="GenPlaceVgr">
+          <vocabularyReferenceItem id="100004044">
+            <formattedValue language="de">Norwegen</formattedValue>
+          </vocabularyReferenceItem>
+        </vocabularyReference>
+        <vocabularyReference name="PerGenderVoc" id="100000023"
+        instanceName="PerGenderVgr">
+          <vocabularyReferenceItem id="100000107">
+            <formattedValue language="de">männlich</formattedValue>
+          </vocabularyReferenceItem>
+        </vocabularyReference>
+        <vocabularyReference name="PerReferenceGNDVoc"
+        id="100033387" instanceName="PerReferenceGNDVgr">
+          <vocabularyReferenceItem id="100196688"
+          name="http://d-nb.info/gnd/118585738">
+            <formattedValue language="de">Munch,
+            Edvard</formattedValue>
+          </vocabularyReferenceItem>
+        </vocabularyReference>
+        <virtualField name="PerPersonSortVrt">
+          <value>Munch, Edvard</value>
+        </virtualField>
+        <virtualField name="PerPersonVrt">
+          <value>Edvard Munch</value>
+        </virtualField>
+        <virtualField name="PerDateFromBirthYearVrt">
+          <value>1863</value>
+        </virtualField>
+        <virtualField name="PerDatingWithCountryVrt">
+          <value>*12.12.1863 Løiten (Hedmark), Norwegen; +23.1.1944
+          Ekely (Oslo), Norwegen</value>
+        </virtualField>
+        <virtualField name="PerPersonDatingVrt">
+          <value>Edvard Munch (*12.12.1863 Løiten (Hedmark),
+          +23.1.1944 Ekely (Oslo))</value>
+        </virtualField>
+        <virtualField name="PerDatingJustYearVrt">
+          <value>*1863, +1944</value>
+        </virtualField>
+      </moduleItem>
+    </module>
+  </modules>
+</application>

@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='utf-8'?>
+<application xmlns="http://www.zetcom.com/ria/ws/module">
+  <modules>
+    <module name="Exhibition" totalSize="12">
+      <moduleItem hasAttachments="false" id="11" uuid="11">
+        <dataField dataType="Varchar" name="ExhTitleTxt">
+          <value>Ullamcorper</value>
+        </dataField>
+      </moduleItem>
+      <moduleItem hasAttachments="false" id="12" uuid="12">
+        <dataField dataType="Varchar" name="ExhTitleTxt">
+          <value>Risus</value>
+        </dataField>
+      </moduleItem>
+    </module>
+  </modules>
+</application>

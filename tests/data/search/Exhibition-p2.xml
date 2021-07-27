@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='utf-8'?>
+<application xmlns="http://www.zetcom.com/ria/ws/module">
+  <modules>
+    <module name="Exhibition" totalSize="12">
+      <moduleItem hasAttachments="false" id="6" uuid="6">
+        <dataField dataType="Varchar" name="ExhTitleTxt">
+          <value>Consectetur</value>
+        </dataField>
+        <moduleReference name="ExhPersonRef" targetModule="Person"
+                         multiplicity="M:N" size="1">
+          <moduleReferenceItem moduleItemId="1982"
+                               uuid="45246701-1a3d-4c6c-e864-905a99b2ed9e" seqNo="0">
+            <formattedValue language="de">Edvard Munch (*12.12.1863
+              Løiten (Hedmark), +23.1.1944 Ekely
+              (Oslo))</formattedValue>
+            <vocabularyReference name="TypeVoc" id="100068386"
+                                 instanceName="ExhPersonTypeVgr">
+              <vocabularyReferenceItem id="100893588"
+                                       name="artist">
+                <formattedValue language="de">
+                  Künstler/in</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </moduleReferenceItem>
+        </moduleReference>
+      </moduleItem>
+      <moduleItem hasAttachments="false" id="7" uuid="7">
+        <dataField dataType="Varchar" name="ExhTitleTxt">
+          <value>Adipiscing</value>
+        </dataField>
+        <moduleReference name="ExhPersonRef" targetModule="Person"
+                         multiplicity="M:N" size="1">
+          <moduleReferenceItem moduleItemId="153053"
+                               uuid="45246701-1a3d-4c6c-e864-905a99b2ed9e" seqNo="0">
+            <formattedValue language="de">Bilbo Baggins</formattedValue>
+            <vocabularyReference name="TypeVoc" id="100068386"
+                                 instanceName="ExhPersonTypeVgr">
+              <vocabularyReferenceItem id="100893588"
+                                       name="artist">
+                <formattedValue language="de">
+                  Künstler/in</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </moduleReferenceItem>
+        </moduleReference>
+      </moduleItem>
+      <moduleItem hasAttachments="false" id="8" uuid="8">
+        <dataField dataType="Varchar" name="ExhTitleTxt">
+          <value>Elit</value>
+        </dataField>
+      </moduleItem>
+      <moduleItem hasAttachments="false" id="9" uuid="9">
+        <dataField dataType="Varchar" name="ExhTitleTxt">
+          <value>Mauris</value>
+        </dataField>
+      </moduleItem>
+      <moduleItem hasAttachments="false" id="10" uuid="10">
+        <dataField dataType="Varchar" name="ExhTitleTxt">
+          <value>Venenatis</value>
+        </dataField>
+      </moduleItem>
+    </module>
+  </modules>
+</application>

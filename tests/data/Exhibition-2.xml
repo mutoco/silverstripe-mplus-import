@@ -1,0 +1,302 @@
+<?xml version='1.0' encoding='utf-8'?>
+<application xmlns="http://www.zetcom.com/ria/ws/module">
+  <modules>
+    <module name="Exhibition" totalSize="1">
+      <moduleItem hasAttachments="false" id="2" uuid="542775d6-80c7-404c-a042-55604aae1f7d">
+        <systemField dataType="Long" name="__id">
+          <value>2</value>
+        </systemField>
+        <systemField dataType="Varchar" name="__lastModifiedUser">
+          <value>username</value>
+        </systemField>
+        <systemField dataType="Timestamp" name="__lastModified">
+          <value>2021-05-07 09:18:18.121</value>
+          <formattedValue language="de">07.05.2021
+          09:18</formattedValue>
+        </systemField>
+        <systemField dataType="Varchar" name="__createdUser">
+          <value>username</value>
+        </systemField>
+        <systemField dataType="Timestamp" name="__created">
+          <value>2020-05-01 10:44:51.863</value>
+          <formattedValue language="de">01.05.2020
+          10:44</formattedValue>
+        </systemField>
+        <systemField dataType="Long" name="__orgUnit">
+          <value>historical</value>
+        </systemField>
+        <systemField name="__uuid">
+          <value>542775d6-80c7-404c-a042-55604aae1f7d</value>
+        </systemField>
+        <dataField dataType="Varchar" name="ExhTitleTxt">
+          <value>Dies ist nur ein Test</value>
+        </dataField>
+        <dataField dataType="Date" name="ExhDateToDat">
+          <value>2018-06-14Z</value>
+          <formattedValue language="de">14.06.2018</formattedValue>
+        </dataField>
+        <dataField dataType="Date" name="ExhDateFromDat">
+          <value>2018-05-17Z</value>
+          <formattedValue language="de">17.05.2018</formattedValue>
+        </dataField>
+        <dataField dataType="Varchar" name="ExhYearTxt">
+          <value>2018</value>
+        </dataField>
+        <dataField dataType="Varchar" name="ExhVenueTxt">
+          <value>Mordor</value>
+        </dataField>
+        <dataField dataType="Long" name="ExhObjectRefMaxSortLnu">
+          <value>4</value>
+          <formattedValue language="de">4</formattedValue>
+        </dataField>
+        <vocabularyReference name="ExhInternetVoc" id="100068387"
+                             instanceName="ExhInternetVgr">
+          <vocabularyReferenceItem id="100894589"
+                                   name="onlinedone">
+            <formattedValue language="de">online /
+              done</formattedValue>
+          </vocabularyReferenceItem>
+        </vocabularyReference>
+        <vocabularyReference name="ExhExternalInternalVoc"
+        id="100014392" instanceName="ExhExternalInternalVgr">
+          <vocabularyReferenceItem id="100035803" name="internal">
+            <formattedValue language="de">Intern</formattedValue>
+          </vocabularyReferenceItem>
+        </vocabularyReference>
+        <virtualField name="ExhConditionCheckCompletedVrt">
+          <value>NEIN</value>
+        </virtualField>
+        <virtualField name="ExhOrganiserFacRepVrt">
+          <value>0</value>
+        </virtualField>
+        <virtualField name="ExhStatusVrt">
+          <value></value>
+        </virtualField>
+        <virtualField name="ExhExhibitionVrt">
+          <value>Dies ist nur ein Test, Mordor, 17.05.2018 -
+          14.06.2018</value>
+        </virtualField>
+        <virtualField name="ExhExhibitionVenuesVrt">
+          <value></value>
+        </virtualField>
+        <repeatableGroup name="ExhTextGrp" size="5">
+          <repeatableGroupItem id="356559">
+            <dataField dataType="Clob" name="TextClb">
+              <value>Dies ist ein Pressetext.</value>
+            </dataField>
+            <dataField dataType="Date" name="DateDat">
+              <value>2021-01-19Z</value>
+              <formattedValue language="de">
+              19.01.2021</formattedValue>
+            </dataField>
+            <dataField dataType="Varchar" name="AuthorTxt">
+              <value>Firstname Lastname</value>
+            </dataField>
+            <vocabularyReference name="TypeVoc" id="100000205"
+            instanceName="ExhTextTypeVgr">
+              <vocabularyReferenceItem id="100842588"
+              name="Press_DE">
+                <formattedValue language="de">Pressetext
+                (DE)</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="356558">
+            <dataField dataType="Clob" name="TextClb">
+              <value>This would be a press release.</value>
+            </dataField>
+            <dataField dataType="Date" name="DateDat">
+              <value>2021-01-19Z</value>
+              <formattedValue language="de">
+              19.01.2021</formattedValue>
+            </dataField>
+            <dataField dataType="Varchar" name="AuthorTxt">
+              <value>Firstname Lastname</value>
+            </dataField>
+            <vocabularyReference name="TypeVoc" id="100000205"
+            instanceName="ExhTextTypeVgr">
+              <vocabularyReferenceItem id="100842589"
+              name="Press_EN">
+                <formattedValue language="de">Pressetext
+                (EN)</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="367558">
+            <dataField dataType="Clob" name="TextClb">
+              <value>Das war eine Ausstellung...</value>
+            </dataField>
+            <dataField dataType="Date" name="DateDat">
+              <value>2021-03-31Z</value>
+              <formattedValue language="de">
+              31.03.2021</formattedValue>
+            </dataField>
+            <vocabularyReference name="TypeVoc" id="100000205"
+            instanceName="ExhTextTypeVgr">
+              <vocabularyReferenceItem id="100881599"
+              name="Review_1_DE">
+                <formattedValue language="de">Ausstellungstext 1 (DE)</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="367559">
+            <dataField dataType="Clob" name="TextClb">
+              <value>...die 5 Wochen gedauert hat...</value>
+            </dataField>
+            <dataField dataType="Date" name="DateDat">
+              <value>2021-03-31Z</value>
+              <formattedValue language="de">
+              31.03.2021</formattedValue>
+            </dataField>
+            <vocabularyReference name="TypeVoc" id="100000205"
+            instanceName="ExhTextTypeVgr">
+              <vocabularyReferenceItem id="100881602"
+              name="Review_2_DE">
+                <formattedValue language="de">Ausstellungstext 2 (DE)</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="367560">
+            <dataField dataType="Clob" name="TextClb">
+              <value>... und auf wenig Interesse gestossen
+              ist.</value>
+            </dataField>
+            <dataField dataType="Date" name="DateDat">
+              <value>2021-03-31Z</value>
+              <formattedValue language="de">
+              31.03.2021</formattedValue>
+            </dataField>
+            <vocabularyReference name="TypeVoc" id="100000205"
+            instanceName="ExhTextTypeVgr">
+              <vocabularyReferenceItem id="100881603"
+              name="Review_3_DE">
+                <formattedValue language="de">Ausstellungstext 3 (DE)</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+        </repeatableGroup>
+        <repeatableGroup name="ExhURLGrp" size="3">
+          <repeatableGroupItem id="375558">
+            <dataField dataType="Varchar" name="AddressTxt">
+              <value>https://youtu.be/lHw0T4olXE8</value>
+            </dataField>
+            <vocabularyReference name="TypeVoc" id="100068388"
+            instanceName="ExhURLTypeVgr">
+              <vocabularyReferenceItem id="100894590"
+              name="weblink">
+                <formattedValue language="de">
+                Weblink</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="375559">
+            <dataField dataType="Varchar" name="AddressTxt">
+              <value>
+              https://digital.Museum.ch/viewer/image/47594/1/LOG_0000/</value>
+            </dataField>
+            <vocabularyReference name="TypeVoc" id="100068388"
+            instanceName="ExhURLTypeVgr">
+              <vocabularyReferenceItem id="100894586"
+              name="exhcat">
+                <formattedValue language="de">
+                Ausstellungskatalog</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="375560">
+            <dataField dataType="Varchar" name="AddressTxt">
+              <value>
+              https://digital.Museum.ch/viewer/image/195307/1/LOG_0000/</value>
+            </dataField>
+            <vocabularyReference name="TypeVoc" id="100068388"
+            instanceName="ExhURLTypeVgr">
+              <vocabularyReferenceItem id="100898586"
+              name="letter">
+                <formattedValue language="de">
+                Künstlerbrief</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+        </repeatableGroup>
+        <moduleReference name="ExhRegistrarRef"
+        targetModule="Registrar" multiplicity="1:N" size="1">
+            <moduleReferenceItem moduleItemId="662863"
+                                 uuid="c3925def-753b-49a2-8f5a-7fa9a9ccbe20" seqNo="0">
+                <formattedValue language="de">requested (own object),
+                    Dies ist nur ein Test, Mordor</formattedValue>
+            </moduleReferenceItem>
+            <moduleReferenceItem moduleItemId="695881"
+                                 uuid="2b8d239c-623f-4a3c-b7de-44e0f0bc83be" seqNo="1">
+                <formattedValue language="de">requested (own object),
+                    Dies ist nur ein Test</formattedValue>
+            </moduleReferenceItem>
+        </moduleReference>
+        <moduleReference name="ExhPersonRef" targetModule="Person"
+        multiplicity="M:N" size="1">
+          <moduleReferenceItem moduleItemId="1982"
+          uuid="45246701-1a3d-4c6c-e864-905a99b2ed9e" seqNo="0">
+            <formattedValue language="de">Edvard Munch (*12.12.1863
+            Løiten (Hedmark), +23.1.1944 Ekely
+            (Oslo))</formattedValue>
+            <vocabularyReference name="TypeVoc" id="100068386"
+            instanceName="ExhPersonTypeVgr">
+              <vocabularyReferenceItem id="100893588"
+              name="artist">
+                <formattedValue language="de">
+                Künstler/in</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </moduleReferenceItem>
+        </moduleReference>
+        <moduleReference name="ExhConservationRef"
+        targetModule="Conservation" multiplicity="1:N" size="2">
+          <moduleReferenceItem moduleItemId="937476"
+          uuid="2e013cb7-7718-49b6-a485-f7da35acd993" seqNo="0" />
+          <moduleReferenceItem moduleItemId="937477"
+          uuid="e9a5ef73-92ca-4e3e-ab2d-f472f1a68fb1" seqNo="1" />
+        </moduleReference>
+        <moduleReference name="ExhPerOrganiserRef"
+        targetModule="Person" multiplicity="N:1" size="1">
+          <moduleReferenceItem moduleItemId="6049"
+          uuid="e886f3a4-20f9-a1e5-d595-ba3abc345078">
+            <formattedValue language="de">Kunstverein</formattedValue>
+          </moduleReferenceItem>
+        </moduleReference>
+        <moduleReference name="ExhMultimediaRef"
+        targetModule="Multimedia" multiplicity="M:N" size="1">
+          <moduleReferenceItem moduleItemId="926231"
+          uuid="2048f038-b4fa-42a5-93da-334171fbc921" seqNo="0">
+            <formattedValue language="de">
+            !{reference.ExhMultimediaRef.format}!</formattedValue>
+            <dataField dataType="Boolean" name="ThumbnailBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+          </moduleReferenceItem>
+        </moduleReference>
+        <repeatableGroup name="ExhArtisticCurrentGrp" size="2">
+          <repeatableGroupItem id="395565">
+            <vocabularyReference name="ArtisticCurrentVoc"
+                                 id="100069387" instanceName="ExhArtisticCurrentVgr">
+              <vocabularyReferenceItem id="100920636"
+                                       name="Romantik">
+                <formattedValue language="de">
+                  Romantik</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="395566">
+            <vocabularyReference name="ArtisticCurrentVoc"
+                                 id="100069387" instanceName="ExhArtisticCurrentVgr">
+              <vocabularyReferenceItem id="100920587"
+                                       name="Aktionskunst">
+                <formattedValue language="de">
+                  Aktionskunst</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+        </repeatableGroup>
+      </moduleItem>
+    </module>
+  </modules>
+</application>

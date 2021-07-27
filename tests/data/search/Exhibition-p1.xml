@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='utf-8'?>
+<application xmlns="http://www.zetcom.com/ria/ws/module">
+  <modules>
+    <module name="Exhibition" totalSize="12">
+      <moduleItem hasAttachments="false" id="1" uuid="1">
+        <dataField dataType="Varchar" name="ExhTitleTxt">
+          <value>Lorem</value>
+        </dataField>
+        <repeatableGroup name="ExhArtisticCurrentGrp" size="3">
+          <repeatableGroupItem id="395562">
+            <vocabularyReference name="ArtisticCurrentVoc"
+                                 id="100069387" instanceName="ExhArtisticCurrentVgr">
+              <vocabularyReferenceItem id="100920586"
+                                       name="Abstrakt">
+                <formattedValue language="de">
+                  Abstrakt</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="395560">
+            <vocabularyReference name="ArtisticCurrentVoc"
+                                 id="100069387" instanceName="ExhArtisticCurrentVgr">
+              <vocabularyReferenceItem id="100920587"
+                                       name="Aktionskunst">
+                <formattedValue language="de">
+                  Aktionskunst</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="395559">
+            <vocabularyReference name="ArtisticCurrentVoc"
+                                 id="100069387" instanceName="ExhArtisticCurrentVgr">
+              <vocabularyReferenceItem id="100920588"
+                                       name="Art Brut">
+                <formattedValue language="de">Art
+                  Brut</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+        </repeatableGroup>
+      </moduleItem>
+      <moduleItem hasAttachments="false" id="2" uuid="2">
+        <dataField dataType="Varchar" name="ExhTitleTxt">
+          <value>Ipsum</value>
+        </dataField>
+        <repeatableGroup name="ExhArtisticCurrentGrp" size="1">
+          <repeatableGroupItem id="395573">
+            <vocabularyReference name="ArtisticCurrentVoc"
+                                 id="100069387" instanceName="ExhArtisticCurrentVgr">
+              <vocabularyReferenceItem id="100920600"
+                                       name="Expressionismus">
+                <formattedValue language="de">
+                  Expressionismus</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+        </repeatableGroup>
+      </moduleItem>
+      <moduleItem hasAttachments="false" id="3" uuid="3">
+        <dataField dataType="Varchar" name="ExhTitleTxt">
+          <value>Dolor</value>
+        </dataField>
+      </moduleItem>
+      <moduleItem hasAttachments="false" id="4" uuid="4">
+        <dataField dataType="Varchar" name="ExhTitleTxt">
+          <value>Sit</value>
+        </dataField>
+        <repeatableGroup name="ExhArtisticCurrentGrp" size="2">
+          <repeatableGroupItem id="395565">
+            <vocabularyReference name="ArtisticCurrentVoc"
+                                 id="100069387" instanceName="ExhArtisticCurrentVgr">
+              <vocabularyReferenceItem id="100920636"
+                                       name="Romantik">
+                <formattedValue language="de">
+                  Romantik</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="395566">
+            <vocabularyReference name="ArtisticCurrentVoc"
+                                 id="100069387" instanceName="ExhArtisticCurrentVgr">
+              <vocabularyReferenceItem id="100920587"
+                                       name="Aktionskunst">
+                <formattedValue language="de">
+                  Aktionskunst</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+        </repeatableGroup>
+      </moduleItem>
+      <moduleItem hasAttachments="false" id="5" uuid="5">
+        <dataField dataType="Varchar" name="ExhTitleTxt">
+          <value>Amet</value>
+        </dataField>
+      </moduleItem>
+    </module>
+  </modules>
+</application>

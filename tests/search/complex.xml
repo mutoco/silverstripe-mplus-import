@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application xmlns="http://www.zetcom.com/ria/ws/module/search" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.zetcom.com/ria/ws/module/search http://docs.zetcom.com/ws/module/search/search_1_6.xsd">
+  <modules>
+    <module name="Test">
+      <search limit="20" offset="10">
+        <select>
+          <field fieldPath="__id"/>
+          <field fieldPath="AdrSurNameTxt"/>
+          <field fieldPath="AdrContactGrp.TypeVoc"/>
+        </select>
+        <sort>
+          <field fieldPath="__id" direction="Ascending"/>
+        </sort>
+        <fulltext>*test</fulltext>
+        <expert>
+          <and>
+            <isNotNull fieldPath="__id"/>
+            <isBlank fieldPath="Foo"/>
+          </and>
+        </expert>
+      </search>
+    </module>
+  </modules>
+</application>

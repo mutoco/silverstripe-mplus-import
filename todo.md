@@ -10,3 +10,4 @@
 - [x] Data transforms
 - [x] Relation filtering
 - [ ] Test changed content on the API
+- [ ] Load vocabulary-item translations

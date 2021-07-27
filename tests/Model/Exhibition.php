@@ -51,9 +51,9 @@ class Exhibition extends DataObject implements TestOnly
     {
         if ($field === 'Status' && ($node = VocabularyItem::findVocabularyItemNode($node))) {
             switch ($node->name) {
-                case 'DigiLab_onlinedone':
+                case 'onlinedone':
                     return 'complete';
-                case 'DigiLab_onlineinprogress':
+                case 'onlineinprogress':
                     return 'wip';
             }
         }

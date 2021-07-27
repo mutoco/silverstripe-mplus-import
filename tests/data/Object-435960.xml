@@ -1,0 +1,2541 @@
+<?xml version='1.0' encoding='utf-8'?>
+<application xmlns="http://www.zetcom.com/ria/ws/module">
+  <modules>
+    <module name="Object" totalSize="1">
+      <moduleItem hasAttachments="false" id="435960"
+      uuid="45bd85c0-f70f-4ec4-ac0c-acecd9d7ccf7">
+        <systemField dataType="Long" name="__id">
+          <value>435960</value>
+        </systemField>
+        <systemField dataType="Varchar" name="__lastModifiedUser">
+          <value>username</value>
+        </systemField>
+        <systemField dataType="Timestamp" name="__lastModified">
+          <value>2021-03-11 09:29:02.192</value>
+          <formattedValue language="de">11.03.2021
+          09:29</formattedValue>
+        </systemField>
+        <systemField dataType="Varchar" name="__createdUser">
+          <value></value>
+        </systemField>
+        <systemField dataType="Timestamp" name="__created">
+          <value>1970-01-01 00:00:00.0</value>
+          <formattedValue language="de">01.01.1970
+          00:00</formattedValue>
+        </systemField>
+        <systemField dataType="Long" name="__orgUnit">
+          <value>museum</value>
+        </systemField>
+        <systemField name="__uuid">
+          <value>45bd85c0-f70f-4ec4-ac0c-acecd9d7ccf7</value>
+        </systemField>
+        <dataField dataType="Varchar" name="ObjEditionNrTxt">
+          <value>1/1</value>
+        </dataField>
+        <dataField dataType="Clob" name="ObjInscriptionClb">
+          <value>Bezeichnet unten rechts: Cuno Amiet 1937; unten
+          links: in Erinnerung an meinen lieben Freund Füssli
+          &amp;C;</value>
+        </dataField>
+        <dataField dataType="Varchar" name="ObjRecordCreatedByTxt">
+          <value>sieber</value>
+        </dataField>
+        <dataField dataType="Varchar" name="ObjCustomStatusTxt">
+          <value>Test-Eintrag Zollstatus, JSI</value>
+        </dataField>
+        <dataField dataType="Date" name="ObjRecordCreatedDateDat">
+          <value>2017-02-02Z</value>
+          <formattedValue language="de">02.02.2017</formattedValue>
+        </dataField>
+        <dataField dataType="Varchar" name="ObjAcquisitionYearTxt">
+          <value>1916</value>
+        </dataField>
+        <dataField dataType="Clob"
+        name="ObjRecommendationNotesExtClb">
+          <value>Extern: unbedingt Duftkissen mitschicken</value>
+        </dataField>
+        <dataField dataType="Clob"
+        name="ObjRecommendationNotesIntClb">
+          <value>ohne Haube</value>
+        </dataField>
+        <dataField dataType="Long" name="ObjNumberObjectsLnu">
+          <value>500</value>
+          <formattedValue language="de">500</formattedValue>
+        </dataField>
+        <dataField dataType="Varchar" name="ObjObjectNumberTxt">
+          <value>123456/1916.16</value>
+        </dataField>
+        <dataField dataType="Varchar" name="ObjOtherNumberTxt">
+          <value>WV-Nr. 666</value>
+        </dataField>
+        <dataField dataType="Boolean" name="ObjDepositaBoo">
+          <value>false</value>
+          <formattedValue language="de">no</formattedValue>
+        </dataField>
+        <dataField dataType="Varchar" name="ObjAudioGuideTxt">
+          <value>20</value>
+        </dataField>
+        <dataField dataType="Varchar" name="ObjYoungGuideTxt">
+          <value>25</value>
+        </dataField>
+        <dataField dataType="Clob" name="ObjInscriptionsMarksClb">
+          <value>test</value>
+        </dataField>
+        <dataField dataType="Varchar" name="ObjObjectNumberMaxTxt">
+          <value>123456/1916.16</value>
+        </dataField>
+        <dataField dataType="Varchar" name="ObjEditionTxt">
+          <value>Jahresgabe des kulinarischen Lesezirkels</value>
+        </dataField>
+        <vocabularyReference name="ObjNormalLocationVoc"
+        id="100000126" instanceName="GenLocationVgr">
+          <vocabularyReferenceItem id="100345244" name="Museum">
+            <formattedValue language="de">Museum</formattedValue>
+          </vocabularyReferenceItem>
+        </vocabularyReference>
+        <vocabularyReference name="ObjCategoryVoc" id="100000035"
+        instanceName="ObjCategoryVgr">
+          <vocabularyReferenceItem id="100105341" name="print">
+            <formattedValue language="de">
+            Druckgrafik</formattedValue>
+          </vocabularyReferenceItem>
+        </vocabularyReference>
+        <vocabularyReference name="ObjAcquisitionModeVoc"
+        id="100000013" instanceName="ObjAcquisitionModeVgr">
+          <vocabularyReferenceItem id="100098887" name="Geschenk">
+            <formattedValue language="de">Geschenk</formattedValue>
+          </vocabularyReferenceItem>
+        </vocabularyReference>
+        <vocabularyReference name="ObjTechnicalTermVoc"
+        id="100058385" instanceName="ObjTechnicalTermVgr">
+          <vocabularyReferenceItem id="100330697">
+            <formattedValue language="de">
+            Kupferstich</formattedValue>
+          </vocabularyReferenceItem>
+        </vocabularyReference>
+        <vocabularyReference name="ObjCurrentLocationVoc"
+        id="100000126" instanceName="GenLocationVgr">
+          <vocabularyReferenceItem id="100345267"
+          name="Museum##Moserbau##Moserbau I##EG##Eingangshalle">
+            <formattedValue language="de">
+            Eingangshalle</formattedValue>
+          </vocabularyReferenceItem>
+        </vocabularyReference>
+        <vocabularyReference name="ObjInternetPublicVoc"
+        id="100059385" instanceName="ObjInternetPublicVgr">
+          <vocabularyReferenceItem id="100390578" name="Nein">
+            <formattedValue language="de">Nein</formattedValue>
+          </vocabularyReferenceItem>
+        </vocabularyReference>
+        <vocabularyReference name="ObjSystematicsVoc"
+        id="100025385" instanceName="ObjSystematicsVgr">
+          <vocabularyReferenceItem id="100102450"
+          name="F 1 Kunst 20. Jh. CH">
+            <formattedValue language="de">F 1 Kunst 20. Jh.
+            CH</formattedValue>
+          </vocabularyReferenceItem>
+        </vocabularyReference>
+        <virtualField name="ObjOwnershipGrpOnlineVrt">
+          <value>ab 2019, Kunstverein</value>
+        </virtualField>
+        <virtualField name="ObjTitleVrt">
+          <value>Stillleben mit Hummer. TEST</value>
+        </virtualField>
+        <virtualField name="ObjCurrentLocationVrt">
+          <value>Museum/Moserbau/Moserbau
+          I/EG/Eingangshalle</value>
+        </virtualField>
+        <virtualField name="ObjPerAssociationVrt">
+          <value>Ferdinand Hodler; Gabriel Ludwig Lory ; Arber
+          &amp; Son Editions; Pablo Picasso</value>
+        </virtualField>
+        <virtualField name="ObjPerOwnerVrt">
+          <value></value>
+        </virtualField>
+        <virtualField name="ObjObjectDataVrt">
+          <value>123456/1916.16, Ferdinand Hodler; Gabriel Ludwig
+          Lory ; Arber &amp; Son Editions; Pablo Picasso,
+          Stillleben mit Hummer</value>
+        </virtualField>
+        <virtualField name="ObjObjectVrt">
+          <value>123456/1916.16, Ferdinand Hodler, Gabriel Ludwig
+          Lory , Arber &amp; Son Editions, Pablo Picasso,
+          Stillleben mit Hummer. TEST, 1990–1991, Öl auf
+          Leinwand</value>
+        </virtualField>
+        <virtualField name="ObjObjectTitleFurtherVrt">
+          <value>Titel englisch: Still life with lobster;
+          Nebentitel: Hummer und Zitrone</value>
+        </virtualField>
+        <virtualField name="ObjMaterialTechniqueVrt">
+          <value>Öl auf Leinwand</value>
+        </virtualField>
+        <virtualField name="ObjDateYearFromVrt">
+          <value>1990</value>
+        </virtualField>
+        <virtualField name="ObjMaterialTechniqueAATVrt">
+          <value>oil paint (paint); brazilwood (wood)</value>
+        </virtualField>
+        <virtualField name="ObjPerOwnerPlaceVrt">
+          <value></value>
+        </virtualField>
+        <virtualField name="ObjCheckMultimediaOnlineVrt">
+          <value></value>
+        </virtualField>
+        <virtualField name="ObjPerOwnerCountryVrt">
+          <value></value>
+        </virtualField>
+        <virtualField name="ObjObjectTitleFurtherOnlineVrt">
+          <value>Nebentitel: Hummer und Zitrone&lt;/br&gt;Titel
+          englisch: Still life with lobster</value>
+        </virtualField>
+        <virtualField name="ObjObjectNumberVrt">
+          <value>123456/1916.16</value>
+        </virtualField>
+        <virtualField name="ObjBriefDescriptionGrpVrt">
+          <value>&lt;html&gt;&lt;body&gt;Text Slg
+          online&lt;br/&gt;Text Gesamtkatalog&lt;br/&gt;Test AGS
+          de&lt;br/&gt;Test AGS en&lt;br/&gt;Text
+          extern&lt;br/&gt;Text intern&lt;br/&gt;Text
+          Schildchen&lt;/body&gt;&lt;/html&gt;</value>
+        </virtualField>
+        <virtualField name="ObjContentDescriptionGrpVrt">
+          <value>Kunstströmung : Dada Ikonografie/Sachbegriff :
+          allegory Person/Körperschaft : Marcel Duchamp
+          Person/Körperschaft : Max Buri Ort : Scheveningen</value>
+        </virtualField>
+        <virtualField name="ObjLiteratureVrt">
+          <value>Literaturtitel test, Max Master</value>
+        </virtualField>
+        <virtualField name="ObjOwnershipVrt">
+          <value>ab 2019, Kunstverein</value>
+        </virtualField>
+        <virtualField name="ObjAcquisitionPersonVrt">
+          <value>Kunstverein</value>
+        </virtualField>
+        <virtualField name="ObjBarcodeVrt">
+          <value>435960</value>
+        </virtualField>
+        <virtualField name="ObjObjectNumberSortVrt">
+          <value>123456/01916.00016</value>
+        </virtualField>
+        <virtualField name="ObjPerAssociationSortVrt">
+          <value>Hodler, Ferdinand; Lory , Gabriel Ludwig; Arber
+          &amp; Son Editions; Picasso, Pablo</value>
+        </virtualField>
+        <virtualField name="ObjDateVrt">
+          <value>1990–1991</value>
+        </virtualField>
+        <virtualField name="ObjPerAssociationOnlineVrt">
+          <value>Ferdinand Hodler zugeschrieben; Gabriel Ludwig
+          Lory zugeschrieben; After Arber &amp; Son Editions; Copy
+          after Pablo Picasso</value>
+        </virtualField>
+        <virtualField name="ObjCreditlineDEVrt">
+          <value>Museum Mordor</value>
+        </virtualField>
+        <virtualField name="ObjCreditlineENVrt">
+          <value>Museum Mordor</value>
+        </virtualField>
+        <virtualField name="ObjCreditlineFRVrt">
+          <value>Museum Mordor</value>
+        </virtualField>
+        <virtualField name="ObjObjectDim3DOnlineVrt">
+          <value>Bildmass: 20 x 30 cm&lt;/br&gt;Bildmass: 13 x 46
+          cm&lt;/br&gt;Objektmass: 1,0 x 2,0 x 3,0 cm</value>
+        </virtualField>
+        <virtualField name="ObjPerAssociationENOnlineVrt">
+          <value>Ferdinand Hodler Attributed to; Gabriel Ludwig
+          Lory Attributed to; After Arber &amp; Son Editions; Copy
+          after Pablo Picasso</value>
+        </virtualField>
+        <virtualField name="ObjCreditlineVrt">
+          <value>&lt;html&gt;&lt;body&gt;Museum
+          Mordor&lt;br/&gt;Museum Mordor&lt;br/&gt;Museum
+          Mordor&lt;/body&gt;&lt;/html&gt;</value>
+        </virtualField>
+        <virtualField name="ObjBriefDescriptionOnlineVrt">
+          <value>Text Slg online</value>
+        </virtualField>
+        <virtualField name="ObjLitReferenceOnlineVrt">
+          <value></value>
+        </virtualField>
+        <virtualField name="ObjObjectRefCheckOnlineVrt">
+          <value></value>
+        </virtualField>
+        <virtualField name="ObjPerOwnerInternalVrt">
+          <value>Eingangshalle</value>
+        </virtualField>
+        <virtualField name="ObjPackingHasCrateVrt">
+          <value></value>
+        </virtualField>
+        <virtualField name="ObjObjectOnlineVrt">
+          <value></value>
+        </virtualField>
+        <virtualField name="ObjStandardImageVrt">
+          <value></value>
+        </virtualField>
+        <virtualField name="ObjPerOwnerExternalPlaceVrt">
+          <value></value>
+        </virtualField>
+        <virtualField name="ObjPerOwnerExternalCountryVrt">
+          <value></value>
+        </virtualField>
+        <repeatableGroup name="ObjCreditlineGrp" size="1">
+          <repeatableGroupItem id="1183732">
+            <dataField dataType="Clob" name="CreditlineFRClb">
+              <value>Museum Mordor</value>
+            </dataField>
+            <dataField dataType="Date" name="DateDat">
+              <value>2017-02-02Z</value>
+              <formattedValue language="de">
+              02.02.2017</formattedValue>
+            </dataField>
+            <dataField dataType="Clob" name="CreditlineDEClb">
+              <value>Museum Mordor</value>
+            </dataField>
+            <dataField dataType="Clob" name="CreditlineENClb">
+              <value>Museum Mordor</value>
+            </dataField>
+            <moduleReference name="ObjCreditlineUserRef"
+            targetModule="User" multiplicity="N:1" size="1">
+              <moduleReferenceItem moduleItemId="100012119"
+              uuid="a8cea2ad-f017-4fc8-9a43-0bb4c6ce5ddb">
+                <formattedValue language="de">null</formattedValue>
+              </moduleReferenceItem>
+            </moduleReference>
+          </repeatableGroupItem>
+        </repeatableGroup>
+        <repeatableGroup name="ObjConservationFacilitiesGrp"
+        size="1">
+          <repeatableGroupItem id="1183704">
+            <dataField dataType="Boolean"
+            name="SecurityNonReflectingBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="SecurityAcrylicBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="SecuritySafetyGlassBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="SecuritySimpleGlassBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="SecurityNoGlassBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="SecurityGlassBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="SecurityPedestalBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="BackWristStrapBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="BackProtectionFrameBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="BackFalseEdgeBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="BackVibrationProtectionBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="UnframedBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="FramedBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="BackProtectionOrnamentalFrameBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="BackProtectionCardboardBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="BackProtectionNoBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="BackProtectionYesBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="PackingBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="MountBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="ProtectiveBoxBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="OrnamemtalFrameBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="SecurityNotesBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="SecurityNonTapedBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="SecurityTapedBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <virtualField name="Line8Vrt">
+              <value></value>
+            </virtualField>
+            <virtualField name="Line7Vrt">
+              <value>für Befestigung auf Sockel vorbereitet, ist
+              verglast</value>
+            </virtualField>
+            <virtualField name="Line6Vrt">
+              <value></value>
+            </virtualField>
+            <virtualField name="Line5Vrt">
+              <value></value>
+            </virtualField>
+            <virtualField name="Line4Vrt">
+              <value></value>
+            </virtualField>
+            <virtualField name="Line3Vrt">
+              <value>aus Karton</value>
+            </virtualField>
+            <virtualField name="Line2Vrt">
+              <value></value>
+            </virtualField>
+            <virtualField name="Line1Vrt">
+              <value></value>
+            </virtualField>
+            <virtualField name="Line0Vrt">
+              <value>Werk ist gerahmt, in Schutzkasten, in
+              Zierrahmen</value>
+            </virtualField>
+          </repeatableGroupItem>
+        </repeatableGroup>
+        <repeatableGroup name="ObjCurrentLocationGrp" size="8">
+          <repeatableGroupItem id="1183755">
+            <dataField dataType="Varchar" name="LocationDetailTxt">
+              <value>Standort 2</value>
+            </dataField>
+            <dataField dataType="Date" name="DateFromDat">
+              <value>2019-01-30Z</value>
+              <formattedValue language="de">
+              30.01.2019</formattedValue>
+            </dataField>
+            <vocabularyReference name="StatusVoc" id="100000129"
+            instanceName="GenMoveStatusVgr">
+              <vocabularyReferenceItem id="100035793"
+              name="historic">
+                <formattedValue language="de">
+                Historisch</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="1183781">
+            <dataField dataType="Varchar" name="LocationDetailTxt">
+              <value>Standort 1</value>
+            </dataField>
+            <dataField dataType="Date" name="DateFromDat">
+              <value>2019-01-30Z</value>
+              <formattedValue language="de">
+              30.01.2019</formattedValue>
+            </dataField>
+            <vocabularyReference name="StatusVoc" id="100000129"
+            instanceName="GenMoveStatusVgr">
+              <vocabularyReferenceItem id="100035793"
+              name="historic">
+                <formattedValue language="de">
+                Historisch</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="1184732">
+            <dataField dataType="Date" name="DateFromDat">
+              <value>2019-05-10Z</value>
+              <formattedValue language="de">
+              10.05.2019</formattedValue>
+            </dataField>
+            <vocabularyReference name="LocationVoc" id="100000126"
+            instanceName="GenLocationVgr">
+              <vocabularyReferenceItem id="100345244"
+              name="Museum">
+                <formattedValue language="de">
+                Museum</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+            <vocabularyReference name="ReasonVoc" id="100000128"
+            instanceName="GenMoveReasonVgr">
+              <vocabularyReferenceItem id="100348543" name="depot">
+                <formattedValue language="de">
+                Depot</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+            <vocabularyReference name="StatusVoc" id="100000129"
+            instanceName="GenMoveStatusVgr">
+              <vocabularyReferenceItem id="100035793"
+              name="historic">
+                <formattedValue language="de">
+                Historisch</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="1341524">
+            <dataField dataType="Varchar" name="LocationDetailTxt">
+              <value>Bern, Kunstmuseum Bern</value>
+            </dataField>
+            <dataField dataType="Date" name="DateFromDat">
+              <value>2019-11-14Z</value>
+              <formattedValue language="de">
+              14.11.2019</formattedValue>
+            </dataField>
+            <vocabularyReference name="LocationVoc" id="100000126"
+            instanceName="GenLocationVgr">
+              <vocabularyReferenceItem id="100344127"
+              name="Extern##Leihgabe">
+                <formattedValue language="de">
+                Leihgabe</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+            <vocabularyReference name="StatusVoc" id="100000129"
+            instanceName="GenMoveStatusVgr">
+              <vocabularyReferenceItem id="100035793"
+              name="historic">
+                <formattedValue language="de">
+                Historisch</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="1341523">
+            <dataField dataType="Varchar" name="LocationDetailTxt">
+              <value>retour aus London</value>
+            </dataField>
+            <dataField dataType="Date" name="DateFromDat">
+              <value>2019-11-14Z</value>
+              <formattedValue language="de">
+              14.11.2019</formattedValue>
+            </dataField>
+            <vocabularyReference name="LocationVoc" id="100000126"
+            instanceName="GenLocationVgr">
+              <vocabularyReferenceItem id="100345326"
+              name="Verpackungsraum">
+                <formattedValue language="de">
+                Verpackungsraum</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+            <vocabularyReference name="StatusVoc" id="100000129"
+            instanceName="GenMoveStatusVgr">
+              <vocabularyReferenceItem id="100035793"
+              name="historic">
+                <formattedValue language="de">
+                Historisch</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="1405471">
+            <dataField dataType="Date" name="DateFromDat">
+              <value>2020-02-11Z</value>
+              <formattedValue language="de">
+              11.02.2020</formattedValue>
+            </dataField>
+            <vocabularyReference name="LocationVoc" id="100000126"
+            instanceName="GenLocationVgr">
+              <vocabularyReferenceItem id="100345251"
+              name="Museum##Moserbau##Moserbau I##1. OG##R 12">
+                <formattedValue language="de">R 12</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+            <vocabularyReference name="StatusVoc" id="100000129"
+            instanceName="GenMoveStatusVgr">
+              <vocabularyReferenceItem id="100035793"
+              name="historic">
+                <formattedValue language="de">
+                Historisch</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="1405472">
+            <dataField dataType="Date" name="DateFromDat">
+              <value>2020-02-11Z</value>
+              <formattedValue language="de">
+              11.02.2020</formattedValue>
+            </dataField>
+            <vocabularyReference name="LocationVoc" id="100000126"
+            instanceName="GenLocationVgr">
+              <vocabularyReferenceItem id="100343850"
+              name="Depots##Depots intern##AV-Lager">
+                <formattedValue language="de">
+                AV-Lager</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+            <vocabularyReference name="ReasonVoc" id="100000128"
+            instanceName="GenMoveReasonVgr">
+              <vocabularyReferenceItem id="100349599"
+              name="Ausstellung (extern)">
+                <formattedValue language="de">Ausstellung
+                (extern)</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+            <vocabularyReference name="StatusVoc" id="100000129"
+            instanceName="GenMoveStatusVgr">
+              <vocabularyReferenceItem id="100035793"
+              name="historic">
+                <formattedValue language="de">
+                Historisch</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="1537549">
+            <dataField dataType="Date" name="DateFromDat">
+              <value>2020-05-06Z</value>
+              <formattedValue language="de">
+              06.05.2020</formattedValue>
+            </dataField>
+            <vocabularyReference name="LocationVoc" id="100000126"
+            instanceName="GenLocationVgr">
+              <vocabularyReferenceItem id="100345267"
+              name="Museum##Moserbau##Moserbau I##EG##Eingangshalle">
+
+                <formattedValue language="de">
+                Eingangshalle</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+            <vocabularyReference name="StatusVoc" id="100000129"
+            instanceName="GenMoveStatusVgr">
+              <vocabularyReferenceItem id="100022364"
+              name="current">
+                <formattedValue language="de">
+                Aktuell</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+        </repeatableGroup>
+        <repeatableGroup name="ObjBriefDescriptionGrp" size="7">
+          <repeatableGroupItem id="1183734">
+            <dataField dataType="Clob" name="DescriptionClb">
+              <value>Text Slg online</value>
+            </dataField>
+            <dataField dataType="Date" name="DateDat">
+              <value>2017-02-02Z</value>
+              <formattedValue language="de">
+              02.02.2017</formattedValue>
+            </dataField>
+            <vocabularyReference name="TypeVoc" id="100000052"
+            instanceName="ObjBriefDescriptionTypeVgr">
+              <vocabularyReferenceItem id="100309689"
+              name="Text_SlgOnline_de">
+                <formattedValue language="de">Text SlgOnline
+                (DE)</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+            <moduleReference name="ObjBriefDescriptionUserRef"
+            targetModule="User" multiplicity="N:1" size="1">
+              <moduleReferenceItem moduleItemId="100012119"
+              uuid="a8cea2ad-f017-4fc8-9a43-0bb4c6ce5ddb">
+                <formattedValue language="de">null</formattedValue>
+              </moduleReferenceItem>
+            </moduleReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="1183736">
+            <dataField dataType="Clob" name="DescriptionClb">
+              <value>Text Gesamtkatalog</value>
+            </dataField>
+            <dataField dataType="Date" name="DateDat">
+              <value>2017-02-10Z</value>
+              <formattedValue language="de">
+              10.02.2017</formattedValue>
+            </dataField>
+            <vocabularyReference name="TypeVoc" id="100000052"
+            instanceName="ObjBriefDescriptionTypeVgr">
+              <vocabularyReferenceItem id="100098874"
+              name="Text SlgKat 2007 de">
+                <formattedValue language="de">Text SlgKat 2007
+                de</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+            <moduleReference name="ObjBriefDescriptionUserRef"
+            targetModule="User" multiplicity="N:1" size="1">
+              <moduleReferenceItem moduleItemId="100012119"
+              uuid="a8cea2ad-f017-4fc8-9a43-0bb4c6ce5ddb">
+                <formattedValue language="de">null</formattedValue>
+              </moduleReferenceItem>
+            </moduleReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="1229491">
+            <dataField dataType="Clob" name="DescriptionClb">
+              <value>Test AGS de</value>
+            </dataField>
+            <vocabularyReference name="TypeVoc" id="100000052"
+            instanceName="ObjBriefDescriptionTypeVgr">
+              <vocabularyReferenceItem id="100221693"
+              name="AGS_DE">
+                <formattedValue language="de">
+                AGS_DE</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="1229489">
+            <dataField dataType="Clob" name="DescriptionClb">
+              <value>Test AGS en</value>
+            </dataField>
+            <vocabularyReference name="TypeVoc" id="100000052"
+            instanceName="ObjBriefDescriptionTypeVgr">
+              <vocabularyReferenceItem id="100272688"
+              name="AGS_EN">
+                <formattedValue language="de">
+                AGS_EN</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="1229492">
+            <dataField dataType="Clob" name="DescriptionClb">
+              <value>Text extern</value>
+            </dataField>
+            <vocabularyReference name="TypeVoc" id="100000052"
+            instanceName="ObjBriefDescriptionTypeVgr">
+              <vocabularyReferenceItem id="100121690"
+              name="TextExtern">
+                <formattedValue language="de">Text
+                Extern</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="1229490">
+            <dataField dataType="Clob" name="DescriptionClb">
+              <value>Text intern</value>
+            </dataField>
+            <vocabularyReference name="TypeVoc" id="100000052"
+            instanceName="ObjBriefDescriptionTypeVgr">
+              <vocabularyReferenceItem id="100132692"
+              name="intern">
+                <formattedValue language="de">Text
+                intern</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="1229493">
+            <dataField dataType="Clob" name="DescriptionClb">
+              <value>Text Schildchen</value>
+            </dataField>
+            <vocabularyReference name="TypeVoc" id="100000052"
+            instanceName="ObjBriefDescriptionTypeVgr">
+              <vocabularyReferenceItem id="100571587"
+              name="schildchen">
+                <formattedValue language="de">Text Schildchen
+                DE</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+        </repeatableGroup>
+        <repeatableGroup name="ObjRecordingMethodGrp" size="1">
+          <repeatableGroupItem id="1183790">
+            <dataField dataType="Boolean" name="GalleryBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="DocumentationPartiallyBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="DocumentationCompleteBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="CatalogueBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="ObjectBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <virtualField name="PrintVrt">
+              <value>Am Original, WV, Fangbl. kompl., Fangbl.
+              teilw., von Galerie</value>
+            </virtualField>
+          </repeatableGroupItem>
+        </repeatableGroup>
+        <repeatableGroup name="ObjPackingGrp" size="1">
+          <repeatableGroupItem id="1183791">
+            <dataField dataType="Boolean" name="TyvekBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="FoilBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="GlassineBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="CardboardBoxBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="BubblesBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="PackingFaceDownBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="PackingFaceUpBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="CardboardBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="PackingStandingBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="FoamCornersBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="RestorerPackingBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="SlideInModuleBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="TransportFrameBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="InsulatedCrateBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="CrateBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="PackingFaceDownCrateBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="PackingFaceUpCrateBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="DoubleCrateBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="HasCrateBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="ClingFilmBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="TissuePaperBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="SeeNotesBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="CardboardFolderBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+          </repeatableGroupItem>
+        </repeatableGroup>
+        <repeatableGroup name="ObjDateGrp" size="1">
+          <repeatableGroupItem id="1183721">
+            <dataField dataType="Varchar" name="DatingFRTxt">
+              <value>1990–1991</value>
+            </dataField>
+            <dataField dataType="Varchar" name="SourceTxt">
+              <value>Von Künstler/Künstlerin</value>
+            </dataField>
+            <dataField dataType="Varchar" name="DatingDETxt">
+              <value>1990–1991</value>
+            </dataField>
+            <dataField dataType="Varchar" name="DatingENTxt">
+              <value>1990–1991</value>
+            </dataField>
+            <dataField dataType="Long" name="YearToLnu">
+              <value>1991</value>
+              <formattedValue language="de">1991</formattedValue>
+            </dataField>
+            <dataField dataType="Long" name="YearFromLnu">
+              <value>1990</value>
+              <formattedValue language="de">1990</formattedValue>
+            </dataField>
+            <vocabularyReference name="SeparatorVoc" id="100018385"
+            instanceName="ObjDateSeparatorVgr">
+              <vocabularyReferenceItem id="100102402" name="-">
+                <formattedValue language="de">–</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+            <vocabularyReference name="SourceTypeVoc"
+            id="100017386" instanceName="ObjDateSourceTypeVgr">
+              <vocabularyReferenceItem id="100179689"
+              name="Entstehung">
+                <formattedValue language="de">
+                Entstehung</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+        </repeatableGroup>
+        <repeatableGroup name="ObjOwnershipStatusGrp" size="1">
+          <repeatableGroupItem id="1183719">
+            <dataField dataType="Boolean" name="Status1Boo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="Status2Boo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="Status3Boo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="Status4Boo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="Status5Boo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="Status6Boo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Date" name="DateDat">
+              <value>2018-10-15Z</value>
+              <formattedValue language="de">
+              15.10.2018</formattedValue>
+            </dataField>
+            <dataField dataType="Varchar" name="ReasonTxt">
+              <value>Begründung BAK</value>
+            </dataField>
+            <vocabularyReference name="TypeVoc" id="100061390"
+            instanceName="ObjOwnershipStatusTypeVgr">
+              <vocabularyReferenceItem id="100401579"
+              name="BAK1933">
+                <formattedValue language="de">Prov. Kat. BAK
+                1933-1950</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+            <vocabularyReference name="CategoryVoc" id="100061389"
+            instanceName="ObjOwnershipStatusCategoryVgr">
+              <vocabularyReferenceItem id="100401587">
+                <formattedValue language="de">
+                A_unbedenklich</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+        </repeatableGroup>
+        <repeatableGroup name="ObjOwnershipGrp" size="3">
+          <repeatableGroupItem id="1183696">
+            <dataField dataType="Boolean"
+            name="ExchangePricePublicBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="OwnerPublicBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Varchar" name="PlaceTxt">
+              <value>Mordor</value>
+            </dataField>
+            <dataField dataType="Clob" name="OwnershipClb">
+              <value>ab 2019, Kunstverein, Geschenk</value>
+            </dataField>
+            <dataField dataType="Long" name="YearFromLnu">
+              <value>2019</value>
+              <formattedValue language="de">2019</formattedValue>
+            </dataField>
+            <dataField dataType="Long" name="SortLnu">
+              <value>2</value>
+              <formattedValue language="de">2</formattedValue>
+            </dataField>
+            <vocabularyReference name="PrefixFromVoc"
+            id="100026386"
+            instanceName="ObjOwnershipDatePrefixVgr">
+              <vocabularyReferenceItem id="100138688">
+                <formattedValue language="de">ab</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+            <vocabularyReference name="ExchangeMethodVoc"
+            id="100021386" instanceName="ObjOwnershipMethodVgr">
+              <vocabularyReferenceItem id="100083421">
+                <formattedValue language="de">
+                Geschenk</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+            <vocabularyReference name="OwnerTypeVoc" id="100026385"
+            instanceName="ObjOwnershipOwnerTypeVgr">
+              <vocabularyReferenceItem id="100067255"
+              name="Museum">
+                <formattedValue language="de">
+                Museum</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+            <moduleReference name="OwnerRef" targetModule="Person"
+            multiplicity="N:1" size="1">
+              <moduleReferenceItem moduleItemId="6049"
+              uuid="e886f3a4-20f9-a1e5-d595-ba3abc345078">
+                <formattedValue language="de">test</formattedValue>
+              </moduleReferenceItem>
+            </moduleReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="1327192">
+            <dataField dataType="Boolean"
+            name="ExchangePricePublicBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="OwnerPublicBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Numeric" name="ConversionRateNum">
+              <value>1</value>
+              <formattedValue language="de">1</formattedValue>
+            </dataField>
+            <dataField dataType="Clob" name="OwnershipClb">
+              <value>Gabriel Ludwig Lory (*1763 Bern, +1840 Bern)
+              (Künstler/-in)</value>
+            </dataField>
+            <dataField dataType="Long" name="SortLnu">
+              <value>2</value>
+              <formattedValue language="de">2</formattedValue>
+            </dataField>
+            <vocabularyReference name="CurrencyVoc" id="100000127"
+            instanceName="GenCurrencyVgr">
+              <vocabularyReferenceItem id="100000018" name="chf">
+                <formattedValue language="de">CHF</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+            <vocabularyReference name="OwnerTypeVoc" id="100026385"
+            instanceName="ObjOwnershipOwnerTypeVgr">
+              <vocabularyReferenceItem id="100067250"
+              name="Künstler">
+                <formattedValue language="de">
+                Künstler/-in</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+            <moduleReference name="OwnerRef" targetModule="Person"
+            multiplicity="N:1" size="1">
+              <moduleReferenceItem moduleItemId="124068"
+              uuid="298ef984-1e55-4df3-97f1-35d426f58049">
+                <formattedValue language="de">foo</formattedValue>
+              </moduleReferenceItem>
+            </moduleReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="1327193">
+            <dataField dataType="Boolean"
+            name="ExchangePricePublicBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="OwnerPublicBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Numeric" name="ConversionRateNum">
+              <value>1</value>
+              <formattedValue language="de">1</formattedValue>
+            </dataField>
+            <dataField dataType="Clob" name="OwnershipClb">
+              <value>Verbleib unbekannt</value>
+            </dataField>
+            <dataField dataType="Long" name="SortLnu">
+              <value>3</value>
+              <formattedValue language="de">3</formattedValue>
+            </dataField>
+            <vocabularyReference name="CurrencyVoc" id="100000127"
+            instanceName="GenCurrencyVgr">
+              <vocabularyReferenceItem id="100000018" name="chf">
+                <formattedValue language="de">CHF</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+            <vocabularyReference name="CategoryVoc" id="100021385"
+            instanceName="ObjOwnershipCategoryVgr">
+              <vocabularyReferenceItem id="100281689"
+              name="Verbleib unbekannt">
+                <formattedValue language="de">Verbleib
+                unbekannt</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+        </repeatableGroup>
+        <repeatableGroup name="ObjStorageRecommendationGrp"
+        size="1">
+          <repeatableGroupItem id="1183726">
+            <dataField dataType="Boolean" name="StoreInFoilBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="StoreInCardboardBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="StoreInFolderBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="StoreInMountBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="StoreUnframedBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="StoreFramedBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="StoreUnpackedBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="StorePackedBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="StorageDarkBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="StorageInColdStorageBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="StoreInShelfBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="StoreVerticallyBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="StoreHorizontallyBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="StoreRolledBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="StoreInTransportFrameBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="StoreInBoxBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="SeeNotesBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+          </repeatableGroupItem>
+        </repeatableGroup>
+        <repeatableGroup name="ObjContentDescriptionGrp" size="5">
+          <repeatableGroupItem id="1183752">
+            <vocabularyReference name="ArtisticCurrencVoc"
+            id="100063385"
+            instanceName="ObjContentDescriptionArtisticCurrentVgr">
+              <vocabularyReferenceItem id="100441588" name="Dada">
+                <formattedValue language="de">Dada</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+            <vocabularyReference name="TypeVoc" id="100015385"
+            instanceName="ObjContentDescriptionTypeVgr">
+              <vocabularyReferenceItem id="100062244"
+              name="Kunststroemung">
+                <formattedValue language="de">
+                Kunstströmung</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="1183746">
+            <vocabularyReference name="KeyWordVoc" id="100015386"
+            instanceName="ObjContentDescriptionKeyWordVgr">
+              <vocabularyReferenceItem id="100099050"
+              name="Allegorie">
+                <formattedValue language="de">
+                Allegorie</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+            <vocabularyReference name="TypeVoc" id="100015385"
+            instanceName="ObjContentDescriptionTypeVgr">
+              <vocabularyReferenceItem id="100037792"
+              name="Subject">
+                <formattedValue language="de">
+                Ikonografie/Sachbegriff</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="1183713">
+            <vocabularyReference name="TypeVoc" id="100015385"
+            instanceName="ObjContentDescriptionTypeVgr">
+              <vocabularyReferenceItem id="100059245"
+              name="Person">
+                <formattedValue language="de">
+                Person/Körperschaft</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+            <moduleReference name="PersonRef" targetModule="Person"
+            multiplicity="N:1" size="1">
+              <moduleReferenceItem moduleItemId="1982"
+              uuid="ea4e9a46-e730-c2a8-d093-e9d9d6eba209">
+                <formattedValue language="de">bar</formattedValue>
+              </moduleReferenceItem>
+            </moduleReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="1183728">
+            <vocabularyReference name="TypeVoc" id="100015385"
+            instanceName="ObjContentDescriptionTypeVgr">
+              <vocabularyReferenceItem id="100059245"
+              name="Person">
+                <formattedValue language="de">
+                Person/Körperschaft</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+            <moduleReference name="PersonRef" targetModule="Person"
+            multiplicity="N:1" size="1">
+              <moduleReferenceItem moduleItemId="153053"
+              uuid="0baa2c48-f2b6-3fab-f3f4-d25dd1e893b7">
+                <formattedValue language="de">lorem</formattedValue>
+              </moduleReferenceItem>
+            </moduleReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="1183776">
+            <vocabularyReference name="PlaceGNDVoc" id="100045385"
+            instanceName="GenPlaceGNDVgr">
+              <vocabularyReferenceItem id="100367583"
+              name="http://d-nb.info/gnd/4120016-0">
+                <formattedValue language="de">
+                Scheveningen</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+            <vocabularyReference name="TypeVoc" id="100015385"
+            instanceName="ObjContentDescriptionTypeVgr">
+              <vocabularyReferenceItem id="100059247" name="Place">
+                <formattedValue language="de">Ort</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+        </repeatableGroup>
+        <repeatableGroup name="ObjTechnicalDataGrp" size="2">
+          <repeatableGroupItem id="1183764">
+            <dataField dataType="Clob" name="NotesClb">
+              <value>test Bemerkung</value>
+            </dataField>
+            <dataField dataType="Varchar" name="DetailsTxt">
+              <value>PAL 123</value>
+            </dataField>
+            <vocabularyReference name="DataVoc" id="100041386"
+            instanceName="ObjTechnicalDataVgr">
+              <vocabularyReferenceItem id="100353602" name="VHS">
+                <formattedValue language="de">VHS</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="1183798">
+            <dataField dataType="Clob" name="NotesClb">
+              <value>Bemerkungen 2</value>
+            </dataField>
+            <dataField dataType="Varchar" name="DetailsTxt">
+              <value>PAL 2. Details</value>
+            </dataField>
+            <vocabularyReference name="DataVoc" id="100041386"
+            instanceName="ObjTechnicalDataVgr">
+              <vocabularyReferenceItem id="100353601" name="VHS-C">
+                <formattedValue language="de">
+                VHS-C</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+        </repeatableGroup>
+        <repeatableGroup name="ObjMaterialTechniqueAATGrp"
+        size="2">
+          <repeatableGroupItem id="1183724">
+            <vocabularyReference name="MaterialTechniqueVoc"
+            id="100000043" instanceName="ObjMaterialTechniqueVgr">
+              <vocabularyReferenceItem id="100619586"
+              name="http://vocab.getty.edu/aat/300015050">
+                <formattedValue language="de">
+                Ölgemälde</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="1288485">
+            <vocabularyReference name="MaterialTechniqueVoc"
+            id="100000043" instanceName="ObjMaterialTechniqueVgr">
+              <vocabularyReferenceItem id="100620589"
+              name="http://vocab.getty.edu/aat/300012013">
+                <formattedValue language="de">brazilwood
+                (wood)</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+        </repeatableGroup>
+        <repeatableGroup name="ObjMaterialTechniqueGrp" size="1">
+          <repeatableGroupItem id="1183771">
+            <dataField dataType="Clob" name="MatTechDEClb">
+              <value>Öl auf Leinwand</value>
+            </dataField>
+            <dataField dataType="Clob" name="MatTechFRClb">
+              <value>Huile sur bois</value>
+            </dataField>
+            <dataField dataType="Clob" name="MatTechENClb">
+              <value>Oil on canvas</value>
+            </dataField>
+            <dataField dataType="Clob" name="NotesClb">
+              <value>Bemerkungen zum Material und zur
+              Technik</value>
+            </dataField>
+          </repeatableGroupItem>
+        </repeatableGroup>
+        <repeatableGroup name="ObjObjectNumberGrp" size="1">
+          <repeatableGroupItem id="1183694">
+            <dataField dataType="Varchar" name="Part3Txt">
+              <value>16</value>
+            </dataField>
+            <dataField dataType="Varchar" name="Part1Txt">
+              <value>123456</value>
+            </dataField>
+            <dataField dataType="Varchar" name="Part2Txt">
+              <value>1916</value>
+            </dataField>
+            <dataField dataType="Varchar" name="FormerNumberTxt">
+              <value>9999999</value>
+            </dataField>
+          </repeatableGroupItem>
+        </repeatableGroup>
+        <repeatableGroup name="ObjObjectTitleFurtherGrp" size="2">
+          <repeatableGroupItem id="1183698">
+            <dataField dataType="Clob" name="NotesClb">
+              <value>Bem c</value>
+            </dataField>
+            <dataField dataType="Varchar" name="TitleTxt">
+              <value>Still life with lobster</value>
+            </dataField>
+            <dataField dataType="Varchar" name="SourceTxt">
+              <value>Quelle c</value>
+            </dataField>
+            <vocabularyReference name="TypeVoc" id="100014398"
+            instanceName="ObjObjectTitleFurtherVgr">
+              <vocabularyReferenceItem id="100098878" name="en">
+                <formattedValue language="de">Titel
+                englisch</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="1183779">
+            <dataField dataType="Varchar" name="TitleTxt">
+              <value>Hummer und Zitrone</value>
+            </dataField>
+            <vocabularyReference name="TypeVoc" id="100014398"
+            instanceName="ObjObjectTitleFurtherVgr">
+              <vocabularyReferenceItem id="100098877"
+              name="Nebentitel">
+                <formattedValue language="de">
+                Nebentitel</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+        </repeatableGroup>
+        <repeatableGroup name="ObjPresentationRecommendationGrp"
+        size="1">
+          <repeatableGroupItem id="1183720">
+            <dataField dataType="Boolean" name="DRingsBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="SuspensionRailBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="NoMountingBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="MountingBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="FrameKHZBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="ShowUnframedBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="ShowFramedBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Varchar" name="NeedsOtherTxt">
+              <value>andere test</value>
+            </dataField>
+            <dataField dataType="Boolean" name="NeedsProjectorBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="NeedsScreenBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="NeedsPlaybackDeviceBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="NeedsCardboardSupportBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="NeedsBookCradleBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="NeedsInlayBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Varchar" name="HumidityTxt">
+              <value>99</value>
+            </dataField>
+            <dataField dataType="Boolean" name="OzClipsBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="InstallationDocumentBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="NeedsTheftProtectionBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="NeedsScrewBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="NeedsAlarmBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="NotReadyForPedestalFixingBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="NeedsBarrierBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="NeedsPedestalFixingBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="NeedsShowcaseBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="BracketSupportRequiredBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="NeedsBaseBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="SeeNotesBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="SecurityPossibilityBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="NeedsPedestalBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="SecurityPlatesBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Varchar" name="TemperatureTxt">
+              <value>95</value>
+            </dataField>
+            <dataField dataType="Boolean" name="RingScrewBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Varchar" name="LuminosityTxt">
+              <value>60</value>
+            </dataField>
+            <dataField dataType="Boolean" name="TrackSlideBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <virtualField name="Line6Vrt">
+              <value>andere test, s. Hinweis intern</value>
+            </virtualField>
+            <virtualField name="Line5Vrt">
+              <value>braucht Winkelauflage, braucht Befestigung auf
+              Sockel, für Befestigung auf Sockel vorbereitet, nicht
+              für Befestigung auf Sockel vorbereitet, braucht
+              Schraube/Gewindestange, braucht Inlay, braucht
+              Buchwiege, braucht Kartonunterlage, braucht
+              Abspielgerät, braucht Monitor, braucht
+              Projektor</value>
+            </virtualField>
+            <virtualField name="Line4Vrt">
+              <value>hat Aufhängung, hat keine Aufhängung, hat
+              Aufhängeleiste, hat D-Rings, hat Oz Clips, hat
+              Track&amp;Slide, hat Ringschraube, hat
+              Sicherheitsplättchen, hat
+              Sicherungsmöglichkeit</value>
+            </virtualField>
+            <virtualField name="Line3Vrt">
+              <value>Werk ist gerahmt, in Schutzkasten</value>
+            </virtualField>
+            <virtualField name="Line2Vrt">
+              <value>ist verglast, braucht Haube/Vitrine</value>
+            </virtualField>
+            <virtualField name="Line1Vrt">
+              <value>max. 60 Lux, 99%rF, 95°C</value>
+            </virtualField>
+            <virtualField name="Line0Vrt">
+              <value></value>
+            </virtualField>
+          </repeatableGroupItem>
+        </repeatableGroup>
+        <repeatableGroup name="ObjTransportRecommendationGrp"
+        size="1">
+          <repeatableGroupItem id="1183753">
+            <dataField dataType="Boolean" name="SeeNotesBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean" name="NoLaydownBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+            <dataField dataType="Boolean"
+            name="HandlingRestorerBoo">
+              <value>true</value>
+              <formattedValue language="de">yes</formattedValue>
+            </dataField>
+          </repeatableGroupItem>
+        </repeatableGroup>
+        <repeatableGroup name="ObjRecordingGrp" size="3">
+          <repeatableGroupItem id="1535587">
+            <dataField dataType="Date" name="DateDat">
+              <value>2020-05-04Z</value>
+              <formattedValue language="de">
+              04.05.2020</formattedValue>
+            </dataField>
+            <dataField dataType="Clob" name="NotesClb">
+              <value>zeitbasierte Arbeiten enthält</value>
+            </dataField>
+            <vocabularyReference name="TypeVoc" id="100024385"
+            instanceName="ObjRecordingTypeVgr">
+              <vocabularyReferenceItem id="100105565"
+              name="Zeitbas.Arbeit_Anmerkung_Enthält">
+                <formattedValue language="de">
+                Zeitbas.Arbeit_Anmerkung_Enthält</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="1535589">
+            <dataField dataType="Date" name="DateDat">
+              <value>2020-05-04Z</value>
+              <formattedValue language="de">
+              04.05.2020</formattedValue>
+            </dataField>
+            <dataField dataType="Clob" name="NotesClb">
+              <value>zeitbas Arb enthaltene Werke Titel</value>
+            </dataField>
+            <vocabularyReference name="TypeVoc" id="100024385"
+            instanceName="ObjRecordingTypeVgr">
+              <vocabularyReferenceItem id="100105566"
+              name="Zeitbas.Arbeit_Enthaltene Werke (Titel)">
+                <formattedValue language="de">
+                Zeitbas.Arbeit_Enthaltene Werke
+                (Titel)</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+          <repeatableGroupItem id="1535588">
+            <dataField dataType="Date" name="DateDat">
+              <value>2020-05-04Z</value>
+              <formattedValue language="de">
+              04.05.2020</formattedValue>
+            </dataField>
+            <dataField dataType="Clob" name="NotesClb">
+              <value>zeitbas Erscheinungsort</value>
+            </dataField>
+            <vocabularyReference name="TypeVoc" id="100024385"
+            instanceName="ObjRecordingTypeVgr">
+              <vocabularyReferenceItem id="100105562"
+              name="Zeitbas.Arbeit_Erscheinungsort">
+                <formattedValue language="de">
+                Zeitbas.Arbeit_Erscheinungsort</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+        </repeatableGroup>
+        <repeatableGroup name="ObjObjectTitleGrp" size="1">
+          <repeatableGroupItem id="1183761">
+            <dataField dataType="Varchar" name="TitleTxt">
+              <value>Stillleben mit Hummer</value>
+            </dataField>
+            <dataField dataType="Varchar" name="SourceTxt">
+              <value>Quelle 1</value>
+            </dataField>
+            <dataField dataType="Clob" name="NotesClb">
+              <value>Bem. 1: Sugus</value>
+            </dataField>
+            <dataField dataType="Varchar" name="AdditionTxt">
+              <value>TEST</value>
+            </dataField>
+            <vocabularyReference name="SourceTypeVoc"
+            id="100016385"
+            instanceName="ObjObjectTitleSourceTypeVgr">
+              <vocabularyReferenceItem id="100038790">
+                <formattedValue language="de">
+                Literatur</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+            <moduleReference name="LiteratureRef"
+            targetModule="Literature" multiplicity="N:1" size="1">
+              <moduleReferenceItem moduleItemId="40975"
+              uuid="e54061ad-ee8b-44c6-82c9-0abc9b1a1307">
+                <formattedValue language="de">Literatur</formattedValue>
+              </moduleReferenceItem>
+            </moduleReference>
+          </repeatableGroupItem>
+        </repeatableGroup>
+        <moduleReference name="ObjTechReportConservationRef"
+        targetModule="Conservation" multiplicity="1:1" size="1">
+          <moduleReferenceItem moduleItemId="778482"
+          uuid="4fc7ae91-52aa-4add-94cc-7392cc81e513" />
+        </moduleReference>
+        <moduleReference name="ObjConservationRef"
+        targetModule="Conservation" multiplicity="M:N" size="1">
+          <moduleReferenceItem moduleItemId="937476"
+          uuid="2e013cb7-7718-49b6-a485-f7da35acd993" seqNo="0" />
+        </moduleReference>
+        <moduleReference name="ObjPerAssociationRef"
+        targetModule="Person" multiplicity="M:N" size="4">
+          <moduleReferenceItem moduleItemId="752"
+          uuid="a7080808-87a4-e3b8-5484-5a566708ecd4" seqNo="0">
+            <formattedValue language="de">ipsum</formattedValue>
+            <dataField dataType="Long" name="SortLnu">
+              <value>1</value>
+              <formattedValue language="de">1</formattedValue>
+            </dataField>
+            <vocabularyReference name="AttributionVoc"
+            id="100000120"
+            instanceName="ObjPerAssociationAttributionVgr">
+              <vocabularyReferenceItem id="100042825"
+              name="attributed_to">
+                <formattedValue language="de">
+                zugeschrieben</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+            <vocabularyReference name="RoleVoc" id="100000121"
+            instanceName="ObjPerAssociationRoleVgr">
+              <vocabularyReferenceItem id="100105331"
+              name="Design">
+                <formattedValue language="de">
+                Design</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </moduleReferenceItem>
+          <moduleReferenceItem moduleItemId="1492"
+          uuid="2daa51f8-2f38-4349-66bc-1c4f7af0fa20" seqNo="1">
+            <formattedValue language="de">Pablo Picasso
+            (*25.10.1881 Malaga, +10.4.1973 Mougins), Kopie nach,
+            weitere Beteiligte</formattedValue>
+            <dataField dataType="Long" name="SortLnu">
+              <value>4</value>
+              <formattedValue language="de">4</formattedValue>
+            </dataField>
+            <vocabularyReference name="AttributionVoc"
+            id="100000120"
+            instanceName="ObjPerAssociationAttributionVgr">
+              <vocabularyReferenceItem id="100044805">
+                <formattedValue language="de">Kopie
+                nach</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+            <vocabularyReference name="Role0047Voc" id="100000121"
+            instanceName="ObjPerAssociationRoleVgr">
+              <vocabularyReferenceItem id="100105635"
+              name="weitere Beteiligte">
+                <formattedValue language="de">weitere
+                Beteiligte</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </moduleReferenceItem>
+          <moduleReferenceItem moduleItemId="5074"
+          uuid="11e38c6b-511e-fd40-8923-629fed36f7ba" seqNo="2">
+            <formattedValue language="de">Arber &amp; Son Editions,
+            nach, Darsteller/-in</formattedValue>
+            <dataField dataType="Long" name="SortLnu">
+              <value>3</value>
+              <formattedValue language="de">3</formattedValue>
+            </dataField>
+            <vocabularyReference name="AttributionVoc"
+            id="100000120"
+            instanceName="ObjPerAssociationAttributionVgr">
+              <vocabularyReferenceItem id="100044806">
+                <formattedValue language="de">nach</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+            <vocabularyReference name="Role0047Voc" id="100000121"
+            instanceName="ObjPerAssociationRoleVgr">
+              <vocabularyReferenceItem id="100457587"
+              name="Darsteller/-in">
+                <formattedValue language="de">
+                Darsteller/-in</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </moduleReferenceItem>
+          <moduleReferenceItem moduleItemId="124068"
+          uuid="298ef984-1e55-4df3-97f1-35d426f58049" seqNo="3">
+            <formattedValue language="de">Gabriel Ludwig Lory
+            (*20.6.1763 Bern, +12.11.1840 Bern), zugeschrieben,
+            Künstler/-in, Drucker/-in</formattedValue>
+            <dataField dataType="Long" name="SortLnu">
+              <value>2</value>
+              <formattedValue language="de">2</formattedValue>
+            </dataField>
+            <vocabularyReference name="AttributionVoc"
+            id="100000120"
+            instanceName="ObjPerAssociationAttributionVgr">
+              <vocabularyReferenceItem id="100042825"
+              name="attributed_to">
+                <formattedValue language="de">
+                zugeschrieben</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+            <vocabularyReference name="Role0047Voc" id="100000121"
+            instanceName="ObjPerAssociationRoleVgr">
+              <vocabularyReferenceItem id="100105329"
+              name="Drucker">
+                <formattedValue language="de">
+                Drucker/-in</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+            <vocabularyReference name="RoleVoc" id="100000121"
+            instanceName="ObjPerAssociationRoleVgr">
+              <vocabularyReferenceItem id="100105634"
+              name="Künstler/-in creation">
+                <formattedValue language="de">
+                Künstler/-in</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </moduleReferenceItem>
+        </moduleReference>
+        <moduleReference name="ObjMultimediaRef"
+        targetModule="Multimedia" multiplicity="M:N" size="3">
+          <moduleReferenceItem moduleItemId="115234"
+          uuid="dcb70ecb-b3ab-4476-b38a-3615124930c9" seqNo="0">
+            <dataField dataType="Boolean" name="ThumbnailBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+          </moduleReferenceItem>
+          <moduleReferenceItem moduleItemId="307193"
+          uuid="699c9773-5dac-4490-8b0b-49b5f8632ef1" seqNo="1">
+            <formattedValue language="de">
+            Vergleichsabbildung</formattedValue>
+            <dataField dataType="Boolean" name="ThumbnailBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+          </moduleReferenceItem>
+          <moduleReferenceItem moduleItemId="727242"
+          uuid="c36e74b3-53f3-4236-bb77-ae7d804bae32" seqNo="2">
+            <formattedValue language="de">Image</formattedValue>
+            <dataField dataType="Boolean" name="ThumbnailBoo">
+              <value>false</value>
+              <formattedValue language="de">no</formattedValue>
+            </dataField>
+          </moduleReferenceItem>
+        </moduleReference>
+        <moduleReference name="ObjLiteratureRef"
+        targetModule="Literature" multiplicity="M:N" size="1">
+          <moduleReferenceItem moduleItemId="107975"
+          uuid="df27d201-c91c-4ddb-ae0e-21d12d5ff58a" seqNo="0">
+            <formattedValue language="de">Max Master,
+            Literaturtitel test, Verlag 2019, S.
+            523</formattedValue>
+            <dataField dataType="Varchar" name="PageRefTxt">
+              <value>S. 523</value>
+            </dataField>
+          </moduleReferenceItem>
+        </moduleReference>
+        <moduleReference name="ObjAcquisitionPersonRef"
+        targetModule="Person" multiplicity="N:1" size="1">
+          <moduleReferenceItem moduleItemId="1982"
+          uuid="e886f3a4-20f9-a1e5-d595-ba3abc345078">
+            <formattedValue language="de">Edvard Munch</formattedValue>
+          </moduleReferenceItem>
+        </moduleReference>
+        <moduleReference name="ObjRegistrarRef"
+        targetModule="Registrar" multiplicity="1:N" size="2">
+          <moduleReferenceItem moduleItemId="577863"
+          uuid="eb2a0197-0f14-41d4-83be-ae3e0b7c2443" seqNo="0">
+            <formattedValue language="de">14.05.2020, cancelled by
+            owner, 123456/1916.16, Ferdinand Hodler, Gabriel Ludwig
+            Lory , Arber &amp; Son Editions, Pablo Picasso,
+            Stillleben mit Hummer. TEST, 1990–1991, Öl auf
+            Leinwand</formattedValue>
+          </moduleReferenceItem>
+          <moduleReferenceItem moduleItemId="662863"
+          uuid="c3925def-753b-49a2-8f5a-7fa9a9ccbe20" seqNo="1">
+            <formattedValue language="de">requested (own object),
+            Dies ist nur ein Test, Mordor</formattedValue>
+          </moduleReferenceItem>
+        </moduleReference>
+        <composite name="ObjObjectCre">
+          <compositeItem seqNo="0">
+            <moduleReference name="ObjObjectARef"
+            targetModule="Object" multiplicity="M:N" size="1">
+              <moduleReferenceItem moduleItemId="47894"
+              uuid="2624c885-af51-4da6-a91c-b0233a8ffef9"
+              seqNo="0">
+                <formattedValue language="de">hat Bezug zu: E
+                1916.16, Hans Arp, Lorenz Boegli, Pipilotti Rist,
+                Tilman Riemenschneider, Adriaen Brouwer, Benedetto
+                Montagna, Testdatensatz Portrait . Hummer, um
+                16.12.1916–vor 1.1.1917, Kupferstich, Radierung und
+                Aquatinta auf Büttenpapier</formattedValue>
+                <vocabularyReference name="TypeAVoc" id="100000119"
+                instanceName="ObjObjectTypeVgr">
+                  <vocabularyReferenceItem id="100729589"
+                  name="hat_Bezug_zu">
+                    <formattedValue language="de">hat Bezug
+                    zu</formattedValue>
+                  </vocabularyReferenceItem>
+                </vocabularyReference>
+                <vocabularyReference name="TypeBVoc" id="100000119"
+                instanceName="ObjObjectTypeVgr">
+                  <vocabularyReferenceItem id="100729589"
+                  name="hat_Bezug_zu">
+                    <formattedValue language="de">hat Bezug
+                    zu</formattedValue>
+                  </vocabularyReferenceItem>
+                </vocabularyReference>
+              </moduleReferenceItem>
+            </moduleReference>
+          </compositeItem>
+          <compositeItem seqNo="1">
+            <moduleReference name="ObjObjectBRef"
+            targetModule="Object" multiplicity="M:N" size="1">
+              <moduleReferenceItem moduleItemId="47894"
+              uuid="2624c885-af51-4da6-a91c-b0233a8ffef9"
+              seqNo="0">
+                <formattedValue language="de">umfasst: E 1916.16,
+                Hans Arp, Lorenz Boegli, Pipilotti Rist, Tilman
+                Riemenschneider, Adriaen Brouwer, Benedetto
+                Montagna, Testdatensatz Portrait . Hummer, um
+                16.12.1916–vor 1.1.1917, Kupferstich, Radierung und
+                Aquatinta auf Büttenpapier</formattedValue>
+                <vocabularyReference name="TypeAVoc" id="100000119"
+                instanceName="ObjObjectTypeVgr">
+                  <vocabularyReferenceItem id="100038799"
+                  name="partObject">
+                    <formattedValue language="de">Teil
+                    von</formattedValue>
+                  </vocabularyReferenceItem>
+                </vocabularyReference>
+                <vocabularyReference name="TypeBVoc" id="100000119"
+                instanceName="ObjObjectTypeVgr">
+                  <vocabularyReferenceItem id="100038798"
+                  name="mainObject">
+                    <formattedValue language="de">
+                    umfasst</formattedValue>
+                  </vocabularyReferenceItem>
+                </vocabularyReference>
+              </moduleReferenceItem>
+            </moduleReference>
+          </compositeItem>
+        </composite>
+        <composite name="ObjDimObjectCgr">
+          <compositeItem seqNo="0">
+            <repeatableGroup name="ObjDim3DGrp" size="8">
+              <repeatableGroupItem id="1183765">
+                <dataField dataType="Numeric" name="SecondInchNum">
+                  <value>11.81</value>
+                  <formattedValue language="de">
+                  11.81</formattedValue>
+                </dataField>
+                <dataField dataType="Varchar"
+                name="PreviewENInchTxt">
+                  <value>image: 7 7/8 x 11 3/4 in</value>
+                </dataField>
+                <dataField dataType="Numeric" name="FirstInchNum">
+                  <value>7.87</value>
+                  <formattedValue language="de">
+                  7.87</formattedValue>
+                </dataField>
+                <dataField dataType="Long" name="SortLnu">
+                  <value>3</value>
+                  <formattedValue language="de">3</formattedValue>
+                </dataField>
+                <dataField dataType="Numeric" name="SecondNum">
+                  <value>30</value>
+                  <formattedValue language="de">30</formattedValue>
+                </dataField>
+                <dataField dataType="Clob" name="NotesClb">
+                  <value>Bemerkung</value>
+                </dataField>
+                <dataField dataType="Boolean" name="RoundedBoo">
+                  <value>true</value>
+                  <formattedValue language="de">
+                  yes</formattedValue>
+                </dataField>
+                <dataField dataType="Numeric" name="FirstNum">
+                  <value>20</value>
+                  <formattedValue language="de">20</formattedValue>
+                </dataField>
+                <dataField dataType="Varchar" name="PreviewENTxt">
+                  <value>image: 20 x 30 cm</value>
+                </dataField>
+                <dataField dataType="Varchar" name="PreviewFRTxt">
+                  <value>image: 20 x 30 cm</value>
+                </dataField>
+                <dataField dataType="Varchar" name="PreviewDETxt">
+                  <value>Bildmass: 20 x 30 cm</value>
+                </dataField>
+                <vocabularyReference name="UnitInchVoc"
+                id="100022385" instanceName="GenUnitInchVgr">
+                  <vocabularyReferenceItem id="100054247"
+                  name="inch">
+                    <formattedValue language="de">
+                    in</formattedValue>
+                  </vocabularyReferenceItem>
+                </vocabularyReference>
+                <vocabularyReference name="TypeVoc" id="100000059"
+                instanceName="ObjDim3DTypeVgr">
+                  <vocabularyReferenceItem id="100102375"
+                  name="image_2">
+                    <formattedValue language="de">
+                    Bildmass</formattedValue>
+                  </vocabularyReferenceItem>
+                </vocabularyReference>
+                <vocabularyReference name="UnitVoc" id="100000130"
+                instanceName="GenDimSizeUnitVgr">
+                  <vocabularyReferenceItem id="100102378"
+                  name="cm">
+                    <formattedValue language="de">
+                    cm</formattedValue>
+                  </vocabularyReferenceItem>
+                </vocabularyReference>
+              </repeatableGroupItem>
+              <repeatableGroupItem id="1341520">
+                <dataField dataType="Numeric" name="SecondInchNum">
+                  <value>18.11</value>
+                  <formattedValue language="de">
+                  18.11</formattedValue>
+                </dataField>
+                <dataField dataType="Varchar"
+                name="PreviewENInchTxt">
+                  <value>image: 5 1/8 x 18 1/8 in</value>
+                </dataField>
+                <dataField dataType="Numeric" name="FirstInchNum">
+                  <value>5.12</value>
+                  <formattedValue language="de">
+                  5.12</formattedValue>
+                </dataField>
+                <dataField dataType="Long" name="SortLnu">
+                  <value>1</value>
+                  <formattedValue language="de">1</formattedValue>
+                </dataField>
+                <dataField dataType="Numeric" name="SecondNum">
+                  <value>46</value>
+                  <formattedValue language="de">46</formattedValue>
+                </dataField>
+                <dataField dataType="Boolean" name="RoundedBoo">
+                  <value>true</value>
+                  <formattedValue language="de">
+                  yes</formattedValue>
+                </dataField>
+                <dataField dataType="Numeric" name="FirstNum">
+                  <value>13</value>
+                  <formattedValue language="de">13</formattedValue>
+                </dataField>
+                <dataField dataType="Varchar" name="PreviewENTxt">
+                  <value>image: 13 x 46 cm</value>
+                </dataField>
+                <dataField dataType="Varchar" name="PreviewFRTxt">
+                  <value>image: 13 x 46 cm</value>
+                </dataField>
+                <dataField dataType="Varchar" name="PreviewDETxt">
+                  <value>Bildmass: 13 x 46 cm</value>
+                </dataField>
+                <vocabularyReference name="UnitInchVoc"
+                id="100022385" instanceName="GenUnitInchVgr">
+                  <vocabularyReferenceItem id="100054247"
+                  name="inch">
+                    <formattedValue language="de">
+                    in</formattedValue>
+                  </vocabularyReferenceItem>
+                </vocabularyReference>
+                <vocabularyReference name="TypeVoc" id="100000059"
+                instanceName="ObjDim3DTypeVgr">
+                  <vocabularyReferenceItem id="100102375"
+                  name="image_2">
+                    <formattedValue language="de">
+                    Bildmass</formattedValue>
+                  </vocabularyReferenceItem>
+                </vocabularyReference>
+                <vocabularyReference name="UnitVoc" id="100000130"
+                instanceName="GenDimSizeUnitVgr">
+                  <vocabularyReferenceItem id="100102378"
+                  name="cm">
+                    <formattedValue language="de">
+                    cm</formattedValue>
+                  </vocabularyReferenceItem>
+                </vocabularyReference>
+              </repeatableGroupItem>
+              <repeatableGroupItem id="1341519">
+                <dataField dataType="Numeric" name="SecondInchNum">
+                  <value>9.84</value>
+                  <formattedValue language="de">
+                  9.84</formattedValue>
+                </dataField>
+                <dataField dataType="Varchar"
+                name="PreviewENInchTxt">
+                  <value>frame: 5 1/2 x 9 7/8 x 1 1/8 in</value>
+                </dataField>
+                <dataField dataType="Numeric" name="FirstInchNum">
+                  <value>5.51</value>
+                  <formattedValue language="de">
+                  5.51</formattedValue>
+                </dataField>
+                <dataField dataType="Numeric"
+                name="ThirdInchesNum">
+                  <value>1.18</value>
+                  <formattedValue language="de">
+                  1.18</formattedValue>
+                </dataField>
+                <dataField dataType="Numeric" name="ThirdNum">
+                  <value>3</value>
+                  <formattedValue language="de">3</formattedValue>
+                </dataField>
+                <dataField dataType="Numeric" name="SecondNum">
+                  <value>25</value>
+                  <formattedValue language="de">25</formattedValue>
+                </dataField>
+                <dataField dataType="Boolean" name="RoundedBoo">
+                  <value>true</value>
+                  <formattedValue language="de">
+                  yes</formattedValue>
+                </dataField>
+                <dataField dataType="Numeric" name="FirstNum">
+                  <value>14</value>
+                  <formattedValue language="de">14</formattedValue>
+                </dataField>
+                <dataField dataType="Varchar" name="PreviewENTxt">
+                  <value>frame: 14 x 25 x 3 cm</value>
+                </dataField>
+                <dataField dataType="Varchar" name="PreviewFRTxt">
+                  <value>cadre: 14 x 25 x 3 cm</value>
+                </dataField>
+                <dataField dataType="Varchar" name="PreviewDETxt">
+                  <value>Rahmenmass: 14 x 25 x 3 cm</value>
+                </dataField>
+                <vocabularyReference name="UnitInchVoc"
+                id="100022385" instanceName="GenUnitInchVgr">
+                  <vocabularyReferenceItem id="100054247"
+                  name="inch">
+                    <formattedValue language="de">
+                    in</formattedValue>
+                  </vocabularyReferenceItem>
+                </vocabularyReference>
+                <vocabularyReference name="TypeVoc" id="100000059"
+                instanceName="ObjDim3DTypeVgr">
+                  <vocabularyReferenceItem id="100102376"
+                  name="Rahmenmass">
+                    <formattedValue language="de">
+                    Rahmenmass</formattedValue>
+                  </vocabularyReferenceItem>
+                </vocabularyReference>
+                <vocabularyReference name="UnitVoc" id="100000130"
+                instanceName="GenDimSizeUnitVgr">
+                  <vocabularyReferenceItem id="100102378"
+                  name="cm">
+                    <formattedValue language="de">
+                    cm</formattedValue>
+                  </vocabularyReferenceItem>
+                </vocabularyReference>
+              </repeatableGroupItem>
+              <repeatableGroupItem id="1381527">
+                <dataField dataType="Numeric" name="SecondInchNum">
+                  <value>0.79</value>
+                  <formattedValue language="de">
+                  0.79</formattedValue>
+                </dataField>
+                <dataField dataType="Varchar"
+                name="PreviewENInchTxt">
+                  <value>Werkmass: 3/8 x 3/4 x 1 1/8 in</value>
+                </dataField>
+                <dataField dataType="Numeric" name="FirstInchNum">
+                  <value>0.39</value>
+                  <formattedValue language="de">
+                  0.39</formattedValue>
+                </dataField>
+                <dataField dataType="Numeric"
+                name="ThirdInchesNum">
+                  <value>1.18</value>
+                  <formattedValue language="de">
+                  1.18</formattedValue>
+                </dataField>
+                <dataField dataType="Numeric" name="ThirdNum">
+                  <value>3</value>
+                  <formattedValue language="de">3</formattedValue>
+                </dataField>
+                <dataField dataType="Numeric" name="SecondNum">
+                  <value>2</value>
+                  <formattedValue language="de">2</formattedValue>
+                </dataField>
+                <dataField dataType="Boolean" name="RoundedBoo">
+                  <value>false</value>
+                  <formattedValue language="de">no</formattedValue>
+                </dataField>
+                <dataField dataType="Numeric" name="FirstNum">
+                  <value>1</value>
+                  <formattedValue language="de">1</formattedValue>
+                </dataField>
+                <dataField dataType="Varchar" name="PreviewENTxt">
+                  <value>Werkmass: 1.0 x 2.0 x 3.0 cm</value>
+                </dataField>
+                <dataField dataType="Varchar" name="PreviewFRTxt">
+                  <value>Werkmass: 1,0 x 2,0 x 3,0 cm</value>
+                </dataField>
+                <dataField dataType="Varchar" name="PreviewDETxt">
+                  <value>Werkmass: 1,0 x 2,0 x 3,0 cm</value>
+                </dataField>
+                <vocabularyReference name="UnitInchVoc"
+                id="100022385" instanceName="GenUnitInchVgr">
+                  <vocabularyReferenceItem id="100054247"
+                  name="inch">
+                    <formattedValue language="de">
+                    in</formattedValue>
+                  </vocabularyReferenceItem>
+                </vocabularyReference>
+                <vocabularyReference name="TypeVoc" id="100000059"
+                instanceName="ObjDim3DTypeVgr">
+                  <vocabularyReferenceItem id="100406580"
+                  name="Werkmass">
+                    <formattedValue language="de">
+                    Werkmass</formattedValue>
+                  </vocabularyReferenceItem>
+                </vocabularyReference>
+                <vocabularyReference name="UnitVoc" id="100000130"
+                instanceName="GenDimSizeUnitVgr">
+                  <vocabularyReferenceItem id="100102378"
+                  name="cm">
+                    <formattedValue language="de">
+                    cm</formattedValue>
+                  </vocabularyReferenceItem>
+                </vocabularyReference>
+              </repeatableGroupItem>
+              <repeatableGroupItem id="1398498">
+                <dataField dataType="Numeric" name="SecondInchNum">
+                  <value>0.79</value>
+                  <formattedValue language="de">
+                  0.79</formattedValue>
+                </dataField>
+                <dataField dataType="Varchar"
+                name="PreviewENInchTxt">
+                  <value>Object: 3/8 x 3/4 x 1 1/8 in</value>
+                </dataField>
+                <dataField dataType="Numeric" name="FirstInchNum">
+                  <value>0.39</value>
+                  <formattedValue language="de">
+                  0.39</formattedValue>
+                </dataField>
+                <dataField dataType="Numeric"
+                name="ThirdInchesNum">
+                  <value>1.18</value>
+                  <formattedValue language="de">
+                  1.18</formattedValue>
+                </dataField>
+                <dataField dataType="Numeric" name="ThirdNum">
+                  <value>3</value>
+                  <formattedValue language="de">3</formattedValue>
+                </dataField>
+                <dataField dataType="Numeric" name="SecondNum">
+                  <value>2</value>
+                  <formattedValue language="de">2</formattedValue>
+                </dataField>
+                <dataField dataType="Boolean" name="RoundedBoo">
+                  <value>false</value>
+                  <formattedValue language="de">no</formattedValue>
+                </dataField>
+                <dataField dataType="Numeric" name="FirstNum">
+                  <value>1</value>
+                  <formattedValue language="de">1</formattedValue>
+                </dataField>
+                <dataField dataType="Varchar" name="PreviewENTxt">
+                  <value>Object: 1.0 x 2.0 x 3.0 cm</value>
+                </dataField>
+                <dataField dataType="Varchar" name="PreviewFRTxt">
+                  <value>Oeuvre: 1,0 x 2,0 x 3,0 cm</value>
+                </dataField>
+                <dataField dataType="Varchar" name="PreviewDETxt">
+                  <value>Objektmass: 1,0 x 2,0 x 3,0 cm</value>
+                </dataField>
+                <vocabularyReference name="UnitInchVoc"
+                id="100022385" instanceName="GenUnitInchVgr">
+                  <vocabularyReferenceItem id="100054247"
+                  name="inch">
+                    <formattedValue language="de">
+                    in</formattedValue>
+                  </vocabularyReferenceItem>
+                </vocabularyReference>
+                <vocabularyReference name="TypeVoc" id="100000059"
+                instanceName="ObjDim3DTypeVgr">
+                  <vocabularyReferenceItem id="100105622"
+                  name="Objektmass">
+                    <formattedValue language="de">
+                    Objektmass</formattedValue>
+                  </vocabularyReferenceItem>
+                </vocabularyReference>
+                <vocabularyReference name="UnitVoc" id="100000130"
+                instanceName="GenDimSizeUnitVgr">
+                  <vocabularyReferenceItem id="100102378"
+                  name="cm">
+                    <formattedValue language="de">
+                    cm</formattedValue>
+                  </vocabularyReferenceItem>
+                </vocabularyReference>
+              </repeatableGroupItem>
+              <repeatableGroupItem id="1399493">
+                <dataField dataType="Numeric" name="SecondInchNum">
+                  <value>0.79</value>
+                  <formattedValue language="de">
+                  0.79</formattedValue>
+                </dataField>
+                <dataField dataType="Varchar"
+                name="PreviewENInchTxt">
+                  <value>Mappenmass: 3/8 x 3/4 x 1 1/8 in</value>
+                </dataField>
+                <dataField dataType="Numeric" name="FirstInchNum">
+                  <value>0.39</value>
+                  <formattedValue language="de">
+                  0.39</formattedValue>
+                </dataField>
+                <dataField dataType="Numeric"
+                name="ThirdInchesNum">
+                  <value>1.18</value>
+                  <formattedValue language="de">
+                  1.18</formattedValue>
+                </dataField>
+                <dataField dataType="Numeric" name="ThirdNum">
+                  <value>3</value>
+                  <formattedValue language="de">3</formattedValue>
+                </dataField>
+                <dataField dataType="Numeric" name="SecondNum">
+                  <value>2</value>
+                  <formattedValue language="de">2</formattedValue>
+                </dataField>
+                <dataField dataType="Boolean" name="RoundedBoo">
+                  <value>true</value>
+                  <formattedValue language="de">
+                  yes</formattedValue>
+                </dataField>
+                <dataField dataType="Numeric" name="FirstNum">
+                  <value>1</value>
+                  <formattedValue language="de">1</formattedValue>
+                </dataField>
+                <dataField dataType="Varchar" name="PreviewENTxt">
+                  <value>Mappenmass: 1 x 2 x 3 cm</value>
+                </dataField>
+                <dataField dataType="Varchar" name="PreviewFRTxt">
+                  <value>Mappenmass: 1 x 2 x 3 cm</value>
+                </dataField>
+                <dataField dataType="Varchar" name="PreviewDETxt">
+                  <value>Mappenmass: 1 x 2 x 3 cm</value>
+                </dataField>
+                <vocabularyReference name="UnitInchVoc"
+                id="100022385" instanceName="GenUnitInchVgr">
+                  <vocabularyReferenceItem id="100054247"
+                  name="inch">
+                    <formattedValue language="de">
+                    in</formattedValue>
+                  </vocabularyReferenceItem>
+                </vocabularyReference>
+                <vocabularyReference name="TypeVoc" id="100000059"
+                instanceName="ObjDim3DTypeVgr">
+                  <vocabularyReferenceItem id="100105308"
+                  name="Mappenmass">
+                    <formattedValue language="de">
+                    Mappenmass</formattedValue>
+                  </vocabularyReferenceItem>
+                </vocabularyReference>
+                <vocabularyReference name="UnitVoc" id="100000130"
+                instanceName="GenDimSizeUnitVgr">
+                  <vocabularyReferenceItem id="100102378"
+                  name="cm">
+                    <formattedValue language="de">
+                    cm</formattedValue>
+                  </vocabularyReferenceItem>
+                </vocabularyReference>
+              </repeatableGroupItem>
+              <repeatableGroupItem id="1536997">
+                <dataField dataType="Numeric" name="SecondInchNum">
+                  <value>0.79</value>
+                  <formattedValue language="de">
+                  0.79</formattedValue>
+                </dataField>
+                <dataField dataType="Varchar"
+                name="PreviewENInchTxt">
+                  <value>Schutzkasten: 3/8 x 3/4 x 1 1/8 in</value>
+                </dataField>
+                <dataField dataType="Numeric" name="FirstInchNum">
+                  <value>0.39</value>
+                  <formattedValue language="de">
+                  0.39</formattedValue>
+                </dataField>
+                <dataField dataType="Numeric"
+                name="ThirdInchesNum">
+                  <value>1.18</value>
+                  <formattedValue language="de">
+                  1.18</formattedValue>
+                </dataField>
+                <dataField dataType="Numeric" name="ThirdNum">
+                  <value>3</value>
+                  <formattedValue language="de">3</formattedValue>
+                </dataField>
+                <dataField dataType="Numeric" name="SecondNum">
+                  <value>2</value>
+                  <formattedValue language="de">2</formattedValue>
+                </dataField>
+                <dataField dataType="Boolean" name="RoundedBoo">
+                  <value>false</value>
+                  <formattedValue language="de">no</formattedValue>
+                </dataField>
+                <dataField dataType="Numeric" name="FirstNum">
+                  <value>1</value>
+                  <formattedValue language="de">1</formattedValue>
+                </dataField>
+                <dataField dataType="Varchar" name="PreviewENTxt">
+                  <value>Schutzkasten: 1.0 x 2.0 x 3.0 cm</value>
+                </dataField>
+                <dataField dataType="Varchar" name="PreviewFRTxt">
+                  <value>Schutzkasten: 1,0 x 2,0 x 3,0 cm</value>
+                </dataField>
+                <dataField dataType="Varchar" name="PreviewDETxt">
+                  <value>Schutzkasten: 1,0 x 2,0 x 3,0 cm</value>
+                </dataField>
+                <vocabularyReference name="UnitInchVoc"
+                id="100022385" instanceName="GenUnitInchVgr">
+                  <vocabularyReferenceItem id="100054247"
+                  name="inch">
+                    <formattedValue language="de">
+                    in</formattedValue>
+                  </vocabularyReferenceItem>
+                </vocabularyReference>
+                <vocabularyReference name="TypeVoc" id="100000059"
+                instanceName="ObjDim3DTypeVgr">
+                  <vocabularyReferenceItem id="100108689"
+                  name="Schutzkasten">
+                    <formattedValue language="de">
+                    Schutzkasten</formattedValue>
+                  </vocabularyReferenceItem>
+                </vocabularyReference>
+                <vocabularyReference name="UnitVoc" id="100000130"
+                instanceName="GenDimSizeUnitVgr">
+                  <vocabularyReferenceItem id="100102378"
+                  name="cm">
+                    <formattedValue language="de">
+                    cm</formattedValue>
+                  </vocabularyReferenceItem>
+                </vocabularyReference>
+              </repeatableGroupItem>
+              <repeatableGroupItem id="1537468">
+                <dataField dataType="Numeric" name="SecondInchNum">
+                  <value>2.36</value>
+                  <formattedValue language="de">
+                  2.36</formattedValue>
+                </dataField>
+                <dataField dataType="Varchar"
+                name="PreviewENInchTxt">
+                  <value>frame: 2 x 2 3/8 x 2 3/4 in</value>
+                </dataField>
+                <dataField dataType="Numeric" name="FirstInchNum">
+                  <value>1.97</value>
+                  <formattedValue language="de">
+                  1.97</formattedValue>
+                </dataField>
+                <dataField dataType="Numeric"
+                name="ThirdInchesNum">
+                  <value>2.76</value>
+                  <formattedValue language="de">
+                  2.76</formattedValue>
+                </dataField>
+                <dataField dataType="Numeric" name="ThirdNum">
+                  <value>7</value>
+                  <formattedValue language="de">7</formattedValue>
+                </dataField>
+                <dataField dataType="Numeric" name="SecondNum">
+                  <value>6</value>
+                  <formattedValue language="de">6</formattedValue>
+                </dataField>
+                <dataField dataType="Boolean" name="RoundedBoo">
+                  <value>false</value>
+                  <formattedValue language="de">no</formattedValue>
+                </dataField>
+                <dataField dataType="Numeric" name="FirstNum">
+                  <value>5</value>
+                  <formattedValue language="de">5</formattedValue>
+                </dataField>
+                <dataField dataType="Varchar" name="PreviewENTxt">
+                  <value>frame: 5.0 x 6.0 x 7.0 cm</value>
+                </dataField>
+                <dataField dataType="Varchar" name="PreviewFRTxt">
+                  <value>cadre: 5,0 x 6,0 x 7,0 cm</value>
+                </dataField>
+                <dataField dataType="Varchar" name="PreviewDETxt">
+                  <value>Rahmenmass: 5,0 x 6,0 x 7,0 cm</value>
+                </dataField>
+                <vocabularyReference name="UnitInchVoc"
+                id="100022385" instanceName="GenUnitInchVgr">
+                  <vocabularyReferenceItem id="100054247"
+                  name="inch">
+                    <formattedValue language="de">
+                    in</formattedValue>
+                  </vocabularyReferenceItem>
+                </vocabularyReference>
+                <vocabularyReference name="TypeVoc" id="100000059"
+                instanceName="ObjDim3DTypeVgr">
+                  <vocabularyReferenceItem id="100102376"
+                  name="Rahmenmass">
+                    <formattedValue language="de">
+                    Rahmenmass</formattedValue>
+                  </vocabularyReferenceItem>
+                </vocabularyReference>
+                <vocabularyReference name="UnitVoc" id="100000130"
+                instanceName="GenDimSizeUnitVgr">
+                  <vocabularyReferenceItem id="100102378"
+                  name="cm">
+                    <formattedValue language="de">
+                    cm</formattedValue>
+                  </vocabularyReferenceItem>
+                </vocabularyReference>
+              </repeatableGroupItem>
+            </repeatableGroup>
+          </compositeItem>
+          <compositeItem seqNo="1">
+            <repeatableGroup name="ObjDimWeightGrp" size="1">
+              <repeatableGroupItem id="1381528">
+                <dataField dataType="Numeric" name="WeightNum">
+                  <value>100</value>
+                  <formattedValue language="de">
+                  100</formattedValue>
+                </dataField>
+                <dataField dataType="Varchar" name="PreviewFRTxt">
+                  <value>100,0 kg</value>
+                </dataField>
+                <dataField dataType="Varchar" name="PreviewDETxt">
+                  <value>100.0 kg</value>
+                </dataField>
+                <dataField dataType="Varchar" name="PreviewENTxt">
+                  <value>100.0 kg</value>
+                </dataField>
+                <vocabularyReference name="UnitVoc" id="100000131"
+                instanceName="GenDimWeightUnitVgr">
+                  <vocabularyReferenceItem id="100102738"
+                  name="kg">
+                    <formattedValue language="de">
+                    kg</formattedValue>
+                  </vocabularyReferenceItem>
+                </vocabularyReference>
+              </repeatableGroupItem>
+            </repeatableGroup>
+          </compositeItem>
+        </composite>
+      </moduleItem>
+    </module>
+  </modules>
+</application>

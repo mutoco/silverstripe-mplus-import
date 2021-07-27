@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<application xmlns="http://www.zetcom.com/ria/ws/module">
+  <modules>
+    <module name="Registrar" totalSize="1">
+      <moduleItem hasAttachments="true" id="695881"
+      uuid="2b8d239c-623f-4a3c-b7de-44e0f0bc83be">
+        <systemField dataType="Long" name="__id">
+          <value>695881</value>
+        </systemField>
+        <systemField dataType="Timestamp" name="__lastModified">
+          <value>2021-01-14 09:29:26.582</value>
+          <formattedValue language="de">14.01.2021
+          09:29</formattedValue>
+        </systemField>
+        <dataField dataType="Long" name="RegSortLnu">
+          <value>4</value>
+          <formattedValue language="de">004</formattedValue>
+        </dataField>
+        <vocabularyReference name="RegRecordTypeVoc" id="100040385"
+        instanceName="RegRecordTypeVgr">
+          <vocabularyReferenceItem id="100087407" name="outgoing">
+            <formattedValue language="de">Outgoing</formattedValue>
+          </vocabularyReferenceItem>
+        </vocabularyReference>
+        <moduleReference name="RegObjectRef" targetModule="Object"
+        multiplicity="N:1" size="1">
+          <moduleReferenceItem moduleItemId="47894"
+          uuid="2624c885-af51-4da6-a91c-b0233a8ffef9">
+            <formattedValue language="de">E 1916.16</formattedValue>
+          </moduleReferenceItem>
+        </moduleReference>
+      </moduleItem>
+    </module>
+  </modules>
+</application>

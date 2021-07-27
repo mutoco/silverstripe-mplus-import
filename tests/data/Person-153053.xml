@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='utf-8'?>
+<application xmlns="http://www.zetcom.com/ria/ws/module">
+  <modules>
+    <module name="Person" totalSize="1">
+      <moduleItem hasAttachments="false" id="153053"
+      uuid="745f8141-dff4-4672-bf22-30d13a1bcfbe">
+        <systemField dataType="Long" name="__id">
+          <value>153053</value>
+        </systemField>
+        <systemField dataType="Timestamp" name="__lastModified">
+          <value>2018-04-24 09:00:01.948</value>
+          <formattedValue language="de">24.04.2018
+          09:00</formattedValue>
+        </systemField>
+        <systemField dataType="Timestamp" name="__created">
+          <value>1970-01-01 00:00:00.0</value>
+          <formattedValue language="de">01.01.1970
+          00:00</formattedValue>
+        </systemField>
+        <dataField dataType="Varchar"
+        name="PerDataValidationUserTxt">
+          <value>someuser</value>
+        </dataField>
+        <dataField dataType="Date" name="PerDataValidationDateDat">
+          <value>2017-12-14Z</value>
+          <formattedValue language="de">14.12.2017</formattedValue>
+        </dataField>
+        <dataField dataType="Varchar" name="PerLastNameTxt">
+          <value>Baggins</value>
+        </dataField>
+        <dataField dataType="Varchar" name="PerFirstNameTxt">
+          <value>Bilbo</value>
+        </dataField>
+        <vocabularyReference name="PerTypeVoc" id="100000027"
+        instanceName="PerTypeVgr">
+          <vocabularyReferenceItem id="100102464" name="person">
+            <formattedValue language="de">Person</formattedValue>
+          </vocabularyReferenceItem>
+        </vocabularyReference>
+        <vocabularyReference name="PerGenderVoc" id="100000023"
+        instanceName="PerGenderVgr">
+          <vocabularyReferenceItem id="100000107">
+            <formattedValue language="de">männlich</formattedValue>
+          </vocabularyReferenceItem>
+        </vocabularyReference>
+        <virtualField name="PerPersonSortVrt">
+          <value>Baggins, Bilbo</value>
+        </virtualField>
+        <virtualField name="PerPersonVrt">
+          <value>Bilbo Baggins</value>
+        </virtualField>
+        <virtualField name="PerDateFromBirthYearVrt">
+          <value></value>
+        </virtualField>
+        <virtualField name="PerDatingWithCountryVrt">
+          <value></value>
+        </virtualField>
+        <virtualField name="PerPersonDatingVrt">
+          <value>Bilbo Baggins</value>
+        </virtualField>
+        <virtualField name="PerURLGrpCheckOnlineVrt">
+          <value></value>
+        </virtualField>
+        <moduleReference name="PerAddressRef"
+        targetModule="Address" multiplicity="M:N" size="1">
+          <moduleReferenceItem moduleItemId="14639"
+          uuid="576513e6-fda5-4464-a837-b8229caa6f5d" seqNo="0">
+            <formattedValue language="de">Direktion: Museum
+            Baggins Bilbo, Direktor,
+            validiert</formattedValue>
+            <vocabularyReference name="TypeVoc" id="100000104"
+            instanceName="PerAddressTypeVgr">
+              <vocabularyReferenceItem id="100085423"
+              name="Direktion">
+                <formattedValue language="de">
+                Direktion</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </moduleReferenceItem>
+        </moduleReference>
+        <moduleReference name="PerObjectAcquisitionRef"
+        targetModule="Object" multiplicity="1:N" size="1">
+          <moduleReferenceItem moduleItemId="47894"
+          uuid="2624c885-af51-4da6-a91c-b0233a8ffef9" seqNo="0">
+            <formattedValue language="de">E 1916.16, Hans Arp,
+            Lorenz Boegli, Pipilotti Rist, Tilman Riemenschneider,
+            Adriaen Brouwer, Benedetto Montagna, Testdatensatz
+            Portrait . Hummer, um 16.12.1916–vor 1.1.1917,
+            Kupferstich, Radierung und Aquatinta auf
+            Büttenpapier</formattedValue>
+          </moduleReferenceItem>
+        </moduleReference>
+        <composite name="PerPersonCre">
+          <compositeItem seqNo="0">
+            <moduleReference name="PerPersonARef"
+            targetModule="Person" multiplicity="M:N" size="3">
+              <moduleReferenceItem moduleItemId="4469"
+              uuid="cf23a61e-7e36-d5b6-2d0f-fe63f711cd73"
+              seqNo="0">
+                <formattedValue language="de">Alberto
+                Giacometti-Stiftung</formattedValue>
+              </moduleReferenceItem>
+              <moduleReferenceItem moduleItemId="6049"
+              uuid="e886f3a4-20f9-a1e5-d595-ba3abc345078"
+              seqNo="1">
+                <formattedValue language="de">Direktor_in von:
+                Kunstverein</formattedValue>
+                <vocabularyReference name="TypeAVoc" id="100000123"
+                instanceName="PerPersonTypeVgr">
+                  <vocabularyReferenceItem id="100353587"
+                  name="Direktor_in_von">
+                    <formattedValue language="de">Direktor_in
+                    von</formattedValue>
+                  </vocabularyReferenceItem>
+                </vocabularyReference>
+                <vocabularyReference name="TypeBVoc" id="100000123"
+                instanceName="PerPersonTypeVgr">
+                  <vocabularyReferenceItem id="100353586"
+                  name="Direktion">
+                    <formattedValue language="de">
+                    Direktion</formattedValue>
+                  </vocabularyReferenceItem>
+                </vocabularyReference>
+              </moduleReferenceItem>
+              <moduleReferenceItem moduleItemId="153052"
+              uuid="03b3c292-98ad-4b7d-af2c-84ac65b225f9"
+              seqNo="2">
+                <formattedValue language="de">Phantasia-Stiftung</formattedValue>
+              </moduleReferenceItem>
+            </moduleReference>
+          </compositeItem>
+        </composite>
+      </moduleItem>
+    </module>
+  </modules>
+</application>
