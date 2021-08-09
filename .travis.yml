@@ -1,6 +1,6 @@
 language: php
 
-matrix:
+jobs:
   include:
     - php: 7.2
       env: DB=PGSQL RECIPE_VERSION=4.8 PHPUNIT_TEST=1
@@ -23,4 +23,3 @@ script:
 
 after_success:
   - if [[ $PHPUNIT_COVERAGE_TEST ]]; then bash <(curl -s https://codecov.io/bash) -f coverage.xml -F php; fi
-
