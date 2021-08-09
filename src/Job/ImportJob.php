@@ -59,7 +59,7 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
 
     public function getJobType()
     {
-        return QueuedJob::QUEUED;
+        return QueuedJob::LARGE;
     }
 
     public function setup()
