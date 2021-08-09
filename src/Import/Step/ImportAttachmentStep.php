@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mutoco\Mplus\Import\Step;
-
 
 use Exception;
 use GuzzleHttp\Psr7\Header;
@@ -81,38 +79,40 @@ class ImportAttachmentStep implements StepInterface
         }
 
         $existingFile = $target->getField($field);
-        if ($stream = $engine->getApi()->loadAttachment(
-            $this->module,
-            $this->id,
-            function (ResponseInterface $response) use ($existingFile, $target, $engine, $field, &$fileName) {
-                if ($header = $response->getHeaderLine('Content-Disposition')) {
-                    $parts = Header::parse($header);
-                    foreach ($parts as $part) {
-                        $fileName = $part['filename'] ?? null;
-                        if ($fileName) {
-                            $fileName = $this->sanitizeFilename($fileName);
-                            break;
+        if (
+            $stream = $engine->getApi()->loadAttachment(
+                $this->module,
+                $this->id,
+                function (ResponseInterface $response) use ($existingFile, $target, $engine, $field, &$fileName) {
+                    if ($header = $response->getHeaderLine('Content-Disposition')) {
+                        $parts = Header::parse($header);
+                        foreach ($parts as $part) {
+                            $fileName = $part['filename'] ?? null;
+                            if ($fileName) {
+                                $fileName = $this->sanitizeFilename($fileName);
+                                break;
+                            }
                         }
-                    }
 
-                    $result = $target->invokeWithExtensions(
-                        'shouldImportMplusAttachment',
-                        $fileName,
-                        $field,
-                        $this,
-                        $engine
-                    );
+                        $result = $target->invokeWithExtensions(
+                            'shouldImportMplusAttachment',
+                            $fileName,
+                            $field,
+                            $this,
+                            $engine
+                        );
 
-                    if (!empty($result)) {
-                        if (min($result) === false) {
-                            throw new Exception('File import cancelled');
+                        if (!empty($result)) {
+                            if (min($result) === false) {
+                                throw new Exception('File import cancelled');
+                            }
+                        } elseif ($existingFile && $existingFile->exists() && $existingFile->Name === $fileName) {
+                            throw new Exception('File already exists');
                         }
-                    } else if ($existingFile && $existingFile->exists() && $existingFile->Name === $fileName) {
-                        throw new Exception('File already exists');
                     }
                 }
-            }
-        )) {
+            )
+        ) {
             if ($image = $this->createImage($stream, $fileName)) {
                 $target->setField($field, $image);
                 $target->write();
@@ -160,7 +160,10 @@ class ImportAttachmentStep implements StepInterface
 
         exec(sprintf(
             'convert -quiet %s -resize \'%dx%d>\' -colorspace RGB -strip %s',
-            $path, $width, $height, $outfile
+            $path,
+            $width,
+            $height,
+            $outfile
         ), $result, $exitCode);
 
         fclose($tmpFile);
@@ -223,7 +226,7 @@ class ImportAttachmentStep implements StepInterface
 
     protected function sanitizeFilename(string $name): string
     {
-        return preg_replace('{\.(jpe?g|tiff?|gif|png|bmp|psd|webp)$}i','', $name) . '.jpg';
+        return preg_replace('{\.(jpe?g|tiff?|gif|png|bmp|psd|webp)$}i', '', $name) . '.jpg';
     }
 
     protected function getSerializableObject(): \stdClass

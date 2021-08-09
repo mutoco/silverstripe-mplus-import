@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mutoco\Mplus\Parse\Result;
-
 
 use Mutoco\Mplus\Serialize\SerializableTrait;
 use Tree\Node\NodeInterface;
@@ -103,7 +101,7 @@ class TreeNode implements NodeInterface, \Serializable
     public function getPathSegments(): array
     {
         $segments = [];
-        foreach($this->getAncestorsAndSelf() as $item) {
+        foreach ($this->getAncestorsAndSelf() as $item) {
             if (($item instanceof TreeNode) && ($name = $item->getName())) {
                 $segments[] = $name;
             }
@@ -237,12 +235,12 @@ class TreeNode implements NodeInterface, \Serializable
         $last = array_pop($path);
         if (empty($path)) {
             return $this->__get($last);
-        } else if ($node = $this->getNestedNode($path)) {
+        } elseif ($node = $this->getNestedNode($path)) {
             return $node->__get($last);
         }
     }
 
-    public function getChildByName(string $name) : ?TreeNode
+    public function getChildByName(string $name): ?TreeNode
     {
         foreach ($this->getChildren() as $child) {
             if ($child instanceof TreeNode && $child->getName() === $name) {

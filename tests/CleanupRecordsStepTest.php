@@ -45,7 +45,7 @@ class CleanupRecordsStepTest extends SapphireTest
 
     public function testCleanup()
     {
-        Config::withConfig(function(MutableConfigCollectionInterface $config) {
+        Config::withConfig(function (MutableConfigCollectionInterface $config) {
             $existing = $this->objFromFixture(Exhibition::class, 'exhibition3');
             $existing->write();
             $this->assertNotNull(Exhibition::get()->find('MplusID', 3));
@@ -67,7 +67,6 @@ class CleanupRecordsStepTest extends SapphireTest
             $this->assertCount(1, Exhibition::get());
             $this->assertCount(1, Person::get());
             $this->assertCount(5, TextBlock::get());
-
         });
     }
 }

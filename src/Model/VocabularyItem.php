@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mutoco\Mplus\Model;
-
 
 use Mutoco\Mplus\Extension\DataRecordExtension;
 use Mutoco\Mplus\Import\Step\ImportModuleStep;

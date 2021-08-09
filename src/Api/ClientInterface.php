@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mutoco\Mplus\Api;
-
 
 use Psr\Http\Message\StreamInterface;
 

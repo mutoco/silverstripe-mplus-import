@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mutoco\Mplus\Tests;
-
 
 use Mutoco\Mplus\Util;
 use SilverStripe\Dev\FunctionalTest;

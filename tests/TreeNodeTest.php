@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mutoco\Mplus\Tests;
-
 
 use Mutoco\Mplus\Parse\Result\NamedChildFinder;
 use Mutoco\Mplus\Parse\Result\ReferenceCollector;
@@ -71,10 +69,18 @@ class TreeNodeTest extends FunctionalTest
         $this->assertEquals('May the force be with you', $this->tree->getNestedNode('Foo.Bar.Group.Title')->getValue());
         $this->assertEquals('groupA', $this->tree->getNestedNode('Foo.Bar.Group')->getTag());
 
-        $this->assertEquals(['foo'], array_map(function ($node) { return $node->getTag(); }, $this->tree->getNodesMatchingPath('Foo')));
-        $this->assertEquals(['child'], array_map(function ($node) { return $node->getTag(); }, $this->tree->getNodesMatchingPath('Foo.Bar')));
-        $this->assertEquals(['groupA', 'groupB'], array_map(function ($node) { return $node->getTag(); }, $this->tree->getNodesMatchingPath('Foo.Bar.Group')));
-        $this->assertEquals(['May the force be with you', 'The joker'], array_map(function ($node) { return $node->getValue(); }, $this->tree->getNodesMatchingPath('Foo.Bar.Group.Title')));
+        $this->assertEquals(['foo'], array_map(function ($node) {
+            return $node->getTag();
+        }, $this->tree->getNodesMatchingPath('Foo')));
+        $this->assertEquals(['child'], array_map(function ($node) {
+            return $node->getTag();
+        }, $this->tree->getNodesMatchingPath('Foo.Bar')));
+        $this->assertEquals(['groupA', 'groupB'], array_map(function ($node) {
+            return $node->getTag();
+        }, $this->tree->getNodesMatchingPath('Foo.Bar.Group')));
+        $this->assertEquals(['May the force be with you', 'The joker'], array_map(function ($node) {
+            return $node->getValue();
+        }, $this->tree->getNodesMatchingPath('Foo.Bar.Group.Title')));
     }
 
     public function testReferenceCollector()
@@ -82,14 +88,16 @@ class TreeNodeTest extends FunctionalTest
         $visitor = new ReferenceCollector();
         $nodes = $this->tree->accept($visitor);
         $this->assertCount(3, $nodes);
-        $ids = array_map(function ($item) { return $item->moduleItemId; }, $nodes);
+        $ids = array_map(function ($item) {
+            return $item->moduleItemId;
+        }, $nodes);
         $this->assertEquals([1,2,3], $ids);
         $this->assertEquals('Test', $nodes[0]->getModuleName());
     }
 
     public function testAccessors()
     {
-        $this->assertEquals('Test' ,$this->tree->getNestedValue('Foo.Bar.targetModule'));
+        $this->assertEquals('Test', $this->tree->getNestedValue('Foo.Bar.targetModule'));
         $this->assertEquals('Han Solo', $this->tree->getNestedValue('Foo.Baz.Author'));
         $this->assertEquals('Test', $this->tree->getNestedNode('Foo.Bar')->targetModule);
         $node = $this->tree->getNestedNode('Foo.Bar');

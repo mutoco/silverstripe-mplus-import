@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mutoco\Mplus\Serialize;
-
 
 trait SerializableTrait
 {
@@ -18,7 +16,6 @@ trait SerializableTrait
 
     protected function unserializeFromObject(\stdClass $obj): void
     {
-
     }
 
     protected function getSerializableObject(): \stdClass

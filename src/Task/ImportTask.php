@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mutoco\Mplus\Task;
-
 
 use Mutoco\Mplus\Job\ImportJob;
 use SilverStripe\Dev\BuildTask;

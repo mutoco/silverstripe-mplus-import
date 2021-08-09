@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mutoco\Mplus\Tests\Api;
-
 
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Utils;
@@ -13,7 +11,6 @@ class Client implements ClientInterface
 {
     public function __construct()
     {
-
     }
 
     public function queryModelItem(string $module, string $id): ?StreamInterface

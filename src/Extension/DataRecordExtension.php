@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mutoco\Mplus\Extension;
-
 
 use SilverStripe\Forms\FieldList;
 use SilverStripe\ORM\DataExtension;

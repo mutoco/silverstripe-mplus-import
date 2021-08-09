@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mutoco\Mplus\Import\Step;
-
 
 use Mutoco\Mplus\Exception\ImportException;
 use Mutoco\Mplus\Extension\DataRecordExtension;
@@ -144,7 +142,7 @@ class ImportModuleStep implements StepInterface
                                 $results = $this->target->invokeWithExtensions('transformMplusRelationField', $field, $node, $engine);
                                 if (!empty($results)) {
                                     $data[$field] = $results[0];
-                                } else if ($node) {
+                                } elseif ($node) {
                                     // Special treatment for Vocabulary items
                                     if (
                                         $node->getTag() === 'vocabularyReference' &&

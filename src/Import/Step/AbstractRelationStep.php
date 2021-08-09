@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mutoco\Mplus\Import\Step;
-
 
 use Mutoco\Mplus\Exception\ImportException;
 use Mutoco\Mplus\Import\ImportEngine;
@@ -83,12 +81,10 @@ abstract class AbstractRelationStep implements StepInterface
 
     protected function handleHasOne(DataObject $target, string $field, ImportEngine $engine): void
     {
-
     }
 
     protected function handleMany(DataList $relation, ImportEngine $engine): void
     {
-
     }
 
     protected function getSerializableObject(): \stdClass

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mutoco\Mplus\Tests\Model;
-
 
 use Mutoco\Mplus\Extension\DataRecordExtension;
 use Mutoco\Mplus\Model\VocabularyItem;
@@ -12,23 +10,23 @@ use SilverStripe\ORM\DataObject;
 
 class Exhibition extends DataObject implements TestOnly
 {
-	private static $db = [
+    private static $db = [
         'Status' => "Enum('complete,wip,none','none')",
-		'Title' => 'Varchar(255)',
-		'DateTo' => 'Date',
-		'DateFrom' => 'Date'
-	];
-
-	private static $has_one = [
-	    'InternalType' => VocabularyItem::class
+        'Title' => 'Varchar(255)',
+        'DateTo' => 'Date',
+        'DateFrom' => 'Date'
     ];
 
-	private static $has_many = [
-		'Texts' => TextBlock::class
-	];
+    private static $has_one = [
+        'InternalType' => VocabularyItem::class
+    ];
 
-	private static $many_many = [
-	    'Persons' => Person::class,
+    private static $has_many = [
+        'Texts' => TextBlock::class
+    ];
+
+    private static $many_many = [
+        'Persons' => Person::class,
         'ArtMovements' => VocabularyItem::class,
         'Works' => [
             'through' => ExhibitionWork::class,
@@ -37,15 +35,15 @@ class Exhibition extends DataObject implements TestOnly
         ]
     ];
 
-	private static $many_many_extraFields = [
-	    'Persons' => ['Role' => 'Varchar(128)']
+    private static $many_many_extraFields = [
+        'Persons' => ['Role' => 'Varchar(128)']
     ];
 
-	private static $extensions = [
-		DataRecordExtension::class
-	];
+    private static $extensions = [
+        DataRecordExtension::class
+    ];
 
-	private static $table_name = 'Mutoco_Test_Exhibition';
+    private static $table_name = 'Mutoco_Test_Exhibition';
 
     public function transformMplusFieldValue(string $field, ?TreeNode $node)
     {

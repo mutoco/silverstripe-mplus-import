@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mutoco\Mplus\Parse\Result;
-
 
 use Tree\Node\NodeInterface;
 use Tree\Visitor\Visitor;

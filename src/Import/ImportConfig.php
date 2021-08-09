@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Mutoco\Mplus\Import;
 
 use Mutoco\Mplus\Serialize\SerializableTrait;
@@ -67,7 +66,8 @@ class ImportConfig implements \Serializable
 
         foreach ($config as $module => $cfg) {
             $this->config[$module] = array_merge_recursive(
-                $this->config[$module] ?? [], $this->getNormalizedModuleConfig($cfg)
+                $this->config[$module] ?? [],
+                $this->getNormalizedModuleConfig($cfg)
             );
         }
 

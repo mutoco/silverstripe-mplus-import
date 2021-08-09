@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mutoco\Mplus\Tests;
-
 
 use Mutoco\Mplus\Import\MemoryImportBackend;
 use Mutoco\Mplus\Import\BackendInterface;

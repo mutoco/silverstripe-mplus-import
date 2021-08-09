@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mutoco\Mplus\Tests;
-
 
 use Mutoco\Mplus\Import\ImportConfig;
 use SilverStripe\Config\Collections\MutableConfigCollectionInterface;
@@ -99,7 +97,7 @@ class ImportConfigTest extends FunctionalTest
             'ExhRegistrarRef.RegSortLnu',
         ], $paths);
 
-        Config::withConfig(function(MutableConfigCollectionInterface $config) {
+        Config::withConfig(function (MutableConfigCollectionInterface $config) {
             // update your config
             $config->set('Test', 'mplus_import_fields', ['MplusID' => '__id']);
             $moduleConfig = [
@@ -145,7 +143,7 @@ class ImportConfigTest extends FunctionalTest
 
     public function testFieldNormalization()
     {
-        Config::withConfig(function(MutableConfigCollectionInterface $config) {
+        Config::withConfig(function (MutableConfigCollectionInterface $config) {
             // update your config
             $config->set('Test', 'mplus_import_fields', ['MplusID' => '__id']);
             $moduleConfig = [
@@ -167,7 +165,7 @@ class ImportConfigTest extends FunctionalTest
 
     public function testModuleNormalization()
     {
-        Config::withConfig(function(MutableConfigCollectionInterface $config) {
+        Config::withConfig(function (MutableConfigCollectionInterface $config) {
             // update your config
             $config->set('Test', 'mplus_import_fields', ['MplusID' => '__id']);
             $cfg = new ImportConfig(self::$config);
@@ -213,7 +211,7 @@ class ImportConfigTest extends FunctionalTest
 
     public function testConfigMerge()
     {
-        Config::withConfig(function(MutableConfigCollectionInterface $config) {
+        Config::withConfig(function (MutableConfigCollectionInterface $config) {
             // update your config
             $config->set('Test', 'mplus_import_fields', ['MplusID' => '__id']);
             $cfg = new ImportConfig(self::$config);

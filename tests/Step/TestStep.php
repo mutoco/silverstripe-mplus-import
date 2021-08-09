@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mutoco\Mplus\Tests\Step;
-
 
 use Mutoco\Mplus\Import\ImportEngine;
 use Mutoco\Mplus\Import\Step\StepInterface;

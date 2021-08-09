@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mutoco\Mplus\Tests\Model;
-
 
 use Mutoco\Mplus\Extension\DataRecordExtension;
 use Mutoco\Mplus\Model\VocabularyItem;

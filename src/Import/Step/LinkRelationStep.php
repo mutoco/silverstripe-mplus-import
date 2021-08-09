@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mutoco\Mplus\Import\Step;
-
 
 use Mutoco\Mplus\Import\ImportEngine;
 use Mutoco\Mplus\Util;
@@ -58,7 +56,7 @@ class LinkRelationStep extends AbstractRelationStep
                         if ($relation instanceof HasManyList) {
                             $target->update($data);
                             $relation->add($target->write());
-                        } else if ($relation instanceof ManyManyList || $relation instanceof ManyManyThroughList) {
+                        } elseif ($relation instanceof ManyManyList || $relation instanceof ManyManyThroughList) {
                             $relation->add($target, $data);
                         }
                     }

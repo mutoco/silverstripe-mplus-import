@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mutoco\Mplus\Parse;
-
 
 use GuzzleHttp\Psr7\Utils;
 use Mutoco\Mplus\Parse\Node\ParserInterface;

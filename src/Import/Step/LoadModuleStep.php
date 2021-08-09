@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mutoco\Mplus\Import\Step;
-
 
 use Mutoco\Mplus\Api\SearchBuilder;
 use Mutoco\Mplus\Exception\ImportException;
@@ -248,11 +246,11 @@ class LoadModuleStep implements StepInterface
 
                             $reference->markResolved();
                             return true;
-
                         } else {
                             throw new ImportException(sprintf(
                                 'Unable to import %s (#%s) from the API',
-                                $moduleName, $id
+                                $moduleName,
+                                $id
                             ));
                         }
                     }

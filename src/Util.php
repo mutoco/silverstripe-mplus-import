@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mutoco\Mplus;
-
 
 use Tree\Node\Node;
 use Tree\Visitor\PreOrderVisitor;
@@ -12,7 +10,9 @@ class Util
 {
     public static function isAssoc(array $arr): bool
     {
-        if (array() === $arr) return false;
+        if (array() === $arr) {
+            return false;
+        }
         return array_keys($arr) !== range(0, count($arr) - 1);
     }
 
@@ -52,7 +52,7 @@ class Util
             if ($name = $node->getValue()) {
                 if (str_ends_with($name, 'Ref')) {
                     $node->addChild(new Node('moduleReferenceItem'));
-                } else if (str_ends_with($name, 'Grp')) {
+                } elseif (str_ends_with($name, 'Grp')) {
                     $node->addChild(new Node('repeatableGroupItem'));
                 }
             }

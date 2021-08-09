@@ -1,11 +1,11 @@
 <?php
+
 /**
  * A helper to create valid search queries for the MpRIA.
  * This does not cover all the possible use-cases!
  */
 
 namespace Mutoco\Mplus\Api;
-
 
 use Mutoco\Mplus\Serialize\SerializableTrait;
 use Mutoco\Mplus\Util;

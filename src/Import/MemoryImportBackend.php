@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mutoco\Mplus\Import;
-
 
 use Mutoco\Mplus\Import\Step\StepInterface;
 use Mutoco\Mplus\Parse\Result\TreeNode;
@@ -144,7 +142,7 @@ class MemoryImportBackend implements BackendInterface
         $flags = $this->queue->getExtractFlags();
         $this->queue->setExtractFlags(\SplPriorityQueue::EXTR_BOTH);
 
-        while(!$this->queue->isEmpty()){
+        while (!$this->queue->isEmpty()) {
             $queue[] = $this->queue->extract();
         }
 

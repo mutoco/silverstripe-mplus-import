@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mutoco\Mplus\Tests;
-
 
 use Mutoco\Mplus\Job\ImportJob;
 use SilverStripe\Dev\FunctionalTest;

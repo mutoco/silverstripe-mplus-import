@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Mutoco\Mplus\Import;
 
 use Mutoco\Mplus\Import\Step\StepInterface;
@@ -48,7 +47,7 @@ if (class_exists('SQLite3')) {
         public function getNextStep(?int &$priority): ?StepInterface
         {
             $db = $this->getDb();
-            $row = $db->querySingle('SELECT * FROM queue ORDER BY priority DESC, id ASC LIMIT 1',true);
+            $row = $db->querySingle('SELECT * FROM queue ORDER BY priority DESC, id ASC LIMIT 1', true);
             if ($row && isset($row['id'])) {
                 $priority = $row['priority'] ?? 0;
                 $this->deleteFromQueue($row['id']);

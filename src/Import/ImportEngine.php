@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mutoco\Mplus\Import;
-
 
 use GuzzleHttp\Exception\GuzzleException;
 use Mutoco\Mplus\Api\ClientInterface;

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mutoco\Mplus\Tests;
-
 
 use Mutoco\Mplus\Import\ImportEngine;
 use Mutoco\Mplus\Import\Step\ImportModuleStep;
@@ -69,7 +67,7 @@ class LoadModuleStepTest extends FunctionalTest
 
     public function testTreeResolve()
     {
-        Config::withConfig(function(MutableConfigCollectionInterface $config) {
+        Config::withConfig(function (MutableConfigCollectionInterface $config) {
             $config->set(ImportEngine::class, 'modules', $this->loadedConfig['ImportEngine']['modules']);
             $engine = new ImportEngine();
             $engine->setApi(new Client());
@@ -99,7 +97,7 @@ class LoadModuleStepTest extends FunctionalTest
 
     protected function runAndGetStep(bool $useSearch)
     {
-        return Config::withConfig(function(MutableConfigCollectionInterface $config) use ($useSearch) {
+        return Config::withConfig(function (MutableConfigCollectionInterface $config) use ($useSearch) {
             $config->set(ImportEngine::class, 'modules', $this->loadedConfig['TestResolveTree']['modules']);
             $engine = new ImportEngine();
             $engine->setApi(new Client());

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mutoco\Mplus\Parse\Node;
-
 
 use Mutoco\Mplus\Parse\Parser;
 
@@ -19,7 +17,7 @@ class FieldParser implements ParserInterface
         $this->value = '';
     }
 
-    public function handleElementStart(Parser $parser, string $name, array $attributes):?ParserInterface
+    public function handleElementStart(Parser $parser, string $name, array $attributes): ?ParserInterface
     {
         if ($this->tag === $name) {
             $this->startDepth = $parser->getDepth();

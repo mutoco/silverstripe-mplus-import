@@ -1,10 +1,10 @@
 <?php
+
 /**
  * Task that runs the import
  */
 
 namespace Mutoco\Mplus\Job;
-
 
 use Mutoco\Mplus\Api\SearchBuilder;
 use Mutoco\Mplus\Exception\ImportException;
@@ -28,7 +28,7 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
     public function __construct(?string $module = null, ?string $id = null)
     {
         parent::__construct(array_filter([$module, $id]));
-        
+
         if ($module && is_string($module)) {
             $this->hydrate($module, $id);
         }

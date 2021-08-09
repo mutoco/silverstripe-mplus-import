@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mutoco\Mplus\Tests;
-
 
 use Mutoco\Mplus\Api\SearchBuilder;
 use SilverStripe\Dev\FunctionalTest;

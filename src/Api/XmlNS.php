@@ -1,10 +1,10 @@
 <?php
+
 /**
  * Collection of Mplus API XML Namespaces
  */
 
 namespace Mutoco\Mplus\Api;
-
 
 class XmlNS
 {

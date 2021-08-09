@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mutoco\Mplus\Tests\Extension;
-
 
 use Mutoco\Mplus\Import\Step\ImportModuleStep;
 use Mutoco\Mplus\Parse\Result\TreeNode;

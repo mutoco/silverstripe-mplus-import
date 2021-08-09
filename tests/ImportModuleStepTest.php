@@ -58,7 +58,7 @@ class ImportModuleStepTest extends SapphireTest
 
     public function testModelImport()
     {
-        Config::withConfig(function(MutableConfigCollectionInterface $config) {
+        Config::withConfig(function (MutableConfigCollectionInterface $config) {
             $existing = $this->objFromFixture(Exhibition::class, 'exhibition2');
             $existing->write();
             $this->assertEquals(['10'], $existing->Persons()->column('MplusID'));
@@ -100,7 +100,7 @@ class ImportModuleStepTest extends SapphireTest
 
     public function testModifiedImport()
     {
-        Config::withConfig(function(MutableConfigCollectionInterface $config) {
+        Config::withConfig(function (MutableConfigCollectionInterface $config) {
             $config->set(ImportEngine::class, 'modules', $this->loadedConfig['ImportEngine']['modules']);
             DBDatetime::set_mock_now('2021-05-10 10:00:00');
 
@@ -136,7 +136,7 @@ class ImportModuleStepTest extends SapphireTest
 
     public function testNestedFields()
     {
-        Config::withConfig(function(MutableConfigCollectionInterface $config) {
+        Config::withConfig(function (MutableConfigCollectionInterface $config) {
             $config->set(ImportEngine::class, 'modules', $this->loadedConfig['ImportNested']['modules']);
             $engine = new ImportEngine();
             $engine->setApi(new Client());
@@ -170,7 +170,7 @@ class ImportModuleStepTest extends SapphireTest
 
     public function testTaxonomyItems()
     {
-        Config::withConfig(function(MutableConfigCollectionInterface $config) {
+        Config::withConfig(function (MutableConfigCollectionInterface $config) {
             $config->set(ImportEngine::class, 'modules', $this->loadedConfig['TestVocabRelations']['modules']);
             $engine = new ImportEngine();
             $engine->setApi(new Client());
@@ -215,7 +215,7 @@ class ImportModuleStepTest extends SapphireTest
 
     public function testVocabularyItems()
     {
-        Config::withConfig(function(MutableConfigCollectionInterface $config) {
+        Config::withConfig(function (MutableConfigCollectionInterface $config) {
             DBDatetime::set_mock_now('2021-05-10 10:00:00');
 
             $config->set(ImportEngine::class, 'modules', $this->loadedConfig['TestVocabularyModels']['modules']);
@@ -252,7 +252,7 @@ class ImportModuleStepTest extends SapphireTest
 
     public function testWithSerialization()
     {
-        Config::withConfig(function(MutableConfigCollectionInterface $config) {
+        Config::withConfig(function (MutableConfigCollectionInterface $config) {
             $config->set(ImportEngine::class, 'modules', $this->loadedConfig['ImportNested']['modules']);
             $engine = new ImportEngine();
             $engine->setApi(new Client());

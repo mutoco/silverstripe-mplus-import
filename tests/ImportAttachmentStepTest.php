@@ -52,7 +52,7 @@ class ImportAttachmentStepTest extends SapphireTest
 
     public function testAttachmentImport()
     {
-        Config::withConfig(function(MutableConfigCollectionInterface $config) {
+        Config::withConfig(function (MutableConfigCollectionInterface $config) {
             DBDatetime::set_mock_now('2021-05-10 10:00:00');
             $object = $this->objFromFixture(Work::class, 'work1');
             $object->write();
@@ -92,7 +92,7 @@ class ImportAttachmentStepTest extends SapphireTest
 
     public function testSkipAttachment()
     {
-        Config::withConfig(function(MutableConfigCollectionInterface $config) {
+        Config::withConfig(function (MutableConfigCollectionInterface $config) {
             $config->set(ImportEngine::class, 'modules', $this->loadedConfig['ImportNested']['modules']);
             $config->merge(Work::class, 'extensions', [
                 TestSkipAttachmentExtension::class

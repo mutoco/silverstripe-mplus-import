@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mutoco\Mplus\Parse\Node;
-
 
 use Mutoco\Mplus\Parse\Parser;
 use Mutoco\Mplus\Parse\Result\TreeNode;

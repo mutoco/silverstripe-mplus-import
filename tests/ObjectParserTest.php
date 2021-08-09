@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Mutoco\Mplus\Tests;
-
 
 use Mutoco\Mplus\Parse\Parser;
 use Mutoco\Mplus\Parse\Result\TreeNode;
@@ -74,5 +72,4 @@ class ObjectParserTest extends FunctionalTest
         $this->assertCount(3, $result->getChildren()[0]->getChildren());
         $this->assertCount(4, $result->getChildren()[0]->getChildren()[0]->getChildren());
     }
-
 }
