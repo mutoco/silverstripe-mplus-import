@@ -1,12 +1,18 @@
 # SilverStripe importer for Museum Plus
 
+[![Code Coverage](https://codecov.io/gh/mutoco/silverstripe-mplus-import/branch/main/graph/badge.svg)](https://codecov.io/gh/mutoco/silverstripe-mplus-import)
+[![Build Status](https://travis-ci.com/mutoco/silverstripe-mplus-import.svg?branch=main)](https://travis-ci.com/mutoco/silverstripe-mplus-import)
+[![Latest Stable Version](https://poser.pugx.org/mutoco/silverstripe-mplus-import/v/stable)](https://packagist.org/packages/mutoco/silverstripe-mplus-import)
+[![Monthly Downloads](https://poser.pugx.org/mutoco/silverstripe-mplus-import/d/monthly)](https://packagist.org/packages/mutoco/silverstripe-mplus-import)
+
 This is an importer to import data-records from [museumplus by zetcom](https://www.zetcom.com/en/museumplus-en/).
 It is implemented as a queued-job for the QueuedJobs Module.
 
 ## Requirements
 
-* SilverStripe ^4.0
+* SilverStripe ^4.7
 * [QueuedJobs Module](https://github.com/symbiote/silverstripe-queuedjobs) ^4
+* PHP 7.4 or newer
 
 ## Installation
 

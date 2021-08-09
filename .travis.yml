@@ -2,8 +2,6 @@ language: php
 
 jobs:
   include:
-    - php: 7.3
-      env: DB=PGSQL RECIPE_VERSION=4.8 PHPUNIT_TEST=1
     - php: 7.4
       env: DB=MYSQL RECIPE_VERSION=4.x-dev PHPCS_TEST=1 PHPUNIT_COVERAGE_TEST=1
 
