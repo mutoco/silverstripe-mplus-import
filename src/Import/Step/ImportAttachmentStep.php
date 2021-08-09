@@ -174,7 +174,7 @@ class ImportAttachmentStep implements StepInterface
         $resultImage = null;
         if ($exitCode === 0) {
             $image = Image::create();
-            $image->setFromString(file_get_contents($outfile), $fileName);
+            $image->setFromLocalFile($outfile, $fileName);
             $resultImage = $this->storeImage($image);
         }
 
@@ -229,7 +229,9 @@ class ImportAttachmentStep implements StepInterface
 
     protected function sanitizeFilename(string $name): string
     {
-        return preg_replace('{\.(jpe?g|tiff?|gif|png|bmp|psd|webp)$}i', '', $name) . '.jpg';
+        $noExt = preg_replace('{\.(jpe?g|tiff?|gif|png|bmp|psd|webp)$}i', '', $name);
+        $clean = preg_replace('{[^a-z0-9\.]+}i', '-', $noExt);
+        return $clean . '.jpg';
     }
 
     protected function getSerializableObject(): \stdClass
