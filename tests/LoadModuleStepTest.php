@@ -32,7 +32,9 @@ class LoadModuleStepTest extends FunctionalTest
 
         Config::inst()->merge(Injector::class, 'Mutoco\Mplus\Api\Client', ['class' => Client::class]);
 
-        $this->loadedConfig = Yaml::parseFile(__DIR__ . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'test.yml');
+        $this->loadedConfig = Yaml::parseFile(
+            __DIR__ . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'test.yml'
+        );
         if (isset($this->loadedConfig['ImportEngine'])) {
             Config::inst()->merge(ImportEngine::class, 'modules', $this->loadedConfig['ImportEngine']['modules']);
         }
@@ -118,8 +120,16 @@ class LoadModuleStepTest extends FunctionalTest
             // Deque next load
             $step = $engine->getBackend()->getNextStep($prio);
 
-            $this->assertEquals('Künstler/in', $tree->getNestedValue('ExhPersonRef.TypeVoc.artist'), 'Has resolved internal field');
-            $this->assertEquals('Edvard', $tree->getNestedValue('ExhPersonRef.PerFirstNameTxt'), 'Has resolved external field');
+            $this->assertEquals(
+                'Künstler/in',
+                $tree->getNestedValue('ExhPersonRef.TypeVoc.artist'),
+                'Has resolved internal field'
+            );
+            $this->assertEquals(
+                'Edvard',
+                $tree->getNestedValue('ExhPersonRef.PerFirstNameTxt'),
+                'Has resolved external field'
+            );
             return $step;
         });
     }

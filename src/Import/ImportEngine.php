@@ -14,11 +14,11 @@ class ImportEngine implements \Serializable
     use Configurable;
     use SerializableTrait;
 
-    const PRIORITY_IMPORT = 1000;
-    const PRIORITY_LOAD = 500;
-    const PRIORITY_LINK = 100;
-    const PRIORITY_FETCH_MORE = 10;
-    const PRIORITY_CLEANUP = 0;
+    public const PRIORITY_IMPORT = 1000;
+    public const PRIORITY_LOAD = 500;
+    public const PRIORITY_LINK = 100;
+    public const PRIORITY_FETCH_MORE = 10;
+    public const PRIORITY_CLEANUP = 0;
 
     protected ?ClientInterface $api = null;
     protected ?StepInterface $lastStep = null;

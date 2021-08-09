@@ -131,7 +131,11 @@ class TreeNodeTest extends FunctionalTest
         $this->assertNotNull($subNode->getSharedParent('Foo.Bar'));
         $this->assertEquals('Foo', $subNode->getSharedParent('Foo.Bar')->getName());
         $this->assertEquals('Baz', $subNode->getSharedParent('Foo.Baz.Author')->getName());
-        $this->assertEquals($this->tree, $subNode->getSharedParent('Some.Path'), 'Non matching paths should return tree root');
+        $this->assertEquals(
+            $this->tree,
+            $subNode->getSharedParent('Some.Path'),
+            'Non matching paths should return tree root'
+        );
         $this->assertEquals($this->tree, $this->tree->getSharedParent(''));
         $this->assertEquals($this->tree, $this->tree->getSharedParent('Foo.Baz.Text'));
 
@@ -145,7 +149,11 @@ class TreeNodeTest extends FunctionalTest
         $grandChild1->setValue('X');
         $grandChild2->setValue('Y');
 
-        $this->assertEquals($grandChild2->getSharedParent('Foo.Bar.Title'), $child2, 'Grandchild 2 should have child 2 as parent');
+        $this->assertEquals(
+            $grandChild2->getSharedParent('Foo.Bar.Title'),
+            $child2,
+            'Grandchild 2 should have child 2 as parent'
+        );
         $this->assertEquals($grandChild2->getSharedParent('Foo.Bar'), $barNode->getChildren()[1]);
     }
 

@@ -130,7 +130,11 @@ class LoadModuleStep implements StepInterface
 
             /** @var TreeNode $reference */
             foreach ($references as $reference) {
-                if (!$reference->isResolved() && ($moduleName = $reference->getModuleName()) && ($id = $reference->moduleItemId)) {
+                if (
+                    !$reference->isResolved() &&
+                    ($moduleName = $reference->getModuleName()) &&
+                    ($id = $reference->moduleItemId)
+                ) {
                     if ($useSearch) {
                         $moduleMap[$moduleName][] = $id;
                     } else {
@@ -218,7 +222,10 @@ class LoadModuleStep implements StepInterface
                     // Check if there are unresolved sub-paths
                     $hasUnresolved = false;
                     foreach ($pathNode->getChildren() as $segment) {
-                        if (!$reference->getNestedNode($segment->getValue()) && !$reference->getNestedValue($segment->getValue())) {
+                        if (
+                            !$reference->getNestedNode($segment->getValue()) &&
+                            !$reference->getNestedValue($segment->getValue())
+                        ) {
                             $hasUnresolved = true;
                             break;
                         }

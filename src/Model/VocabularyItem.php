@@ -44,7 +44,10 @@ class VocabularyItem extends DataObject
             throw new \Exception('Node does not contain a vocabularyReferenceItem');
         }
 
-        if (($target = VocabularyItem::get()->find('MplusID', $vocabNode->getId())) && $target instanceof VocabularyItem) {
+        if (
+            ($target = VocabularyItem::get()->find('MplusID', $vocabNode->getId())) &&
+            $target instanceof VocabularyItem
+        ) {
             return $target;
         }
 
@@ -84,7 +87,11 @@ class VocabularyItem extends DataObject
         $item->setField('Language', $node->language);
         $item->setField('Value', $node->getValue());
 
-        if (($parent = $node->getParent()) && ($parent instanceof TreeNode) && ($parent->getTag() === 'vocabularyReference')) {
+        if (
+            ($parent = $node->getParent()) &&
+            ($parent instanceof TreeNode) &&
+            ($parent->getTag() === 'vocabularyReference')
+        ) {
             $item->setField('VocabularyGroup', VocabularyGroup::findOrCreateFromNode($parent));
         }
     }

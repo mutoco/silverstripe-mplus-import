@@ -44,7 +44,11 @@ abstract class AbstractRelationStep implements StepInterface
 
         $type = $target->getRelationType($this->relationName);
         if (!$type) {
-            throw new ImportException(sprintf('No relation named "%s" on %s', $this->relationName, $target->getClassName()));
+            throw new ImportException(sprintf(
+                'No relation named "%s" on %s',
+                $this->relationName,
+                $target->getClassName()
+            ));
         }
 
         switch ($type) {

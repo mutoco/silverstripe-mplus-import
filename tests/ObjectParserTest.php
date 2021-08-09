@@ -55,7 +55,10 @@ class ObjectParserTest extends FunctionalTest
         $this->assertNull($result->getNestedNode('Object.ObjMultimediaRef.ThumbnailBoo'));
         $this->assertNotNull($result->getNestedNode('Object.ObjMultimediaRef.TypeVoc'));
         $this->assertFalse($result->getNestedNode('Object.ObjMultimediaRef.TypeVoc')->isLeaf());
-        $this->assertEquals('Testing', $result->getNestedNode('Object.ObjMultimediaRef.TypeVoc')->getChildren()[0]->getValue());
+        $this->assertEquals(
+            'Testing',
+            $result->getNestedNode('Object.ObjMultimediaRef.TypeVoc')->getChildren()[0]->getValue()
+        );
     }
 
     public function testSearchResult()

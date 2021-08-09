@@ -46,7 +46,9 @@ class ImportModuleStepTest extends SapphireTest
 
         Config::inst()->merge(Injector::class, 'Mutoco\Mplus\Api\Client', ['class' => Client::class]);
 
-        $this->loadedConfig = Yaml::parseFile(__DIR__ . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'test.yml');
+        $this->loadedConfig = Yaml::parseFile(
+            __DIR__ . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'test.yml'
+        );
     }
 
     protected function tearDown()
@@ -94,7 +96,10 @@ class ImportModuleStepTest extends SapphireTest
             $person = Person::get()->find('MplusID', 1982);
             $this->assertEquals('1863-12-12', $person->DateOfBirth);
             $this->assertEquals('Edvard', $person->Firstname);
-            $this->assertEquals([356559, 356558, 367558, 367559, 367560], $engine->getBackend()->getImportedIds('ExhTextGrp'));
+            $this->assertEquals(
+                [356559, 356558, 367558, 367559, 367560],
+                $engine->getBackend()->getImportedIds('ExhTextGrp')
+            );
         });
     }
 
@@ -115,8 +120,16 @@ class ImportModuleStepTest extends SapphireTest
             Person::flush_and_destroy_cache();
             $exhibition = Exhibition::get()->find('MplusID', 2);
             $person = Person::get()->find('MplusID', 1982);
-            $this->assertEquals('2021-05-10 10:00:00', $exhibition->Imported, 'Imported date must be updated to import time');
-            $this->assertEquals('2021-05-10 10:00:00', $person->Imported, 'Imported date must be updated to import time');
+            $this->assertEquals(
+                '2021-05-10 10:00:00',
+                $exhibition->Imported,
+                'Imported date must be updated to import time'
+            );
+            $this->assertEquals(
+                '2021-05-10 10:00:00',
+                $person->Imported,
+                'Imported date must be updated to import time'
+            );
 
             DBDatetime::set_mock_now('2021-05-11 11:00:00');
             $engine = new ImportEngine();
@@ -148,7 +161,10 @@ class ImportModuleStepTest extends SapphireTest
             Exhibition::flush_and_destroy_cache();
             $exhibition = Exhibition::get()->find('MplusID', 2);
             $this->assertEquals([435960, 47894], $exhibition->Works()->column('MplusID'));
-            $this->assertEquals(['Stillleben mit Hummer', 'Testdatensatz Portrait'], $exhibition->Works()->column('Title'));
+            $this->assertEquals(
+                ['Stillleben mit Hummer', 'Testdatensatz Portrait'],
+                $exhibition->Works()->column('Title')
+            );
             $this->assertEquals(['TEST', 'Hummer'], $exhibition->Works()->column('Subtitle'));
             $this->assertEquals(['Edvard Munch', 'Edvard Munch'], $exhibition->Works()->column('Artist'));
             $this->assertTrue($exhibition->Works()->last()->Image()->exists());
@@ -268,7 +284,10 @@ class ImportModuleStepTest extends SapphireTest
             Exhibition::flush_and_destroy_cache();
             $exhibition = Exhibition::get()->find('MplusID', 2);
             $this->assertEquals([435960, 47894], $exhibition->Works()->column('MplusID'));
-            $this->assertEquals(['Stillleben mit Hummer', 'Testdatensatz Portrait'], $exhibition->Works()->column('Title'));
+            $this->assertEquals(
+                ['Stillleben mit Hummer', 'Testdatensatz Portrait'],
+                $exhibition->Works()->column('Title')
+            );
             $this->assertEquals(['TEST', 'Hummer'], $exhibition->Works()->column('Subtitle'));
             $this->assertEquals(['Edvard Munch', 'Edvard Munch'], $exhibition->Works()->column('Artist'));
         });

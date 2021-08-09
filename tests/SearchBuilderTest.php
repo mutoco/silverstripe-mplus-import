@@ -14,11 +14,15 @@ class SearchBuilderTest extends FunctionalTest
         $builder->setPrettyPrint(true);
         $builder->setLimit(20);
         $builder->setStart(10);
-        $xml = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'search' . DIRECTORY_SEPARATOR . 'default.xml');
+        $xml = file_get_contents(
+            __DIR__ . DIRECTORY_SEPARATOR . 'search' . DIRECTORY_SEPARATOR . 'default.xml'
+        );
         $this->assertEquals($xml, (string)$builder);
 
         $builder->setSelect(['__id', 'AdrSurNameTxt', 'AdrContactGrp.TypeVoc']);
-        $xml = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'search' . DIRECTORY_SEPARATOR . 'withFields.xml');
+        $xml = file_get_contents(
+            __DIR__ . DIRECTORY_SEPARATOR . 'search' . DIRECTORY_SEPARATOR . 'withFields.xml'
+        );
         $this->assertEquals($xml, (string)$builder);
 
         $builder->setSelect([]);
@@ -26,7 +30,9 @@ class SearchBuilderTest extends FunctionalTest
         $builder->setLimit(10);
         $builder->setFulltext('*test');
         $builder->addSort('__id', false);
-        $xml = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'search' . DIRECTORY_SEPARATOR . 'withFulltextAndSort.xml');
+        $xml = file_get_contents(
+            __DIR__ . DIRECTORY_SEPARATOR . 'search' . DIRECTORY_SEPARATOR . 'withFulltextAndSort.xml'
+        );
         $this->assertEquals($xml, (string)$builder);
 
         $builder = new SearchBuilder('Test');
@@ -45,7 +51,9 @@ class SearchBuilderTest extends FunctionalTest
                 ]
             ]
         ]);
-        $xml = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'search' . DIRECTORY_SEPARATOR . 'withExpert.xml');
+        $xml = file_get_contents(
+            __DIR__ . DIRECTORY_SEPARATOR . 'search' . DIRECTORY_SEPARATOR . 'withExpert.xml'
+        );
         $this->assertEquals($xml, (string)$builder);
     }
 
@@ -60,7 +68,9 @@ class SearchBuilderTest extends FunctionalTest
                 'operand' => '123'
             ]
         ]);
-        $xml = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'search' . DIRECTORY_SEPARATOR . 'withSingleExpert.xml');
+        $xml = file_get_contents(
+            __DIR__ . DIRECTORY_SEPARATOR . 'search' . DIRECTORY_SEPARATOR . 'withSingleExpert.xml'
+        );
         $this->assertEquals($xml, (string)$builder);
     }
 
@@ -92,7 +102,9 @@ class SearchBuilderTest extends FunctionalTest
             ]
         ]);
 
-        $xml = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'search' . DIRECTORY_SEPARATOR . 'withNestedExpert.xml');
+        $xml = file_get_contents(
+            __DIR__ . DIRECTORY_SEPARATOR . 'search' . DIRECTORY_SEPARATOR . 'withNestedExpert.xml'
+        );
         $this->assertEquals($xml, (string)$builder);
     }
 

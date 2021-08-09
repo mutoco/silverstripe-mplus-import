@@ -33,7 +33,9 @@ class CleanupRecordsStepTest extends SapphireTest
 
         Config::inst()->merge(Injector::class, 'Mutoco\Mplus\Api\Client', ['class' => Client::class]);
 
-        $this->loadedConfig = Yaml::parseFile(__DIR__ . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'test.yml');
+        $this->loadedConfig = Yaml::parseFile(
+            __DIR__ . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'test.yml'
+        );
     }
 
     protected function tearDown()

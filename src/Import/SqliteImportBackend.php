@@ -267,8 +267,12 @@ SQL;
             $this->treeInsert = $db->prepare('REPLACE INTO trees (id, module, value) VALUES (:id, :module, :value)');
             $this->treeSelect = $db->prepare('SELECT value FROM trees WHERE id=:id AND module=:module');
 
-            $this->relationInsert = $db->prepare('REPLACE INTO relations (id, class, relation, value) VALUES (:id, :class, :relation, :value)');
-            $this->relationSelect = $db->prepare('SELECT value FROM relations WHERE id=:id AND class=:class AND relation=:relation');
+            $this->relationInsert = $db->prepare(
+                'REPLACE INTO relations (id, class, relation, value) VALUES (:id, :class, :relation, :value)'
+            );
+            $this->relationSelect = $db->prepare(
+                'SELECT value FROM relations WHERE id=:id AND class=:class AND relation=:relation'
+            );
 
             $this->moduleInsert = $db->prepare('REPLACE INTO modules (id, module) VALUES (:id, :module)');
             $this->moduleSelect = $db->prepare('SELECT id FROM modules WHERE module=:module AND id=:id');

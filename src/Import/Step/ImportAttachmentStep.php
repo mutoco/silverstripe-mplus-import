@@ -138,7 +138,10 @@ class ImportAttachmentStep implements StepInterface
                 return $this->createImageWithIntervention($stream, $fileName);
             }
         } catch (\Throwable $err) {
-            Injector::inst()->get(LoggerInterface::class)->error(sprintf('Unable to create image from file %s', $fileName));
+            Injector::inst()->get(LoggerInterface::class)->error(sprintf(
+                'Unable to create image from file %s',
+                $fileName
+            ));
             Injector::inst()->get(LoggerInterface::class)->error($err->getMessage());
         }
 

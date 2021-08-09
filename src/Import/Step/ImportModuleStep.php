@@ -68,7 +68,11 @@ class ImportModuleStep implements StepInterface
         }
 
         if (!$this->tree) {
-            throw new ImportException(sprintf('Cannot import module (%s #%s) without an imported tree', $this->module, $this->id));
+            throw new ImportException(sprintf(
+                'Cannot import module (%s #%s) without an imported tree',
+                $this->module,
+                $this->id
+            ));
         }
     }
 
@@ -87,7 +91,12 @@ class ImportModuleStep implements StepInterface
 
         if (!$isSkipped) {
             if (isset($config['attachment'])) {
-                $result = $this->target->invokeWithExtensions('mplusShouldImportAttachment', $config['attachment'], $this->tree, $engine);
+                $result = $this->target->invokeWithExtensions(
+                    'mplusShouldImportAttachment',
+                    $config['attachment'],
+                    $this->tree,
+                    $engine
+                );
                 if (empty($result) || min($result) !== false) {
                     $engine->addStep(new ImportAttachmentStep($this->module, $this->id));
                 }
@@ -118,7 +127,13 @@ class ImportModuleStep implements StepInterface
             foreach ($nodes as $collection) {
                 foreach ($collection->getChildren() as $child) {
                     if ($child instanceof TreeNode) {
-                        $results = $this->target->invokeWithExtensions('shouldImportMplusRelation', $relationName, $child, $engine);
+                        $results = $this->target->invokeWithExtensions(
+                            'shouldImportMplusRelation',
+                            $relationName,
+                            $child,
+                            $engine
+                        );
+
                         if (!empty($results) && min($results) === false) {
                             continue;
                         }
@@ -139,7 +154,13 @@ class ImportModuleStep implements StepInterface
                                 } else {
                                     $node = $this->tree->getNestedNode($path);
                                 }
-                                $results = $this->target->invokeWithExtensions('transformMplusRelationField', $field, $node, $engine);
+                                $results = $this->target->invokeWithExtensions(
+                                    'transformMplusRelationField',
+                                    $field,
+                                    $node,
+                                    $engine
+                                );
+
                                 if (!empty($results)) {
                                     $data[$field] = $results[0];
                                 } elseif ($node) {
@@ -148,9 +169,16 @@ class ImportModuleStep implements StepInterface
                                         $node->getTag() === 'vocabularyReference' &&
                                         ($item = VocabularyItem::findOrCreateFromNode($node))
                                     ) {
-                                        $engine->getBackend()->reportImportedModule('VocabularyItem', $item->MplusID);
+                                        $engine->getBackend()->reportImportedModule(
+                                            'VocabularyItem',
+                                            $item->MplusID
+                                        );
+
                                         if (($group = $item->VocabularyGroup()) && $group->exists()) {
-                                            $engine->getBackend()->reportImportedModule('VocabularyGroup', $group->MplusID);
+                                            $engine->getBackend()->reportImportedModule(
+                                                'VocabularyGroup',
+                                                $group->MplusID
+                                            );
                                         }
                                         $data[$field] = $item->ID;
                                     } else {
@@ -166,18 +194,32 @@ class ImportModuleStep implements StepInterface
 
             if (!empty($ids)) {
                 // If there are IDs, link the relation
-                $engine->addStep(new LinkRelationStep($this->target->getClassName(), $this->target->MplusID, $relationName, $ids));
+                $engine->addStep(new LinkRelationStep(
+                    $this->target->getClassName(),
+                    $this->target->MplusID,
+                    $relationName,
+                    $ids
+                ));
             } else {
                 // If there are no IDs, clean the relation
-                $engine->addStep(new CleanupRelationStep($this->target->getClassName(), $this->target->MplusID, $relationName, []));
+                $engine->addStep(new CleanupRelationStep(
+                    $this->target->getClassName(),
+                    $this->target->MplusID,
+                    $relationName,
+                    []
+                ));
             }
         }
 
         $engine->getBackend()->reportImportedModule($this->module, $this->id);
     }
 
-    protected function createOrUpdate(array $config, TreeNode $tree, ImportEngine $engine, &$skipped = false): DataObject
-    {
+    protected function createOrUpdate(
+        array $config,
+        TreeNode $tree,
+        ImportEngine $engine,
+        &$skipped = false
+    ): DataObject {
         $modelClass = $config['modelClass'] ?? null;
         $id = $this->getId();
 
@@ -190,7 +232,10 @@ class ImportModuleStep implements StepInterface
         $target = $existing ?? Injector::inst()->create($modelClass);
 
         if (!$target->hasExtension(DataRecordExtension::class)) {
-            throw new ImportException(sprintf('Dataobject import target (%s) needs to have the DataRecordExtension', $modelClass));
+            throw new ImportException(sprintf(
+                'Dataobject import target (%s) needs to have the DataRecordExtension',
+                $modelClass
+            ));
         }
 
         // Skip over existing records that were not modified remotely
@@ -202,7 +247,11 @@ class ImportModuleStep implements StepInterface
 
             if ($lastModified > 0 && $lastModified <= strtotime($target->Imported)) {
                 // Get result from skip call and filter out any `null` value returns
-                $skipCallbackResult = $target->invokeWithExtensions('beforeMplusSkip', $this, $engine);
+                $skipCallbackResult = $target->invokeWithExtensions(
+                    'beforeMplusSkip',
+                    $this,
+                    $engine
+                );
                 // If any callback returned false, we won't skip
                 if (empty($skipCallbackResult) || min($skipCallbackResult) !== false) {
                     $skipped = true;
@@ -220,7 +269,12 @@ class ImportModuleStep implements StepInterface
             }
 
             if ($target->hasDatabaseField($fieldName) && ($fieldNode = $tree->getNestedNode($mplusName))) {
-                $results = $target->invokeWithExtensions('transformMplusFieldValue', $fieldName, $fieldNode, $engine);
+                $results = $target->invokeWithExtensions(
+                    'transformMplusFieldValue',
+                    $fieldName,
+                    $fieldNode,
+                    $engine
+                );
                 $target->setField($fieldName, empty($results) ? $fieldNode->getValue() : $results[0]);
             }
         }

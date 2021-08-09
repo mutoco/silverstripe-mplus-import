@@ -187,8 +187,16 @@ class SearchBuilder implements \Serializable
 
         $xml->appendChild($root = $xml->createElementNS(XmlNS::SEARCH, 'application'));
 
-        $root->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
-        $root->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'schemaLocation', 'http://www.zetcom.com/ria/ws/module/search http://docs.zetcom.com/ws/module/search/search_1_6.xsd');
+        $root->setAttributeNS(
+            'http://www.w3.org/2000/xmlns/',
+            'xmlns:xsi',
+            'http://www.w3.org/2001/XMLSchema-instance'
+        );
+        $root->setAttributeNS(
+            'http://www.w3.org/2001/XMLSchema-instance',
+            'schemaLocation',
+            'http://www.zetcom.com/ria/ws/module/search http://docs.zetcom.com/ws/module/search/search_1_6.xsd'
+        );
 
         $root->appendChild($modules = $xml->createElementNS(XmlNS::SEARCH, 'modules'));
         $modules->appendChild($child = $xml->createElementNS(XmlNS::SEARCH, 'module'));

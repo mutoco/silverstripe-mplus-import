@@ -86,7 +86,11 @@ class TreeParser implements ParserInterface
             $parser->addNode($node);
         }
 
-        if (!$this->depths->isEmpty() && $this->depths->top() >= $parser->getDepth() && isset($this->fieldTags[$name])) {
+        if (
+            !$this->depths->isEmpty() &&
+            $this->depths->top() >= $parser->getDepth() &&
+            isset($this->fieldTags[$name])
+        ) {
             return new FieldParser($this->fieldTags[$name]);
         }
 

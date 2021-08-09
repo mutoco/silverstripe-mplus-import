@@ -79,7 +79,8 @@ class LoadSearchStep implements StepInterface
                 $total = (int)$tree->totalSize;
                 $this->page++;
                 if ($this->page * $pageSize < $total) {
-                    // Enqueue an additional search step (with same priority) that will run after the first batch has completed
+                    // Enqueue an additional search step (with same priority).
+                    // It will run after the first batch has completed
                     $step = new LoadSearchStep($this->search, $this->page);
                     $step->setDefaultPriority($this->priority);
                     $engine->addStep($step);

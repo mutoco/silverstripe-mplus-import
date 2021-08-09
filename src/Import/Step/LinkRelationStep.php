@@ -25,7 +25,12 @@ class LinkRelationStep extends AbstractRelationStep
 
         $result = parent::run($engine);
 
-        $engine->getBackend()->reportImportedRelation($this->targetClass, $this->targetId, $this->relationName, $this->relationIds);
+        $engine->getBackend()->reportImportedRelation(
+            $this->targetClass,
+            $this->targetId,
+            $this->relationName,
+            $this->relationIds
+        );
 
         return $result;
     }
