@@ -4,7 +4,6 @@ namespace Mutoco\Mplus\Tests;
 
 use Mutoco\Mplus\Import\ImportEngine;
 use Mutoco\Mplus\Import\Step\ImportAttachmentStep;
-use Mutoco\Mplus\Import\Step\ImportModuleStep;
 use Mutoco\Mplus\Import\Step\LoadModuleStep;
 use Mutoco\Mplus\Tests\Api\Client;
 use Mutoco\Mplus\Tests\Extension\TestSkipAttachmentExtension;
@@ -13,6 +12,7 @@ use Mutoco\Mplus\Tests\Model\ExhibitionWork;
 use Mutoco\Mplus\Tests\Model\Person;
 use Mutoco\Mplus\Tests\Model\TextBlock;
 use Mutoco\Mplus\Tests\Model\Work;
+use SilverStripe\Assets\Dev\TestAssetStore;
 use SilverStripe\Config\Collections\MutableConfigCollectionInterface;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
@@ -37,6 +37,8 @@ class ImportAttachmentStepTest extends SapphireTest
     {
         parent::setUp();
 
+        TestAssetStore::activate('data');
+
         Config::nest();
 
         Config::inst()->merge(Injector::class, 'Mutoco\Mplus\Api\Client', ['class' => Client::class]);
@@ -49,6 +51,7 @@ class ImportAttachmentStepTest extends SapphireTest
     protected function tearDown()
     {
         Config::unnest();
+        TestAssetStore::reset();
         parent::tearDown();
     }
 

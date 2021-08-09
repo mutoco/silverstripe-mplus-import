@@ -16,6 +16,7 @@ use Mutoco\Mplus\Tests\Model\Taxonomy;
 use Mutoco\Mplus\Tests\Model\TaxonomyType;
 use Mutoco\Mplus\Tests\Model\TextBlock;
 use Mutoco\Mplus\Tests\Model\Work;
+use SilverStripe\Assets\Dev\TestAssetStore;
 use SilverStripe\Config\Collections\MutableConfigCollectionInterface;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Injector\Injector;
@@ -42,6 +43,8 @@ class ImportModuleStepTest extends SapphireTest
     {
         parent::setUp();
 
+        TestAssetStore::activate('data');
+
         Config::nest();
 
         Config::inst()->merge(Injector::class, 'Mutoco\Mplus\Api\Client', ['class' => Client::class]);
@@ -54,6 +57,7 @@ class ImportModuleStepTest extends SapphireTest
     protected function tearDown()
     {
         Config::unnest();
+        TestAssetStore::reset();
         parent::tearDown();
     }
 
