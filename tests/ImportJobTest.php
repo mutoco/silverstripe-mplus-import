@@ -3,10 +3,24 @@
 namespace Mutoco\Mplus\Tests;
 
 use Mutoco\Mplus\Job\ImportJob;
+use SilverStripe\Core\Config\Config;
 use SilverStripe\Dev\FunctionalTest;
 
 class ImportJobTest extends FunctionalTest
 {
+    public function setUp()
+    {
+        parent::setUp();
+
+        Config::modify()->merge('SilverStripe\Core\Injector\Injector', 'Mutoco\Mplus\Api\Client', [
+           'constructor' => [
+               'https://some.endpoint.example/',
+               'user',
+               'pass'
+           ]
+        ]);
+    }
+
     public function testSerialization()
     {
         $job = new ImportJob('Exhibition');
