@@ -18,20 +18,11 @@ class Client implements ClientInterface
 
     private \GuzzleHttp\Client $client;
 
-    public function __construct(?string $baseUrl = null, ?string $username = null, ?string $password = null)
+    public function __construct(string $baseUrl, string $username, string $password)
     {
-        if ($baseUrl) {
-            $this->setBaseUrl($baseUrl);
-        }
-
-        if ($username) {
-            $this->setUsername($username);
-        }
-
-        if ($password) {
-            $this->setPassword($password);
-        }
-
+        $this->setBaseUrl($baseUrl);
+        $this->setUsername($username);
+        $this->setPassword($password);
         $this->sessionKey = null;
         $this->maxRetries = 3;
         $this->retries = 0;

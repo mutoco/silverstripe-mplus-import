@@ -9,6 +9,10 @@ use Psr\Http\Message\StreamInterface;
 
 class Client implements ClientInterface
 {
+    public function __construct()
+    {
+    }
+
     public function queryModelItem(string $module, string $id): ?StreamInterface
     {
         $filename = sprintf('%s-%s.xml', $module, $id);
