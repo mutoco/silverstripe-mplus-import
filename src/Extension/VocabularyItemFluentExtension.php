@@ -42,7 +42,7 @@ class VocabularyItemFluentExtension extends DataExtension
 
                     if ($nodes && $nodes->count() > 0 && ($term = $nodes->item(0))) {
                         $value = $term->nodeValue;
-                        FluentState::singleton()->withState(function(FluentState $state) use ($locale, $lang, $value) {
+                        FluentState::singleton()->withState(function (FluentState $state) use ($locale, $lang, $value) {
                             $state->setLocale($locale);
                             $this->owner->Value = $value;
                             $this->owner->Language = $lang;
