@@ -59,9 +59,10 @@ class VocabularyItem extends DataObject
             'Module' => 'VocabularyItem'
         ]);
 
-        self::updateFromNode($target, $vocabNode, $engine);
+        if (!self::updateFromNode($target, $vocabNode, $engine)) {
+            $target->write();
+        }
 
-        $target->write();
         return $target;
     }
 
@@ -82,7 +83,13 @@ class VocabularyItem extends DataObject
         return null;
     }
 
-    protected static function updateFromNode(VocabularyItem $item, TreeNode $node, ImportEngine $engine): void
+    /**
+     * @param VocabularyItem $item
+     * @param TreeNode $node
+     * @param ImportEngine $engine
+     * @return bool - true when item was already written
+     */
+    protected static function updateFromNode(VocabularyItem $item, TreeNode $node, ImportEngine $engine): bool
     {
         $item->setField('Name', $node->name);
         $item->setField('Language', $node->language);
@@ -96,13 +103,16 @@ class VocabularyItem extends DataObject
             $item->setField('VocabularyGroup', VocabularyGroup::findOrCreateFromNode($parent));
         }
 
-        $item->invokeWithExtensions('onUpdateFromNode', $node, $engine);
+        $result = $item->invokeWithExtensions('onUpdateFromNode', $node, $engine);
+        return !empty($result) && max($result) == true;
     }
 
-    public function beforeMplusImport(ImportModuleStep $step, ImportEngine $engine)
+    public function afterMplusImport(ImportModuleStep $step, ImportEngine $engine)
     {
         if ($node = self::findVocabularyItemNode($step->getTree())) {
-            self::updateFromNode($this, $node, $engine);
+            if (!self::updateFromNode($this, $node, $engine)) {
+                $this->write();
+            }
         }
     }
 }

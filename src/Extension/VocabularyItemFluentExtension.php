@@ -18,7 +18,7 @@ class VocabularyItemFluentExtension extends DataExtension
         'Language'
     ];
 
-    public function onUpdateFromNode(TreeNode $node, ImportEngine $engine): void
+    public function onUpdateFromNode(TreeNode $node, ImportEngine $engine): ?bool
     {
         if ($group = $this->owner->VocabularyGroup()) {
             $data = $engine->getApi()->queryVocabularyData($group->Name, $this->owner->MplusID);
@@ -28,11 +28,12 @@ class VocabularyItemFluentExtension extends DataExtension
                     $group->Name,
                     $this->owner->MplusID
                 ));
-                return;
+                return null;
             }
 
             $xml = new \DOMDocument();
             if ($xml->loadXML($data->getContents())) {
+                $this->owner->write(); // Ensure record was written, even if we won't find any translatable entries
                 $xpath = new \DOMXPath($xml);
                 $xpath->registerNamespace('ns', XmlNS::VOCABULARY);
                 foreach (Locale::getLocales() as $localeRecord) {
@@ -50,7 +51,10 @@ class VocabularyItemFluentExtension extends DataExtension
                         });
                     }
                 }
+                return true;
             }
         }
+
+        return null;
     }
 }
