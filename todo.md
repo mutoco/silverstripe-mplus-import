@@ -11,3 +11,4 @@
 - [x] Relation filtering
 - [ ] Test changed content on the API
 - [ ] Load vocabulary-item translations
+- [ ] Unit-Test the API Client

@@ -62,4 +62,14 @@ class Client implements ClientInterface
         }
         return null;
     }
+
+    public function queryVocabularyData(string $vocGroup, ?string $itemId = null): ?StreamInterface
+    {
+        $filename = sprintf('Voc-%s.xml', $itemId ?? 'search');
+        $filePath = realpath(implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'data', $filename]));
+        if (file_exists($filePath)) {
+            return Utils::streamFor(fopen($filePath, 'r'));
+        }
+        return null;
+    }
 }

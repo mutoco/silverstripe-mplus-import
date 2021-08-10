@@ -25,6 +25,10 @@ composer require mutoco/silverstripe-mplus-import 1.x-dev
 ## License
 See [License](license.md)
 
+## Project status
+
+This is not a stable release (yet). The API might change and there are still several things [todo](todo.md)
+
 ## API configuration
 
 Use the injector to set your credentials for the Mplus API.

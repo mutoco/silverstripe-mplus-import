@@ -64,8 +64,6 @@ class Client implements ClientInterface
         return $this;
     }
 
-
-
     /**
      * @return int
      */
@@ -83,7 +81,6 @@ class Client implements ClientInterface
         $this->maxRetries = $maxRetries;
         return $this;
     }
-
 
     /**
      * @return string
@@ -222,6 +219,17 @@ class Client implements ClientInterface
         }
 
         return null;
+    }
+
+    public function queryVocabularyData(string $vocGroup, ?string $itemId = null): ?StreamInterface
+    {
+        $this->retries = 0;
+
+        return $this->sendApiRequest(sprintf(
+            'ria-ws/application/vocabulary/instances/%s/nodes/%s',
+            $vocGroup,
+            $itemId ?? 'search'
+        ));
     }
 
     protected function sendApiRequest(string $url, array $options = [], string $method = 'GET'): ?StreamInterface

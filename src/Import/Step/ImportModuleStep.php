@@ -167,7 +167,7 @@ class ImportModuleStep implements StepInterface
                                     // Special treatment for Vocabulary items
                                     if (
                                         $node->getTag() === 'vocabularyReference' &&
-                                        ($item = VocabularyItem::findOrCreateFromNode($node))
+                                        ($item = VocabularyItem::findOrCreateFromNode($node, $engine))
                                     ) {
                                         $engine->getBackend()->reportImportedModule(
                                             'VocabularyItem',

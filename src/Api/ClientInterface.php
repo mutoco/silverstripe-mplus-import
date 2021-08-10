@@ -29,6 +29,15 @@ interface ClientInterface
     public function queryModelItem(string $module, string $id): ?StreamInterface;
 
     /**
+     * Query the vocabulary data for a given vocabulary-group. This will return all possible terms for this
+     * vocabulary-group. Can optionally be limited to a single item by supplying the Vocabulary-Item ID.
+     * @param string $vocGroup - the name of the vocabulary group, eg. "ObjDim3DTypeVgr"
+     * @param string|null $itemId - (optional) the ID of the vocabulary item to query
+     * @return StreamInterface|null - the XML result stream or null upon failure
+     */
+    public function queryVocabularyData(string $vocGroup, ?string $itemId = null): ?StreamInterface;
+
+    /**
      * Load an attachment for the given module
      * @param string $module - the module to query
      * @param string $id - the module ID

@@ -1,0 +1,476 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<collection xmlns="http://www.zetcom.com/ria/ws/vocabulary"
+size="17">
+  <node logicalName="image_2" id="100102375">
+    <version>2020-04-18T13:18:54.698Z</version>
+    <lastModified>2020-04-18T13:18:54.698Z</lastModified>
+    <lastModifiedUser>Gandalf</lastModifiedUser>
+    <sortCriteria>001</sortCriteria>
+    <orgUnit logicalName="DefaultOrgUnit" />
+    <status logicalName="valid" />
+    <parents />
+    <instance logicalName="ObjDim3DTypeVgr" id="100000059" />
+    <terms>
+      <term id="100122675">
+        <version>2020-04-18T13:18:54.698Z</version>
+        <lastModified>2016-09-09T12:39:08.563Z</lastModified>
+        <lastModifiedUser>Gandalf</lastModifiedUser>
+        <isoLanguageCode>de</isoLanguageCode>
+        <content>Bildmass</content>
+        <order>1</order>
+        <status logicalName="valid" />
+        <category logicalName="preferred" />
+      </term>
+      <term id="100126955">
+        <version>2020-04-18T13:15:38.265Z</version>
+        <isoLanguageCode>fr</isoLanguageCode>
+        <content>image</content>
+        <order>3</order>
+        <status logicalName="valid" />
+        <category logicalName="preferred" />
+      </term>
+      <term id="100125946">
+        <version>2020-04-18T13:18:54.698Z</version>
+        <isoLanguageCode>en</isoLanguageCode>
+        <content>image</content>
+        <order>2</order>
+        <status logicalName="valid" />
+        <category logicalName="preferred" />
+      </term>
+    </terms>
+  </node>
+  <node logicalName="Objektmass" id="100105622">
+    <version>2021-02-26T08:59:51.309Z</version>
+    <lastModified>2021-02-26T08:59:51.309Z</lastModified>
+    <lastModifiedUser>Gandalf</lastModifiedUser>
+    <sortCriteria>002</sortCriteria>
+    <orgUnit logicalName="DefaultOrgUnit" />
+    <status logicalName="valid" />
+    <parents />
+    <instance logicalName="ObjDim3DTypeVgr" id="100000059" />
+    <terms>
+      <term id="100230137">
+        <version>2021-02-26T08:59:51.309Z</version>
+        <isoLanguageCode>fr</isoLanguageCode>
+        <content>oeuvre</content>
+        <order>3</order>
+        <status logicalName="valid" />
+        <category logicalName="preferred" />
+      </term>
+      <term id="100230136">
+        <version>2021-02-26T08:59:38.598Z</version>
+        <isoLanguageCode>en</isoLanguageCode>
+        <content>object</content>
+        <order>2</order>
+        <status logicalName="valid" />
+        <category logicalName="preferred" />
+      </term>
+      <term id="100125922">
+        <version>2020-04-18T13:18:56.339Z</version>
+        <lastModified>2016-09-09T14:48:28.440Z</lastModified>
+        <lastModifiedUser>Gandalf</lastModifiedUser>
+        <isoLanguageCode>de</isoLanguageCode>
+        <content>Objektmass</content>
+        <order>1</order>
+        <status logicalName="valid" />
+        <category logicalName="preferred" />
+      </term>
+    </terms>
+  </node>
+  <node logicalName="plate_2" id="100105310">
+    <version>2020-04-18T13:18:55.698Z</version>
+    <lastModified>2020-04-18T13:18:55.698Z</lastModified>
+    <lastModifiedUser>Gandalf</lastModifiedUser>
+    <sortCriteria>003</sortCriteria>
+    <orgUnit logicalName="DefaultOrgUnit" />
+    <status logicalName="valid" />
+    <parents />
+    <instance logicalName="ObjDim3DTypeVgr" id="100000059" />
+    <terms>
+      <term id="100341035">
+        <version>2020-04-18T13:18:55.683Z</version>
+        <isoLanguageCode>en</isoLanguageCode>
+        <content>plate</content>
+        <order>2</order>
+        <status logicalName="valid" />
+        <category logicalName="preferred" />
+      </term>
+      <term id="100125610">
+        <version>2020-04-18T13:18:55.683Z</version>
+        <lastModified>2016-09-09T13:13:06.305Z</lastModified>
+        <lastModifiedUser>Gandalf</lastModifiedUser>
+        <isoLanguageCode>de</isoLanguageCode>
+        <content>Plattenmass</content>
+        <order>1</order>
+        <status logicalName="valid" />
+        <category logicalName="preferred" />
+      </term>
+      <term id="100341036">
+        <version>2020-04-18T13:18:55.698Z</version>
+        <isoLanguageCode>fr</isoLanguageCode>
+        <content>platine</content>
+        <order>3</order>
+        <status logicalName="valid" />
+        <category logicalName="preferred" />
+      </term>
+    </terms>
+  </node>
+  <node logicalName="sheet_2" id="100105307">
+    <version>2020-04-18T13:18:55.151Z</version>
+    <lastModified>2020-04-18T13:18:55.151Z</lastModified>
+    <lastModifiedUser>Gandalf</lastModifiedUser>
+    <sortCriteria>004</sortCriteria>
+    <orgUnit logicalName="DefaultOrgUnit" />
+    <status logicalName="valid" />
+    <parents />
+    <instance logicalName="ObjDim3DTypeVgr" id="100000059" />
+    <terms>
+      <term id="100125607">
+        <version>2020-04-18T13:18:55.151Z</version>
+        <lastModified>2016-09-09T13:13:06.305Z</lastModified>
+        <lastModifiedUser>Gandalf</lastModifiedUser>
+        <isoLanguageCode>de</isoLanguageCode>
+        <content>Blattmass</content>
+        <order>1</order>
+        <status logicalName="valid" />
+        <category logicalName="preferred" />
+      </term>
+      <term id="100125945">
+        <version>2020-04-18T13:18:55.151Z</version>
+        <isoLanguageCode>en</isoLanguageCode>
+        <content>sheet</content>
+        <order>2</order>
+        <status logicalName="valid" />
+        <category logicalName="preferred" />
+      </term>
+      <term id="100126956">
+        <version>2020-04-18T13:15:38.843Z</version>
+        <isoLanguageCode>fr</isoLanguageCode>
+        <content>feuille</content>
+        <order>3</order>
+        <status logicalName="valid" />
+        <category logicalName="preferred" />
+      </term>
+    </terms>
+  </node>
+  <node logicalName="Lichtmass" id="100123721">
+    <version>2020-04-18T13:18:57.187Z</version>
+    <lastModified>2020-04-18T13:18:57.187Z</lastModified>
+    <lastModifiedUser>Gandalf</lastModifiedUser>
+    <sortCriteria>005</sortCriteria>
+    <orgUnit logicalName="DefaultOrgUnit" />
+    <status logicalName="valid" />
+    <parents />
+    <instance logicalName="ObjDim3DTypeVgr" id="100000059" />
+    <terms>
+      <term id="100144108">
+        <version>2020-04-18T13:18:57.187Z</version>
+        <isoLanguageCode>de</isoLanguageCode>
+        <content>Lichtmass</content>
+        <order>1</order>
+        <status logicalName="valid" />
+        <category logicalName="preferred" />
+      </term>
+    </terms>
+  </node>
+  <node logicalName="Raummass" id="100106678">
+    <version>2020-04-18T13:15:39.165Z</version>
+    <lastModified>2020-04-18T13:15:39.165Z</lastModified>
+    <lastModifiedUser>Gandalf</lastModifiedUser>
+    <sortCriteria>006</sortCriteria>
+    <orgUnit logicalName="SysDefaultVocOrgUnit" />
+    <parents />
+    <instance logicalName="ObjDim3DTypeVgr" id="100000059" />
+    <terms>
+      <term id="100127019">
+        <version>2020-04-18T13:15:39.165Z</version>
+        <isoLanguageCode>de</isoLanguageCode>
+        <content>Raummass</content>
+        <order>1</order>
+        <status logicalName="valid" />
+        <category logicalName="preferred" />
+      </term>
+    </terms>
+  </node>
+  <node logicalName="Mappenmass" id="100105308">
+    <version>2020-04-18T13:18:55.386Z</version>
+    <lastModified>2020-04-18T13:18:55.386Z</lastModified>
+    <lastModifiedUser>Gandalf</lastModifiedUser>
+    <sortCriteria>007</sortCriteria>
+    <orgUnit logicalName="DefaultOrgUnit" />
+    <status logicalName="valid" />
+    <parents />
+    <instance logicalName="ObjDim3DTypeVgr" id="100000059" />
+    <terms>
+      <term id="100125608">
+        <version>2020-04-18T13:18:55.386Z</version>
+        <lastModified>2016-09-09T13:13:06.305Z</lastModified>
+        <lastModifiedUser>Gandalf</lastModifiedUser>
+        <isoLanguageCode>de</isoLanguageCode>
+        <content>Mappenmass</content>
+        <order>1</order>
+        <status logicalName="valid" />
+        <category logicalName="preferred" />
+      </term>
+    </terms>
+  </node>
+  <node logicalName="mount" id="100105309">
+    <version>2020-04-18T13:18:55.558Z</version>
+    <lastModified>2020-04-18T13:18:55.558Z</lastModified>
+    <lastModifiedUser>Gandalf</lastModifiedUser>
+    <sortCriteria>008</sortCriteria>
+    <orgUnit logicalName="DefaultOrgUnit" />
+    <status logicalName="valid" />
+    <parents />
+    <instance logicalName="ObjDim3DTypeVgr" id="100000059" />
+    <terms>
+      <term id="100125609">
+        <version>2020-04-18T13:18:55.558Z</version>
+        <lastModified>2016-09-09T13:13:06.305Z</lastModified>
+        <lastModifiedUser>Gandalf</lastModifiedUser>
+        <isoLanguageCode>de</isoLanguageCode>
+        <content>Passepartout</content>
+        <order>1</order>
+        <status logicalName="valid" />
+        <category logicalName="preferred" />
+      </term>
+    </terms>
+  </node>
+  <node logicalName="Rahmenmass" id="100102376">
+    <version>2020-04-18T13:18:54.886Z</version>
+    <lastModified>2020-04-18T13:18:54.870Z</lastModified>
+    <lastModifiedUser>Gandalf</lastModifiedUser>
+    <sortCriteria>009</sortCriteria>
+    <orgUnit logicalName="DefaultOrgUnit" />
+    <status logicalName="valid" />
+    <parents />
+    <instance logicalName="ObjDim3DTypeVgr" id="100000059" />
+    <terms>
+      <term id="100126958">
+        <version>2020-04-18T13:15:38.656Z</version>
+        <isoLanguageCode>fr</isoLanguageCode>
+        <content>cadre</content>
+        <order>3</order>
+        <status logicalName="valid" />
+        <category logicalName="preferred" />
+      </term>
+      <term id="100126957">
+        <version>2020-04-18T13:15:38.656Z</version>
+        <isoLanguageCode>en</isoLanguageCode>
+        <content>frame</content>
+        <order>2</order>
+        <status logicalName="valid" />
+        <category logicalName="preferred" />
+      </term>
+      <term id="100122676">
+        <version>2020-04-18T13:18:54.886Z</version>
+        <lastModified>2016-09-09T12:39:08.563Z</lastModified>
+        <lastModifiedUser>Gandalf</lastModifiedUser>
+        <isoLanguageCode>de</isoLanguageCode>
+        <content>Rahmenmass</content>
+        <order>1</order>
+        <status logicalName="valid" />
+        <category logicalName="preferred" />
+      </term>
+    </terms>
+  </node>
+  <node logicalName="Sockelmass" id="100102377">
+    <version>2020-04-18T13:18:55.011Z</version>
+    <lastModified>2020-04-18T13:18:55.011Z</lastModified>
+    <lastModifiedUser>Gandalf</lastModifiedUser>
+    <sortCriteria>010</sortCriteria>
+    <orgUnit logicalName="DefaultOrgUnit" />
+    <status logicalName="valid" />
+    <parents />
+    <instance logicalName="ObjDim3DTypeVgr" id="100000059" />
+    <terms>
+      <term id="100341034">
+        <version>2020-04-18T13:18:55.011Z</version>
+        <isoLanguageCode>en</isoLanguageCode>
+        <content>pedestal</content>
+        <order>2</order>
+        <status logicalName="valid" />
+        <category logicalName="preferred" />
+      </term>
+      <term id="100341033">
+        <version>2020-04-18T13:18:55.011Z</version>
+        <isoLanguageCode>fr</isoLanguageCode>
+        <content>socle</content>
+        <order>3</order>
+        <status logicalName="valid" />
+        <category logicalName="preferred" />
+      </term>
+      <term id="100122677">
+        <version>2020-04-18T13:18:55.011Z</version>
+        <lastModified>2016-09-09T12:39:08.563Z</lastModified>
+        <lastModifiedUser>Gandalf</lastModifiedUser>
+        <isoLanguageCode>de</isoLanguageCode>
+        <content>Sockelmass</content>
+        <order>1</order>
+        <status logicalName="valid" />
+        <category logicalName="preferred" />
+      </term>
+    </terms>
+  </node>
+  <node logicalName="Schutzkasten" id="100108689">
+    <version>2021-02-23T14:44:02.677Z</version>
+    <lastModified>2021-02-23T14:44:02.677Z</lastModified>
+    <lastModifiedUser>Gandalf</lastModifiedUser>
+    <sortCriteria>011</sortCriteria>
+    <orgUnit logicalName="SysDefaultVocOrgUnit" />
+    <parents />
+    <instance logicalName="ObjDim3DTypeVgr" id="100000059" />
+    <terms>
+      <term id="100129057">
+        <version>2020-04-18T13:18:56.511Z</version>
+        <isoLanguageCode>de</isoLanguageCode>
+        <content>Schutzkasten</content>
+        <order>1</order>
+        <status logicalName="valid" />
+        <category logicalName="preferred" />
+      </term>
+      <term id="100915932">
+        <version>2021-02-23T14:44:02.677Z</version>
+        <isoLanguageCode>en</isoLanguageCode>
+        <content>protection box</content>
+        <order>2</order>
+        <status logicalName="valid" />
+        <category logicalName="preferred" />
+      </term>
+    </terms>
+  </node>
+  <node logicalName="diam_diam" id="100106646">
+    <version>2020-04-18T13:15:39.018Z</version>
+    <lastModified>2020-04-18T13:15:39.018Z</lastModified>
+    <lastModifiedUser>Gandalf</lastModifiedUser>
+    <sortCriteria>012</sortCriteria>
+    <orgUnit logicalName="SysDefaultVocOrgUnit" />
+    <status logicalName="valid" />
+    <parents />
+    <instance logicalName="ObjDim3DTypeVgr" id="100000059" />
+    <terms>
+      <term id="100126959">
+        <version>2020-04-18T13:15:38.999Z</version>
+        <isoLanguageCode>de</isoLanguageCode>
+        <content>Durchmesser</content>
+        <order>1</order>
+        <status logicalName="valid" />
+        <category logicalName="preferred" />
+      </term>
+      <term id="100126961">
+        <version>2020-04-18T13:15:39.018Z</version>
+        <isoLanguageCode>fr</isoLanguageCode>
+        <content>diamètre</content>
+        <order>2</order>
+        <status logicalName="valid" />
+        <category logicalName="preferred" />
+      </term>
+      <term id="100126960">
+        <version>2020-04-18T13:15:39.018Z</version>
+        <isoLanguageCode>en</isoLanguageCode>
+        <content>diameter</content>
+        <order>3</order>
+        <status logicalName="valid" />
+        <category logicalName="preferred" />
+      </term>
+    </terms>
+  </node>
+  <node id="100119689">
+    <version>2020-04-18T13:18:56.667Z</version>
+    <lastModified>2020-04-18T13:18:56.667Z</lastModified>
+    <lastModifiedUser>Gandalf</lastModifiedUser>
+    <orgUnit logicalName="SysDefaultVocOrgUnit" />
+    <status logicalName="refused" />
+    <parents />
+    <instance logicalName="ObjDim3DTypeVgr" id="100000059" />
+    <terms>
+      <term id="100140034">
+        <version>2020-04-18T13:18:56.667Z</version>
+        <isoLanguageCode>de</isoLanguageCode>
+        <content>Farbstock</content>
+        <order>1</order>
+        <status logicalName="valid" />
+        <category logicalName="preferred" />
+      </term>
+    </terms>
+  </node>
+  <node logicalName="Kästchenmass" id="100105349">
+    <version>2020-04-18T13:18:55.855Z</version>
+    <lastModified>2020-04-18T13:18:55.855Z</lastModified>
+    <lastModifiedUser>Gandalf</lastModifiedUser>
+    <orgUnit logicalName="DefaultOrgUnit" />
+    <status logicalName="refused" />
+    <parents />
+    <instance logicalName="ObjDim3DTypeVgr" id="100000059" />
+    <terms>
+      <term id="100125649">
+        <version>2020-04-18T13:18:55.855Z</version>
+        <lastModified>2016-09-09T14:03:08.366Z</lastModified>
+        <lastModifiedUser>Gandalf</lastModifiedUser>
+        <isoLanguageCode>de</isoLanguageCode>
+        <content>Kästchenmass</content>
+        <order>1</order>
+        <status logicalName="valid" />
+        <category logicalName="preferred" />
+      </term>
+    </terms>
+  </node>
+  <node logicalName="Schubladenmass" id="100105350">
+    <version>2020-04-18T13:18:56.167Z</version>
+    <lastModified>2020-04-18T13:18:56.151Z</lastModified>
+    <lastModifiedUser>Gandalf</lastModifiedUser>
+    <orgUnit logicalName="DefaultOrgUnit" />
+    <status logicalName="refused" />
+    <parents />
+    <instance logicalName="ObjDim3DTypeVgr" id="100000059" />
+    <terms>
+      <term id="100125650">
+        <version>2020-04-18T13:18:56.167Z</version>
+        <lastModified>2016-09-09T14:03:08.366Z</lastModified>
+        <lastModifiedUser>Gandalf</lastModifiedUser>
+        <isoLanguageCode>de</isoLanguageCode>
+        <content>Schubladenmass</content>
+        <order>1</order>
+        <status logicalName="valid" />
+        <category logicalName="preferred" />
+      </term>
+    </terms>
+  </node>
+  <node logicalName="Werkmass" id="100406580">
+    <version>2018-08-06T09:27:19.075Z</version>
+    <lastModified>2018-08-06T09:27:19.075Z</lastModified>
+    <lastModifiedUser>Gandalf</lastModifiedUser>
+    <orgUnit logicalName="SysDefaultVocOrgUnit" />
+    <parents />
+    <instance logicalName="ObjDim3DTypeVgr" id="100000059" />
+    <terms>
+      <term id="100447938">
+        <version>2018-08-06T09:27:19.075Z</version>
+        <isoLanguageCode>de</isoLanguageCode>
+        <content>Werkmass</content>
+        <order>1</order>
+        <status logicalName="valid" />
+        <category logicalName="preferred" />
+      </term>
+    </terms>
+  </node>
+  <node id="100119690">
+    <version>2020-04-18T13:18:56.905Z</version>
+    <lastModified>2020-04-18T13:18:56.890Z</lastModified>
+    <lastModifiedUser>Gandalf</lastModifiedUser>
+    <orgUnit logicalName="SysDefaultVocOrgUnit" />
+    <status logicalName="refused" />
+    <parents />
+    <instance logicalName="ObjDim3DTypeVgr" id="100000059" />
+    <terms>
+      <term id="100140035">
+        <version>2020-04-18T13:18:56.905Z</version>
+        <isoLanguageCode>de</isoLanguageCode>
+        <content>Zeichnungsstock</content>
+        <order>1</order>
+        <status logicalName="valid" />
+        <category logicalName="preferred" />
+      </term>
+    </terms>
+  </node>
+</collection>

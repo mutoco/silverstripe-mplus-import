@@ -3,6 +3,7 @@
 namespace Mutoco\Mplus\Model;
 
 use Mutoco\Mplus\Extension\DataRecordExtension;
+use Mutoco\Mplus\Import\ImportEngine;
 use Mutoco\Mplus\Import\Step\ImportModuleStep;
 use Mutoco\Mplus\Parse\Result\TreeNode;
 use SilverStripe\ORM\DataObject;
@@ -36,7 +37,7 @@ class VocabularyItem extends DataObject
         'Value'
     ];
 
-    public static function findOrCreateFromNode(TreeNode $node): VocabularyItem
+    public static function findOrCreateFromNode(TreeNode $node, ImportEngine $engine): VocabularyItem
     {
         $vocabNode = self::findVocabularyItemNode($node);
 
@@ -58,7 +59,7 @@ class VocabularyItem extends DataObject
             'Module' => 'VocabularyItem'
         ]);
 
-        self::updateFromNode($target, $vocabNode);
+        self::updateFromNode($target, $vocabNode, $engine);
 
         $target->write();
         return $target;
@@ -81,7 +82,7 @@ class VocabularyItem extends DataObject
         return null;
     }
 
-    protected static function updateFromNode(VocabularyItem $item, TreeNode $node): void
+    protected static function updateFromNode(VocabularyItem $item, TreeNode $node, ImportEngine $engine): void
     {
         $item->setField('Name', $node->name);
         $item->setField('Language', $node->language);
@@ -94,12 +95,14 @@ class VocabularyItem extends DataObject
         ) {
             $item->setField('VocabularyGroup', VocabularyGroup::findOrCreateFromNode($parent));
         }
+
+        $item->invokeWithExtensions('onUpdateFromNode', $node, $engine);
     }
 
-    public function beforeMplusImport(ImportModuleStep $step)
+    public function beforeMplusImport(ImportModuleStep $step, ImportEngine $engine)
     {
         if ($node = self::findVocabularyItemNode($step->getTree())) {
-            self::updateFromNode($this, $node);
+            self::updateFromNode($this, $node, $engine);
         }
     }
 }

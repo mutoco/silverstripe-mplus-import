@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<node xmlns="http://www.zetcom.com/ria/ws/vocabulary"
+logicalName="sheet_2" id="100105307">
+  <version>2020-04-18T13:18:55.151Z</version>
+  <lastModified>2020-04-18T13:18:55.151Z</lastModified>
+  <lastModifiedUser>Gandalf</lastModifiedUser>
+  <sortCriteria>004</sortCriteria>
+  <orgUnit logicalName="DefaultOrgUnit" />
+  <status logicalName="valid" />
+  <parents />
+  <instance logicalName="ObjDim3DTypeVgr" id="100000059" />
+  <terms>
+    <term id="100125607">
+      <version>2020-04-18T13:18:55.151Z</version>
+      <lastModified>2016-09-09T13:13:06.305Z</lastModified>
+      <lastModifiedUser>Gandalf</lastModifiedUser>
+      <isoLanguageCode>de</isoLanguageCode>
+      <content>Blattmass</content>
+      <order>1</order>
+      <status logicalName="valid" />
+      <category logicalName="preferred" />
+    </term>
+    <term id="100125945">
+      <version>2020-04-18T13:18:55.151Z</version>
+      <isoLanguageCode>en</isoLanguageCode>
+      <content>sheet</content>
+      <order>2</order>
+      <status logicalName="valid" />
+      <category logicalName="preferred" />
+    </term>
+    <term id="100126956">
+      <version>2020-04-18T13:15:38.843Z</version>
+      <isoLanguageCode>fr</isoLanguageCode>
+      <content>feuille</content>
+      <order>3</order>
+      <status logicalName="valid" />
+      <category logicalName="preferred" />
+    </term>
+  </terms>
+</node>
