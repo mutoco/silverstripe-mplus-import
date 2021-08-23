@@ -4,6 +4,9 @@ namespace Mutoco\Mplus\Model;
 
 use Mutoco\Mplus\Extension\DataRecordExtension;
 use Mutoco\Mplus\Parse\Result\TreeNode;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridFieldConfig_RecordViewer;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBDatetime;
 
@@ -31,6 +34,29 @@ class VocabularyGroup extends DataObject
         'MplusID',
         'Name'
     ];
+
+    public function getCMSFields()
+    {
+        $this->beforeUpdateCMSFields(function (FieldList $fields) {
+            $fields->removeByName('VocabularyItems');
+
+            // Setup voc items gridfield
+            $gridConfig = GridFieldConfig_RecordViewer::create();
+
+            $itemsGrid = GridField::create(
+                'VocabularyItems',
+                $this->fieldLabel('VocabularyItems'),
+                $this->VocabularyItems(),
+                $gridConfig
+            );
+
+            $fields->addFieldToTab('Root.Main', $itemsGrid);
+        });
+
+        $fields = parent::getCMSFields();
+        $fields->changeFieldOrder(['Name', 'MplusID', 'Module', 'Imported', 'VocabularyItems']);
+        return $fields;
+    }
 
     public static function findOrCreateFromNode(TreeNode $node): VocabularyGroup
     {
