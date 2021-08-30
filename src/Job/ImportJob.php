@@ -21,6 +21,9 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
 {
     use Configurable;
 
+    private static $use_search = true;
+    private static $delete_obsolete = true;
+
     protected ?ImportEngine $importer = null;
     protected ?string $module = null;
     protected ?string $id = null;
@@ -70,8 +73,10 @@ class ImportJob extends AbstractQueuedJob implements QueuedJob
         $client->init();
         $this->importer = new ImportEngine();
         $this->importer->setApi($client);
-        $this->importer->setDeleteObsoleteRecords($this->id === null);
-        $this->importer->setUseSearchToResolve(true);
+        $this->importer->setDeleteObsoleteRecords(
+            $this->id === null ? self::config()->get('delete_obsolete') : false
+        );
+        $this->importer->setUseSearchToResolve(self::config()->get('use_search'));
 
         if (class_exists('SQLite3')) {
             $this->importer->setBackend(new SqliteImportBackend());
