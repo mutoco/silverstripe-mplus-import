@@ -51,6 +51,15 @@ abstract class AbstractRelationStep implements StepInterface
             ));
         }
 
+        $target->invokeWithExtensions(
+            'beforeMplusRelationStep',
+            $type,
+            $this->relationName,
+            $this->relationIds,
+            $this,
+            $engine
+        );
+
         switch ($type) {
             case 'has_one':
                 $class = $target->getRelationClass($this->relationName);
@@ -72,6 +81,15 @@ abstract class AbstractRelationStep implements StepInterface
                 $this->handleMany($relation, $engine);
                 break;
         }
+
+        $target->invokeWithExtensions(
+            'afterMplusRelationStep',
+            $type,
+            $this->relationName,
+            $this->relationIds,
+            $this,
+            $engine
+        );
 
         return false;
     }
