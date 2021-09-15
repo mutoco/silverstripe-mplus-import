@@ -158,8 +158,7 @@
           </repeatableGroupItem>
           <repeatableGroupItem id="367560">
             <dataField dataType="Clob" name="TextClb">
-              <value>... und auf wenig Interesse gestossen
-              ist.</value>
+              <value>... und auf wenig Interesse gestossen ist.</value>
             </dataField>
             <dataField dataType="Date" name="DateDat">
               <value>2021-03-31Z</value>

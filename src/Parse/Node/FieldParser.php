@@ -40,9 +40,7 @@ class FieldParser implements ParserInterface
     public function handleElementEnd(Parser $parser, string $name): bool
     {
         if ($this->tag === $name && $this->startDepth === $parser->getDepth()) {
-            $parser->getCurrent()->setValue(
-                preg_replace('{\s+}', ' ', trim($this->value))
-            );
+            $parser->getCurrent()->setValue(trim($this->value));
             return true;
         }
 
