@@ -184,6 +184,9 @@ class ImportModuleStep implements StepInterface
                                     } else {
                                         $data[$field] = $node->getValue();
                                     }
+                                } else {
+                                    // Must clear the db field if nothing was found
+                                    $data[$field] = null;
                                 }
                             }
                         }
