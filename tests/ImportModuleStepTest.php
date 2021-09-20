@@ -183,8 +183,8 @@ class ImportModuleStepTest extends SapphireTest
             $this->assertCount(2, $type);
             $this->assertEquals('Outgoing', $type[0]->Value);
             $this->assertEquals('100087407', $type[0]->MplusID);
-            $this->assertEquals('100087407', $type[1]->MplusID);
-            $this->assertEquals('RegRecordTypeVgr', $type[1]->VocabularyGroup()->Name);
+            $this->assertEquals(null, $type[1]->MplusID);
+            $this->assertEquals('RegRecordTypeVgr', $type[0]->VocabularyGroup()->Name);
         });
     }
 

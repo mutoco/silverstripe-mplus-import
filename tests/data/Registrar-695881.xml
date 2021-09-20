@@ -16,16 +16,16 @@
           <value>4</value>
           <formattedValue language="de">004</formattedValue>
         </dataField>
-        <vocabularyReference name="RegRecordTypeVoc" id="100040385"
-        instanceName="RegRecordTypeVgr">
-          <vocabularyReferenceItem id="100087407" name="outgoing">
-            <formattedValue language="de">Outgoing</formattedValue>
-          </vocabularyReferenceItem>
-        </vocabularyReference>
         <moduleReference name="RegObjectRef" targetModule="Object"
         multiplicity="N:1" size="1">
           <moduleReferenceItem moduleItemId="47894"
           uuid="2624c885-af51-4da6-a91c-b0233a8ffef9">
+            <vocabularyReference name="RegRecordTypeVoc" id="100040385"
+            instanceName="RegRecordTypeVgr">
+              <vocabularyReferenceItem id="100087407" name="outgoing">
+                <formattedValue language="de">Outgoing</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
             <formattedValue language="de">E 1916.16</formattedValue>
           </moduleReferenceItem>
         </moduleReference>

@@ -61,7 +61,7 @@ class Util
         return self::treeToPaths($copy);
     }
 
-    public static function findNodeForPath($value, Node $tree): ?Node
+    public static function findNodeForPath($value, ?Node $tree): ?Node
     {
         if ($tree === null) {
             throw new \InvalidArgumentException('Tree must be a Node instance');

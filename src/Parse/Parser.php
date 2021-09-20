@@ -14,7 +14,7 @@ class Parser
 {
     protected \SplStack $parsers;
     protected int $depth;
-    protected ?Node $pathTree = null;
+    protected ?Node $allowedPaths = null;
     protected ?TreeNode $current = null;
 
     /**
@@ -22,7 +22,7 @@ class Parser
      */
     public function getAllowedPaths(): ?Node
     {
-        return $this->pathTree;
+        return $this->allowedPaths;
     }
 
     /**
@@ -36,9 +36,9 @@ class Parser
         }
 
         if (!$allowedPaths || $allowedPaths->isLeaf()) {
-            $this->pathTree = null;
+            $this->allowedPaths = null;
         } else {
-            $this->pathTree = $allowedPaths;
+            $this->allowedPaths = $allowedPaths;
         }
 
         return $this;
@@ -56,11 +56,11 @@ class Parser
 
     public function isAllowedPath($value): bool
     {
-        if ($this->pathTree === null) {
+        if ($this->allowedPaths === null) {
             return true;
         }
 
-        return Util::isValidPath($value, $this->pathTree);
+        return Util::isValidPath($value, $this->allowedPaths);
     }
 
     public function isAllowedNext(string $name): bool

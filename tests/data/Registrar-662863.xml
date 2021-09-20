@@ -16,12 +16,7 @@
           <value>3</value>
           <formattedValue language="de">003</formattedValue>
         </dataField>
-        <vocabularyReference name="RegRecordTypeVoc" id="100040385"
-        instanceName="RegRecordTypeVgr">
-          <vocabularyReferenceItem id="100087407" name="outgoing">
-            <formattedValue language="de">Outgoing</formattedValue>
-          </vocabularyReferenceItem>
-        </vocabularyReference>
+
         <moduleReference name="RegObjectRef" targetModule="Object"
         multiplicity="N:1" size="1">
           <moduleReferenceItem moduleItemId="435960"

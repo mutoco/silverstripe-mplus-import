@@ -30,7 +30,8 @@ class ObjectParserTest extends FunctionalTest
             'Object.__id',
             'Object.ObjBriefDescriptionGrp.DescriptionClb',
             'Object.ObjMultimediaRef',
-            'Object.ObjMultimediaRef.TypeVoc'
+            'Object.ObjMultimediaRef.TypeVoc',
+            'Object.ThumbnailBoo'
         ]);
 
         $this->assertTrue($parser->isAllowedPath('Object'));
@@ -53,6 +54,7 @@ class ObjectParserTest extends FunctionalTest
         $this->assertNull($result->getNestedNode('Object.ObjBriefDescriptionGrp.TypeVoc'));
         $this->assertNull($result->getNestedNode('Object.ObjAcquisitionYearTxt'));
         $this->assertNull($result->getNestedNode('Object.ObjMultimediaRef.ThumbnailBoo'));
+        $this->assertNull($result->getNestedNode('Object.ThumbnailBoo'));
         $this->assertNotNull($result->getNestedNode('Object.ObjMultimediaRef.TypeVoc'));
         $this->assertFalse($result->getNestedNode('Object.ObjMultimediaRef.TypeVoc')->isLeaf());
         $this->assertEquals(
