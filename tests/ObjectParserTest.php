@@ -63,6 +63,21 @@ class ObjectParserTest extends FunctionalTest
         );
     }
 
+    public function testSparseAllowedPaths()
+    {
+        //$this->markTestIncomplete('This currently fails and has to be properly implemented');
+        $parser = new Parser();
+        $parser->setAllowedPaths([
+            'Object.ThumbnailBoo',
+            'ThumbnailBoo'
+        ]);
+
+        /** @var TreeNode $objectResult */
+        $result = $parser->parseFile(__DIR__ . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'parserTest.xml');
+        $this->assertNull($result->getNestedNode('Object.ThumbnailBoo'));
+        $this->assertNull($result->getNestedNode('ThumbnailBoo'));
+    }
+
     public function testSearchResult()
     {
         $parser = new Parser();

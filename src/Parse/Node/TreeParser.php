@@ -10,6 +10,7 @@ class TreeParser implements ParserInterface
     protected string $tag;
     protected array $attributes;
     protected \SplStack $depths;
+    protected int $ignoredDepth = -1;
 
     protected array $fieldTags = [
         'systemField' => 'value',
@@ -27,6 +28,7 @@ class TreeParser implements ParserInterface
 
     public function __construct()
     {
+        $this->ignoredDepth = -1;
         $this->depths = new \SplStack();
     }
 
@@ -68,15 +70,30 @@ class TreeParser implements ParserInterface
 
     public function handleElementStart(Parser $parser, string $name, array $attributes): ?ParserInterface
     {
+        // Skip if we're ignoring a certain tree branch
+        if ($this->ignoredDepth >= 0) {
+            return null;
+        }
+
+        $allowedNext = false;
+        if (isset($attributes['name'])) {
+            // Check if the named node is allowed as next node
+            $allowedNext = $parser->isAllowedNext($attributes['name']);
+
+            if (!$allowedNext) {
+                // If we encountered a named node that is not matching the allowed paths, we can discard
+                // the entire sub-tree. Setting the ignored depth to the current depth
+                $this->ignoredDepth = $parser->getDepth();
+            }
+        }
+
         if (
-            // First check if there's a name and if it's allowed next
-            (isset($attributes['name']) && $parser->isAllowedNext($attributes['name'])) ||
-            (
-                // Also valid are all collection tags that are nested 1 level into the current node
-                isset($this->collectionTags[$name]) &&
-                !$this->depths->isEmpty() &&
-                $parser->getDepth() === $this->depths->top() + 1 &&
-                $parser->isAllowedPath($parser->getCurrent()->getPathSegments())
+            $allowedNext || (
+            // Also valid are all collection tags that are nested 1 level into the current node
+            isset($this->collectionTags[$name]) &&
+            !$this->depths->isEmpty() &&
+            $parser->getDepth() === $this->depths->top() + 1 &&
+            $parser->isAllowedPath($parser->getCurrent()->getPathSegments())
             )
         ) {
             $this->depths->push($parser->getDepth());
@@ -84,6 +101,8 @@ class TreeParser implements ParserInterface
             $node->setTag($name);
             $node->setAttributes($attributes);
             $parser->addNode($node);
+            // Reset the ignored depth, since there was an exception to the rule
+            $this->ignoredDepth = -1;
         }
 
         if (
@@ -91,6 +110,8 @@ class TreeParser implements ParserInterface
             $this->depths->top() >= $parser->getDepth() &&
             isset($this->fieldTags[$name])
         ) {
+            // Reset the ignored depth, since there was an exception to the rule
+            $this->ignoredDepth = -1;
             return new FieldParser($this->fieldTags[$name]);
         }
 
@@ -99,6 +120,11 @@ class TreeParser implements ParserInterface
 
     public function handleElementEnd(Parser $parser, string $name): bool
     {
+        if ($parser->getDepth() <= $this->ignoredDepth) {
+            $this->ignoredDepth = -1;
+            return false;
+        }
+
         if ($name === $parser->getCurrent()->getTag() && $this->depths->top() === $parser->getDepth()) {
             $this->depths->pop();
             $parser->popNode();

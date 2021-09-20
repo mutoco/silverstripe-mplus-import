@@ -86,8 +86,15 @@ class LoadModuleStep implements StepInterface
         }
 
         if ($result = $this->loadModule($engine, $this->module, $this->id, $this->allowedPaths)) {
-            $this->resultTree = $result;
-            return true;
+            if (
+                ($tree = $result->getNestedNode($this->module)) &&
+                ($children = $tree->getChildren()) &&
+                !empty($children)
+            ) {
+                $this->resultTree = $children[0];
+                $this->resultTree->setParent(null);
+                return true;
+            }
         }
 
         return false;
@@ -246,7 +253,7 @@ class LoadModuleStep implements StepInterface
                     if ($hasUnresolved) {
                         if ($result = $this->loadModule($engine, $moduleName, $id, $pathNode)) {
                             foreach ($pathNode->getChildren() as $segment) {
-                                if ($resultNode = $result->getNestedNode($segment->getValue())) {
+                                if ($resultNode = $result->getNestedNode([$moduleName, $segment->getValue()])) {
                                     $reference->addChild($resultNode);
                                 }
                             }
@@ -274,15 +281,21 @@ class LoadModuleStep implements StepInterface
         return false;
     }
 
-    protected function loadModule(ImportEngine $engine, string $module, string $id, Node $allowedPaths): ?TreeNode
-    {
+    protected function loadModule(
+        ImportEngine $engine,
+        string $module,
+        string $id,
+        Node $allowedPaths
+    ): ?TreeNode {
         //TODO: Cache results to reduce API calls
         $stream = $engine->getApi()->queryModelItem($module, $id);
         if ($stream) {
             $parser = new Parser();
             $clone = Util::cloneTree($allowedPaths);
-            $clone->setValue(null);
-            $parser->setAllowedPaths($clone);
+            $clone->setValue($module);
+            $outer = new Node();
+            $outer->addChild($clone);
+            $parser->setAllowedPaths($outer);
             return $parser->parse($stream);
         }
         return null;
