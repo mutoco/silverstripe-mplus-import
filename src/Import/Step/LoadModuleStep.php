@@ -138,9 +138,9 @@ class LoadModuleStep implements StepInterface
             /** @var TreeNode $reference */
             foreach ($references as $reference) {
                 if (
-                    !$reference->isResolved() &&
                     ($moduleName = $reference->getModuleName()) &&
-                    ($id = $reference->moduleItemId)
+                    ($id = $reference->moduleItemId) &&
+                    !empty($engine->getConfig()->getModuleConfig($moduleName))
                 ) {
                     if ($useSearch) {
                         $moduleMap[$moduleName][] = $id;
