@@ -7,7 +7,6 @@ use SilverStripe\Dev\FunctionalTest;
 
 class SearchBuilderTest extends FunctionalTest
 {
-
     public function testSearchBuilder()
     {
         $builder = new SearchBuilder('Test');
