@@ -171,7 +171,9 @@ class ImportModuleStepTest extends SapphireTest
             );
             $this->assertEquals(['TEST', 'Hummer'], $exhibition->Works()->column('Subtitle'));
             $this->assertEquals(['Edvard Munch', 'Edvard Munch'], $exhibition->Works()->column('Artist'));
-            $this->assertTrue($exhibition->Works()->last()->Image()->exists());
+            if (extension_loaded('imagick')) {
+                $this->assertTrue($exhibition->Works()->last()->Image()->exists());
+            }
 
             $sort = [];
             $type = [];
