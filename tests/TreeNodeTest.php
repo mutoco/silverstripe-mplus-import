@@ -11,7 +11,7 @@ class TreeNodeTest extends FunctionalTest
 {
     protected TreeNode $tree;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $tree = new TreeNode('foo', ['name' => 'Foo']);
         $tree->addChild($child1 = new TreeNode('child', ['name' => 'Bar', 'targetModule' => 'Test']));

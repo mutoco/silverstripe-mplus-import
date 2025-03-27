@@ -24,7 +24,7 @@ class LoadModuleStepTest extends FunctionalTest
 
     protected array $loadedConfig;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -40,7 +40,7 @@ class LoadModuleStepTest extends FunctionalTest
         }
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         Config::unnest();
         parent::tearDown();

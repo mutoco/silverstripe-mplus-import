@@ -33,9 +33,10 @@ class ImportAttachmentStepTest extends SapphireTest
     protected array $loadedConfig;
     protected static $fixture_file = 'ImportAttachmentStepTest.yml';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
+
 
         TestAssetStore::activate('data');
 
@@ -48,7 +49,7 @@ class ImportAttachmentStepTest extends SapphireTest
         );
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         Config::unnest();
         TestAssetStore::reset();
@@ -57,6 +58,10 @@ class ImportAttachmentStepTest extends SapphireTest
 
     public function testAttachmentImport()
     {
+        if (! extension_loaded('imagick')) {
+            $this->markTestSkipped('The imagick extension is not installed. Skipping.');
+        }
+
         Config::withConfig(function (MutableConfigCollectionInterface $config) {
             DBDatetime::set_mock_now('2021-05-10 10:00:00');
             $object = $this->objFromFixture(Work::class, 'work1');

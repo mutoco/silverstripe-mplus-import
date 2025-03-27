@@ -31,7 +31,7 @@ class LoadSearchStepTest extends SapphireTest
 
     protected array $loadedConfig;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -42,7 +42,7 @@ class LoadSearchStepTest extends SapphireTest
         );
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         Config::unnest();
         parent::tearDown();

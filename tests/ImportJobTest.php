@@ -12,7 +12,7 @@ use Symfony\Component\Yaml\Yaml;
 
 class ImportJobTest extends FunctionalTest
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -45,7 +45,7 @@ class ImportJobTest extends FunctionalTest
         ]]);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         Config::unnest();
         parent::tearDown();

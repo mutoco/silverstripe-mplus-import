@@ -25,7 +25,7 @@ class CleanupRecordsStepTest extends SapphireTest
     protected array $loadedConfig;
     protected static $fixture_file = 'CleanupRecordsStepTest.yml';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -38,7 +38,7 @@ class CleanupRecordsStepTest extends SapphireTest
         );
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         Config::unnest();
         parent::tearDown();

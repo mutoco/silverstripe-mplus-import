@@ -1,18 +1,19 @@
-<phpunit bootstrap="vendor/silverstripe/framework/tests/bootstrap.php" colors="true">
-    <testsuite name="mutoco/silverstripe-mplus-import">
-        <directory>tests/</directory>
-    </testsuite>
-    <filter>
-        <whitelist addUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">src/</directory>
-            <exclude>
-                <directory suffix=".php">tests/</directory>
-            </exclude>
-        </whitelist>
-    </filter>
-    <php>
-        <env name="SS_DATABASE_CLASS" value="SQLite3Database"/>
-        <env name="SS_SQLITE_DATABASE_PATH" value=":memory:"/>
-        <env name="SS_DATABASE_NAME" value="test-mplus-sqlite"/>
-    </php>
+<?xml version="1.0"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="vendor/silverstripe/framework/tests/bootstrap.php" colors="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+  <coverage includeUncoveredFiles="true">
+    <include>
+      <directory suffix=".php">src/</directory>
+    </include>
+    <exclude>
+      <directory suffix=".php">tests/</directory>
+    </exclude>
+  </coverage>
+  <testsuite name="mutoco/silverstripe-mplus-import">
+    <directory>tests/</directory>
+  </testsuite>
+  <php>
+    <env name="SS_DATABASE_CLASS" value="SQLite3Database"/>
+    <env name="SS_SQLITE_DATABASE_PATH" value=":memory:"/>
+    <env name="SS_DATABASE_NAME" value="test-mplus-sqlite"/>
+  </php>
 </phpunit>

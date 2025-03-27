@@ -39,7 +39,7 @@ class ImportModuleStepTest extends SapphireTest
     protected array $loadedConfig;
     protected static $fixture_file = 'ImportModuleStepTest.yml';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -54,7 +54,7 @@ class ImportModuleStepTest extends SapphireTest
         );
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         Config::unnest();
         TestAssetStore::reset();
