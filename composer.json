@@ -8,7 +8,7 @@
     ],
     "license": "BSD-3-Clause",
     "require": {
-        "php": ">= 7.3, <8",
+        "php": ">= 7.4 || ^8",
         "ext-xml": "*",
         "ext-dom": "*",
         "silverstripe/framework": "^4.7",
