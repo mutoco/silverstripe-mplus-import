@@ -148,15 +148,13 @@ class ImportConfig implements \Serializable
         return $relations;
     }
 
-    protected function getSerializableObject(): \stdClass
+    protected function getSerializableArray(): array
     {
-        $obj = new \stdClass();
-        $obj->config = $this->config;
-        return $obj;
+        return ['config' => $this->config];
     }
 
-    protected function unserializeFromObject(\stdClass $obj): void
+    protected function unserializeFromArray(array $data): void
     {
-        $this->config = $obj->config;
+        $this->config = $data['config'];
     }
 }

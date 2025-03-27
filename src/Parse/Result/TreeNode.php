@@ -278,27 +278,25 @@ class TreeNode implements NodeInterface, \Serializable
         return $copy;
     }
 
-    protected function getSerializableObject(): \stdClass
+    protected function getSerializableArray(): array
     {
-        $obj = new \stdClass();
-
-        $obj->attributes = $this->attributes;
-        $obj->tag = $this->tag;
-        $obj->value = $this->value;
-        $obj->children = $this->children;
-        $obj->resolved = $this->resolved;
-
-        return $obj;
+        return [
+            'attributes' => $this->attributes,
+            'tag' => $this->tag,
+            'value' => $this->value,
+            'children' => $this->children,
+            'resolved' => $this->resolved,
+        ];
     }
 
-    protected function unserializeFromObject(\stdClass $obj): void
+    protected function unserializeFromArray(array $data): void
     {
-        $this->attributes = $obj->attributes;
-        $this->tag = $obj->tag;
-        $this->value = $obj->value;
-        $this->resolved = $obj->resolved;
+        $this->attributes = $data['attributes'];
+        $this->tag = $data['tag'];
+        $this->value = $data['value'];
+        $this->resolved = $data['resolved'];
 
-        foreach ($obj->children as $child) {
+        foreach ($data['children'] as $child) {
             $this->addChild($child);
         }
     }

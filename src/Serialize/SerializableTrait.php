@@ -4,7 +4,17 @@ namespace Mutoco\Mplus\Serialize;
 
 trait SerializableTrait
 {
-    public function serialize()
+    public function __serialize(): array
+    {
+        return $this->getSerializableArray();
+    }
+
+    public function __unserialize(array $data)
+    {
+        $this->unserializeFromArray($data);
+    }
+
+    public function serialize(): ?string
     {
         return serialize($this->getSerializableObject());
     }
@@ -16,10 +26,22 @@ trait SerializableTrait
 
     protected function unserializeFromObject(\stdClass $obj): void
     {
+        $this->unserializeFromArray($obj->data);
     }
 
     protected function getSerializableObject(): \stdClass
     {
-        return new \stdClass();
+        $obj = new \stdClass();
+        $obj->data = $this->getSerializableArray();
+        return $obj;
+    }
+
+    protected function unserializeFromArray(array $data): void
+    {
+    }
+
+    protected function getSerializableArray(): array
+    {
+        return [];
     }
 }

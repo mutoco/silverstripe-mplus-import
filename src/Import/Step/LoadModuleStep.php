@@ -301,19 +301,19 @@ class LoadModuleStep implements StepInterface
         return null;
     }
 
-    protected function getSerializableObject(): \stdClass
+    protected function getSerializableArray(): array
     {
-        $obj = new \stdClass();
-        $obj->module = $this->module;
-        $obj->id = $this->id;
-        $obj->resultTree = $this->resultTree;
-        return $obj;
+        return [
+            'module' => $this->module,
+            'id' => $this->id,
+            'resultTree' => $this->resultTree,
+        ];
     }
 
-    protected function unserializeFromObject(\stdClass $obj): void
+    protected function unserializeFromArray(array $data): void
     {
-        $this->module = $obj->module;
-        $this->id = $obj->id;
-        $this->resultTree = $obj->resultTree;
+        $this->module = $data['module'];
+        $this->id = $data['id'];
+        $this->resultTree = $data['resultTree'];
     }
 }

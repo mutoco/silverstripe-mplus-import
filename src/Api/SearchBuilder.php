@@ -162,6 +162,7 @@ class SearchBuilder implements \Serializable
     public function removeSort(string $field): self
     {
         unset($this->sort[$field]);
+        return $this;
     }
 
     public function isValid(): bool
@@ -265,29 +266,29 @@ class SearchBuilder implements \Serializable
         }
     }
 
-    protected function getSerializableObject(): \stdClass
+    protected function getSerializableArray(): array
     {
-        $obj = new \stdClass();
-        $obj->start = $this->start;
-        $obj->limit = $this->limit;
-        $obj->module = $this->module;
-        $obj->select = $this->select;
-        $obj->expert = $this->expert;
-        $obj->sort = $this->sort;
-        $obj->prettyPrint = $this->prettyPrint;
-        $obj->fulltext = $this->fulltext;
-        return $obj;
+        return [
+            'start' => $this->start,
+            'limit' => $this->limit,
+            'module' => $this->module,
+            'select' => $this->select,
+            'expert' => $this->expert,
+            'sort' => $this->sort,
+            'prettyPrint' => $this->prettyPrint,
+            'fulltext' => $this->fulltext
+        ];
     }
 
-    protected function unserializeFromObject(\stdClass $obj): void
+    protected function unserializeFromArray(array $data): void
     {
-        $this->start = $obj->start;
-        $this->limit = $obj->limit;
-        $this->module = $obj->module;
-        $this->select = $obj->select;
-        $this->expert = $obj->expert;
-        $this->sort = $obj->sort;
-        $this->prettyPrint = $obj->prettyPrint;
-        $this->fulltext = $obj->fulltext;
+        $this->start = $data['start'];
+        $this->limit = $data['limit'];
+        $this->module = $data['module'];
+        $this->select = $data['select'];
+        $this->expert = $data['expert'];
+        $this->sort = $data['sort'];
+        $this->prettyPrint = $data['prettyPrint'];
+        $this->fulltext = $data['fulltext'];
     }
 }

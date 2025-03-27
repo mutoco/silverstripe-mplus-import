@@ -83,15 +83,15 @@ class CleanupRecordsStep implements StepInterface
     }
 
 
-    protected function getSerializableObject(): \stdClass
+    protected function getSerializableArray(): array
     {
-        $obj = new \stdClass();
-        $obj->module = $this->module;
-        return $obj;
+        return [
+            'module' => $this->module
+        ];
     }
 
-    protected function unserializeFromObject(\stdClass $obj): void
+    protected function unserializeFromArray(array $data): void
     {
-        $this->module = $obj->module;
+        $this->module = $data['module'];
     }
 }

@@ -61,21 +61,21 @@ class TestStep implements StepInterface
         self::$stack[] = $this->name . ':' . __FUNCTION__;
     }
 
-    protected function getSerializableObject(): \stdClass
+    protected function getSerializableArray(): array
     {
-        $obj = new \stdClass();
-        $obj->loops = $this->loops;
-        $obj->step = $this->step;
-        $obj->enqueue = $this->enqueue;
-        $obj->name = $this->name;
-        return $obj;
+        return [
+            'loops' => $this->loops,
+            'step' => $this->step,
+            'enqueue' => $this->enqueue,
+            'name' => $this->name,
+        ];
     }
 
-    protected function unserializeFromObject(\stdClass $obj): void
+    protected function unserializeFromArray(array $data): void
     {
-        $this->loops = $obj->loops;
-        $this->step = $obj->step;
-        $this->enqueue = $obj->enqueue;
-        $this->name = $obj->name;
+        $this->loops = $data['loops'];
+        $this->step = $data['step'];
+        $this->enqueue = $data['enqueue'];
+        $this->name = $data['name'];
     }
 }

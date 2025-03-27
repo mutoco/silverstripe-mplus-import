@@ -109,21 +109,21 @@ abstract class AbstractRelationStep implements StepInterface
     {
     }
 
-    protected function getSerializableObject(): \stdClass
+    protected function getSerializableArray(): array
     {
-        $obj = new \stdClass();
-        $obj->relationName = $this->relationName;
-        $obj->targetClass = $this->targetClass;
-        $obj->targetId = $this->targetId;
-        $obj->relationIds = $this->relationIds;
-        return $obj;
+        return [
+            'relationName' => $this->relationName,
+            'targetClass' => $this->targetClass,
+            'targetId' => $this->targetId,
+            'relationIds' => $this->relationIds,
+        ];
     }
 
-    protected function unserializeFromObject(\stdClass $obj): void
+    protected function unserializeFromArray(array $data): void
     {
-        $this->relationName = $obj->relationName;
-        $this->targetClass = $obj->targetClass;
-        $this->targetId = $obj->targetId;
-        $this->relationIds = $obj->relationIds;
+        $this->relationName = $data['relationName'];
+        $this->targetClass = $data['targetClass'];
+        $this->targetId = $data['targetId'];
+        $this->relationIds = $data['relationIds'];
     }
 }

@@ -234,17 +234,17 @@ class ImportAttachmentStep implements StepInterface
         return $clean . '.jpg';
     }
 
-    protected function getSerializableObject(): \stdClass
+    protected function getSerializableArray(): array
     {
-        $obj = new \stdClass();
-        $obj->module = $this->module;
-        $obj->id = $this->id;
-        return $obj;
+        return [
+            'module' => $this->module,
+            'id' => $this->id,
+        ];
     }
 
-    protected function unserializeFromObject(\stdClass $obj): void
+    protected function unserializeFromArray(array $data): void
     {
-        $this->module = $obj->module;
-        $this->id = $obj->id;
+        $this->module = $data['module'];
+        $this->id = $data['id'];
     }
 }

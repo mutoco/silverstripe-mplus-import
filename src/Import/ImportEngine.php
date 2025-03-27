@@ -188,30 +188,30 @@ class ImportEngine implements \Serializable
         return false;
     }
 
-    protected function getSerializableObject(): \stdClass
+    protected function getSerializableArray(): array
     {
-        $obj = new \stdClass();
-        $obj->steps = $this->steps;
-        $obj->backend = $this->backend;
-        $obj->deleteObsoleteRecords = $this->deleteObsoleteRecords;
-        $obj->useSearchToResolve = $this->useSearchToResolve;
-        $obj->importOnlyNewer = $this->importOnlyNewer;
-        $obj->networkFailCount = $this->networkFailCount;
-        $obj->apiClass = $this->api ? get_class($this->api) : null;
-        return $obj;
+        return [
+            'steps' => $this->steps,
+            'backend' => $this->backend,
+            'deleteObsoleteRecords' => $this->deleteObsoleteRecords,
+            'useSearchToResolve' => $this->useSearchToResolve,
+            'importOnlyNewer' => $this->importOnlyNewer,
+            'networkFailCount' => $this->networkFailCount,
+            'apiClass' => $this->api ? get_class($this->api) : null,
+        ];
     }
 
-    protected function unserializeFromObject(\stdClass $obj): void
+    protected function unserializeFromArray(array $data): void
     {
-        $this->steps = $obj->steps;
-        $this->backend = $obj->backend;
+        $this->steps = $data['steps'];
+        $this->backend = $data['backend'];
         $this->config = null;
-        $this->deleteObsoleteRecords = $obj->deleteObsoleteRecords;
-        $this->useSearchToResolve = $obj->useSearchToResolve;
-        $this->importOnlyNewer = $obj->importOnlyNewer;
-        $this->networkFailCount = $obj->networkFailCount;
-        if ($obj->apiClass) {
-            $this->setApi(Injector::inst()->create($obj->apiClass));
+        $this->deleteObsoleteRecords = $data['deleteObsoleteRecords'];
+        $this->useSearchToResolve = $data['useSearchToResolve'];
+        $this->importOnlyNewer = $data['importOnlyNewer'];
+        $this->networkFailCount = $data['networkFailCount'];
+        if ($data['apiClass']) {
+            $this->setApi(Injector::inst()->create($data['apiClass']));
         }
     }
 }

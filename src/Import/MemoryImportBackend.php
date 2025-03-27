@@ -130,12 +130,13 @@ class MemoryImportBackend implements BackendInterface
         $this->queue = new \SplPriorityQueue();
     }
 
-    protected function getSerializableObject(): \stdClass
+    protected function getSerializableArray(): array
     {
-        $obj = new \stdClass();
-        $obj->modules = $this->modules;
-        $obj->relations = $this->relations;
-        $obj->trees = $this->trees;
+        $data = [
+            'modules' => $this->modules,
+            'relations' => $this->relations,
+            'trees' => $this->trees,
+        ];
 
         $queue = [];
         $this->queue->rewind();
@@ -153,18 +154,18 @@ class MemoryImportBackend implements BackendInterface
 
         $this->queue->setExtractFlags($flags);
 
-        $obj->queue = $queue;
-        return $obj;
+        $data['queue'] = $queue;
+        return $data;
     }
 
-    protected function unserializeFromObject(\stdClass $obj): void
+    protected function unserializeFromArray(array $data): void
     {
-        $this->modules = $obj->modules;
-        $this->relations = $obj->relations;
-        $this->trees = $obj->trees;
+        $this->modules = $data['modules'];
+        $this->relations = $data['relations'];
+        $this->trees = $data['trees'];
         $this->queue = new \SplPriorityQueue();
 
-        foreach ($obj->queue as $item) {
+        foreach ($data['queue'] as $item) {
             $this->queue->insert($item['data'], $item['priority']);
         }
     }

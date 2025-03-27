@@ -292,41 +292,41 @@ class ImportModuleStep implements StepInterface
     }
 
 
-    protected function getSerializableObject(): \stdClass
+    protected function getSerializableArray(): array
     {
-        $obj = new \stdClass();
+        $data = [];
 
         // When possible, we also serialize the direct parent, as it sometimes contains important attributes
         if ($this->tree && ($parent = $this->tree->getParent())) {
             $copy = $parent->getCopy();
             $copy->addChild($this->tree);
-            $obj->tree = $copy;
-            $obj->withParent = true;
+            $data['tree'] = $copy;
+            $data['withParent'] = true;
         } else {
-            $obj->withParent = false;
-            $obj->tree = $this->tree;
+            $data['withParent'] = false;
+            $data['tree'] = $this->tree;
         }
-        $obj->module = $this->module;
-        $obj->id = $this->id;
+        $data['module'] = $this->module;
+        $data['id'] = $this->id;
         if ($this->target) {
-            $obj->targetClass = $this->target->getClassName();
-            $obj->targetId = $this->target->ID;
+            $data['targetClass'] = $this->target->getClassName();
+            $data['targetId'] = $this->target->ID;
         }
-        return $obj;
+        return $data;
     }
 
-    protected function unserializeFromObject(\stdClass $obj): void
+    protected function unserializeFromArray(array $data): void
     {
-        $this->tree = $obj->tree;
+        $this->tree = $data['tree'];
 
-        if ($obj->withParent) {
+        if ($data['withParent']) {
             $this->tree = $this->tree->getChildren()[0];
         }
 
-        $this->module = $obj->module;
-        $this->id = $obj->id;
-        if (isset($obj->targetClass)) {
-            $this->target = DataObject::get_by_id($obj->targetClass, $obj->targetId);
+        $this->module = $data['module'];
+        $this->id = $data['id'];
+        if (isset($data['targetClass'])) {
+            $this->target = DataObject::get_by_id($data['targetClass'], $data['targetId']);
         }
     }
 }

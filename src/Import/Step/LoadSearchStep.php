@@ -98,19 +98,19 @@ class LoadSearchStep implements StepInterface
     {
     }
 
-    protected function getSerializableObject(): \stdClass
+    protected function getSerializableArray(): array
     {
-        $obj = new \stdClass();
-        $obj->search = $this->search;
-        $obj->page = $this->page;
-        $obj->priority = $this->priority;
-        return $obj;
+        return [
+            'search' => $this->search,
+            'page' => $this->page,
+            'priority' => $this->priority,
+        ];
     }
 
-    protected function unserializeFromObject(\stdClass $obj): void
+    protected function unserializeFromArray(array $data): void
     {
-        $this->page = $obj->page;
-        $this->search = $obj->search;
-        $this->priority = $obj->priority;
+        $this->page = $data['page'];
+        $this->search = $data['search'];
+        $this->priority = $data['priority'];
     }
 }

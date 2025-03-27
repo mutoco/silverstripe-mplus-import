@@ -295,16 +295,16 @@ SQL;
             return false;
         }
 
-        protected function getSerializableObject(): \stdClass
+        protected function getSerializableArray(): array
         {
-            $obj = new \stdClass();
-            $obj->filename = $this->filename;
-            return $obj;
+            return [
+                'filename' => $this->filename
+            ];
         }
 
-        protected function unserializeFromObject(\stdClass $obj): void
+        protected function unserializeFromArray(array $data): void
         {
-            $this->filename = $obj->filename;
+            $this->filename = $data['filename'];
             $this->db = new \SQLite3($this->filename);
             $this->prepareStatements();
         }
